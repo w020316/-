@@ -654,15 +654,17 @@ return`<p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">上�
 }
 
 function renderBatchLeetCode(){
-return`<p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">从 LeetCode 批量导入题目信息（仅标题、难度、标签，不含完整题解）</p><div class="form-group"><label>导入方式</label><select id="lcMode" onchange="toggleLcMode()"><option value="list">按难度列表导入</option><option value="ids">按题号导入</option></select></div><div id="lcListMode"><div class="form-group"><label>难度筛选</label><div style="display:flex;gap:8px;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" id="lcEasy" checked> 简单</label><label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" id="lcMedium" checked> 中等</label><label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" id="lcHard" checked> 困难</label></div></div><div class="form-group"><label>导入数量</label><input type="number" id="lcCount" value="20" min="1" max="100" style="width:100px"></div></div><div id="lcIdsMode" style="display:none"><div class="form-group"><label>题号列表（逗号分隔）</label><input type="text" id="lcIds" placeholder="1, 2, 3, 15, 206, 70"></div></div><div class="form-group"><label>目标分类</label><select id="lcCategory">${CATEGORIES.map(c=>`<option value="${c.id}" ${c.id==='algorithm'?'selected':''}>${c.icon} ${c.name}</option>`).join('')}</select></div><button class="btn btn-orange" onclick="fetchLeetCodeProblems()">🟠 从 LeetCode 导入</button><div id="lcPreview" style="margin-top:16px"></div><div style="margin-top:12px;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-size:12px;color:var(--text-muted)">💡 提示：LeetCode 导入仅获取题目标题、难度和标签信息，不含完整题目描述和答案。导入后可在题库中查看和补充详情。</div>`;
+return`<p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">从 LeetCode 批量导入题目，支持获取中文标题、题目描述和通过率</p><div class="form-group"><label>导入方式</label><select id="lcMode" onchange="toggleLcMode()"><option value="list">按难度列表导入</option><option value="ids">按题号导入</option><option value="github">GitHub 开源题库</option></select></div><div id="lcListMode"><div class="form-group"><label>难度筛选</label><div style="display:flex;gap:8px;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" id="lcEasy" checked> 简单</label><label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" id="lcMedium" checked> 中等</label><label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" id="lcHard" checked> 困难</label></div></div><div class="form-group"><label>导入数量</label><input type="number" id="lcCount" value="20" min="1" max="100" style="width:100px"></div></div><div id="lcIdsMode" style="display:none"><div class="form-group"><label>题号列表（逗号分隔）</label><input type="text" id="lcIds" placeholder="1, 2, 3, 15, 206, 70"></div></div><div id="lcGithubMode" style="display:none"><div class="form-group"><label>选择题库</label><select id="lcRepo"><option value="azl397985856/leetcode">azl397985856/leetcode - LeetCode题解（推荐）</option><option value="greyireland/algorithm-pattern">greyireland/algorithm-pattern - 算法模板</option></select></div><p style="font-size:12px;color:var(--text-muted)">从 GitHub 开源仓库获取精选面试题列表，包含题解和分类信息</p></div><div class="form-group"><label>目标分类</label><select id="lcCategory">${CATEGORIES.map(c=>`<option value="${c.id}" ${c.id==='algorithm'?'selected':''}>${c.icon} ${c.name}</option>`).join('')}</select></div><label style="display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:12px;cursor:pointer"><input type="checkbox" id="lcDetail" checked> 获取题目详情（中文标题、描述、通过率）</label><button class="btn btn-orange" onclick="fetchLeetCodeProblems()">🟠 从 LeetCode 导入</button><div id="lcPreview" style="margin-top:16px"></div><div style="margin-top:12px;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-size:12px;color:var(--text-muted)">💡 提示：勾选"获取题目详情"可获取中文标题和题目描述，但速度较慢。取消勾选仅获取基本信息，速度更快。</div>`;
 }
 
 function toggleLcMode(){
 const mode=document.getElementById('lcMode')?.value;
 const listMode=document.getElementById('lcListMode');
 const idsMode=document.getElementById('lcIdsMode');
+const ghMode=document.getElementById('lcGithubMode');
 if(listMode)listMode.style.display=mode==='list'?'block':'none';
 if(idsMode)idsMode.style.display=mode==='ids'?'block':'none';
+if(ghMode)ghMode.style.display=mode==='github'?'block':'none';
 }
 
 function handleBatchFile(event){
@@ -698,12 +700,15 @@ function fetchLeetCodeProblems(){
 const mode=document.getElementById('lcMode')?.value;
 const category=document.getElementById('lcCategory')?.value||'algorithm';
 const preview=document.getElementById('lcPreview');
-if(preview)preview.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">⏳ 正在从 LeetCode 获取题目...</div>';
-if(mode==='ids'){
+const withDetail=document.getElementById('lcDetail')?.checked;
+if(preview)preview.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">⏳ 正在获取题目...</div>';
+if(mode==='github'){
+fetchFromGitHub(category,preview);
+}else if(mode==='ids'){
 const idsStr=document.getElementById('lcIds')?.value||'';
 const ids=idsStr.split(',').map(s=>s.trim()).filter(Boolean).map(Number).filter(n=>n>0);
 if(!ids.length){toast('请输入有效的题号','error');return}
-fetchLeetCodeByIds(ids,category,preview);
+fetchLeetCodeByIds(ids,category,preview,withDetail);
 }else{
 const easy=document.getElementById('lcEasy')?.checked;
 const medium=document.getElementById('lcMedium')?.checked;
@@ -714,49 +719,127 @@ if(easy)difficulties.push('EASY');
 if(medium)difficulties.push('MEDIUM');
 if(hard)difficulties.push('HARD');
 if(!difficulties.length){toast('请至少选择一个难度','error');return}
-fetchLeetCodeList(difficulties,count,category,preview);
+fetchLeetCodeList(difficulties,count,category,preview,withDetail);
 }
 }
 
-function fetchLeetCodeList(difficulties,count,category,preview){
-const query=`query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug,limit:$limit,skip:$skip,filters:$filters){total questions{title titleSlug difficulty topicTags{name slug}}}}`;
+function fetchLeetCodeList(difficulties,count,category,preview,withDetail){
+const query=`query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug,limit:$limit,skip:$skip,filters:$filters){total questions{questionFrontendId title titleCn titleSlug difficulty acRate topicTags{name nameTranslated slug}}}}`;
 const variables={categorySlug:"",limit:count,skip:0,filters:{difficulty:difficulties}};
 fetch('https://leetcode.cn/graphql/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,variables})}).then(r=>r.json()).then(data=>{
 const questions=data?.data?.problemsetQuestionList?.questions||[];
 if(!questions.length){if(preview)preview.innerHTML='<div style="color:var(--text-muted)">未获取到题目，可能因跨域限制</div>';return}
 const tagMap={'array':'algorithm','hash-table':'algorithm','linked-list':'algorithm','math':'algorithm','two-pointers':'algorithm','sliding-window':'algorithm','stack':'algorithm','queue':'algorithm','heap':'algorithm','greedy':'algorithm','dynamic-programming':'algorithm','divide-and-conquer':'algorithm','backtracking':'algorithm','tree':'algorithm','binary-tree':'algorithm','binary-search-tree':'algorithm','graph':'algorithm','depth-first-search':'algorithm','breadth-first-search':'algorithm','binary-search':'algorithm','sort':'algorithm','recursion':'algorithm','trie':'algorithm','monotonic-stack':'algorithm','bit-manipulation':'algorithm','database':'database','shell':'os','concurrency':'os','design':'system-design','javascript':'frontend','html':'frontend','css':'frontend'};
-const mapped=questions.map(q=>{
 const diffMap={'EASY':'easy','MEDIUM':'medium','HARD':'hard'};
+const mapped=questions.map(q=>{
 const tags=q.topicTags||[];
 let cat=category;
 for(const tag of tags){if(tagMap[tag.slug]){cat=tagMap[tag.slug];break}}
-return{title:`LC-${q.titleSlug.replace(/-/g,' ')}: ${q.title}`,category:cat,difficulty:diffMap[q.difficulty]||'medium',content:`来源：LeetCode ${q.titleSlug}\nhttps://leetcode.cn/problems/${q.titleSlug}/`,answer:'',source:`LeetCode: ${q.titleSlug}`};
+const tagNames=tags.map(t=>t.nameTranslated||t.name).filter(Boolean);
+const title=q.titleCn||q.title;
+return{title:`LC${q.questionFrontendId}: ${title}`,category:cat,difficulty:diffMap[q.difficulty]||'medium',content:`LeetCode #${q.questionFrontendId}\nhttps://leetcode.cn/problems/${q.titleSlug}/\n通过率: ${(q.acRate*100).toFixed(1)}%`,answer:'',source:`LeetCode #${q.questionFrontendId}`,tags:tagNames,acRate:q.acRate?`${(q.acRate*100).toFixed(1)}%`:'',titleSlug:q.titleSlug};
 });
+if(withDetail&&mapped.length<=30){
+fetchLeetCodeDetails(mapped,preview);
+}else{
 showLeetCodePreview(mapped,preview);
+}
 }).catch(err=>{if(preview)preview.innerHTML=`<div style="color:var(--difficulty-hard)">❌ 获取失败：${err.message}。建议使用JSON粘贴方式导入。</div>`});
 }
 
-function fetchLeetCodeByIds(ids,category,preview){
+function fetchLeetCodeDetails(questions,preview){
+let completed=0;
+const total=questions.length;
+const detailed=[...questions];
+detailed.forEach((q,i)=>{
+const query=`query questionDetail($titleSlug:String!){question(titleSlug:$titleSlug){content translatedTitle translatedContent difficulty}}`;
+fetch('https://leetcode.cn/graphql/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,variables:{titleSlug:q.titleSlug}})}).then(r=>r.json()).then(data=>{
+completed++;
+const detail=data?.data?.question;
+if(detail){
+if(detail.translatedTitle)q.title=`LC${q.title}: ${detail.translatedTitle}`;
+if(detail.translatedContent){
+const div=document.createElement('div');div.innerHTML=detail.translatedContent;
+const text=div.textContent||div.innerText||'';
+q.content=text.substring(0,500)+'...\n\n来源: LeetCode\nhttps://leetcode.cn/problems/'+q.titleSlug+'/';
+}else if(detail.content){
+const div=document.createElement('div');div.innerHTML=detail.content;
+const text=div.textContent||div.innerText||'';
+q.content=text.substring(0,500)+'...\n\n来源: LeetCode\nhttps://leetcode.cn/problems/'+q.titleSlug+'/';
+}
+}
+if(preview)preview.innerHTML=`<div style="text-align:center;padding:12px;color:var(--text-muted)">⏳ 获取详情中... ${completed}/${total}</div>`;
+if(completed===total)showLeetCodePreview(detailed,preview);
+}).catch(()=>{completed++;if(completed===total)showLeetCodePreview(detailed,preview)});
+});
+}
+
+function fetchLeetCodeByIds(ids,category,preview,withDetail){
 let questions=[];
 let completed=0;
 ids.forEach(id=>{
-const query=`query questionDetail($titleSlug:String){question(titleSlug:$titleSlug){questionId title titleSlug difficulty topicTags{name slug}}}`;
+const query=`query questionDetail($titleSlug:String!){question(titleSlug:$titleSlug){questionId questionFrontendId title titleCn titleSlug difficulty acRate topicTags{name nameTranslated slug}content translatedTitle translatedContent}}`;
 fetch('https://leetcode.cn/graphql/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,variables:{titleSlug:String(id)}})}).then(r=>r.json()).then(data=>{
 completed++;
 const q=data?.data?.question;
 if(q){
 const diffMap={'Easy':'easy','Medium':'medium','Hard':'hard'};
-questions.push({title:`LC-${q.questionId}: ${q.title}`,category,difficulty:diffMap[q.difficulty]||'medium',content:`来源：LeetCode #${q.questionId}\nhttps://leetcode.cn/problems/${q.titleSlug}/`,answer:'',source:`LeetCode #${q.questionId}`});
+const tags=q.topicTags||[];
+const tagNames=tags.map(t=>t.nameTranslated||t.name).filter(Boolean);
+const title=q.translatedTitle||q.titleCn||q.title;
+let content=`LeetCode #${q.questionFrontendId}\nhttps://leetcode.cn/problems/${q.titleSlug}/`;
+if(q.acRate)content+=`\n通过率: ${(q.acRate*100).toFixed(1)}%`;
+if(withDetail&&(q.translatedContent||q.content)){
+const div=document.createElement('div');div.innerHTML=q.translatedContent||q.content;
+const text=div.textContent||div.innerText||'';
+content=text.substring(0,500)+'...\n\n'+content;
 }
+questions.push({title:`LC${q.questionFrontendId}: ${title}`,category,difficulty:diffMap[q.difficulty]||'medium',content,answer:'',source:`LeetCode #${q.questionFrontendId}`,tags:tagNames,acRate:q.acRate?`${(q.acRate*100).toFixed(1)}%`:'',titleSlug:q.titleSlug});
+}
+if(preview)preview.innerHTML=`<div style="text-align:center;padding:12px;color:var(--text-muted)">⏳ 获取详情中... ${completed}/${ids.length}</div>`;
 if(completed===ids.length)showLeetCodePreview(questions,preview);
 }).catch(()=>{completed++;if(completed===ids.length)showLeetCodePreview(questions,preview)});
+});
+}
+
+function fetchFromGitHub(category,preview){
+const repo=document.getElementById('lcRepo')?.value||'azl397985856/leetcode';
+const url=`https://raw.githubusercontent.com/${repo}/master/README.md`;
+fetch(url).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(md=>{
+const problems=[];
+const lcRegex=/\[(\d+)\.\s*([^\]]+)\]\(https:\/\/leetcode\.cn\/problems\/([^\/]+)\/?\)/g;
+let match;
+while((match=lcRegex.exec(md))!==null){
+const num=match[1],title=match[2],slug=match[3];
+problems.push({title:`LC${num}: ${title}`,category,difficulty:'medium',content:`LeetCode #${num}\nhttps://leetcode.cn/problems/${slug}/`,answer:'',source:`GitHub: ${repo}`,tags:[],titleSlug:slug});
+}
+if(!problems.length){
+const simpleRegex=/##\s*(\d+)\.\s*([^\n]+)/g;
+while((match=simpleRegex.exec(md))!==null){
+const num=match[1],title=match[2].trim();
+if(title.length>2&&title.length<100){
+problems.push({title:`#${num}: ${title}`,category,difficulty:'medium',content:`来源: ${repo}`,answer:'',source:`GitHub: ${repo}`,tags:[]});
+}
+}
+}
+if(!problems.length){
+if(preview)preview.innerHTML=`<div style="color:var(--text-muted)">未能从该仓库解析出题目。该仓库可能使用了不同的格式。</div>`;
+return;
+}
+const limited=problems.slice(0,100);
+if(problems.length>100&&preview){
+preview.innerHTML=`<div style="font-size:12px;color:var(--accent-gold);margin-bottom:8px">⚠️ 发现 ${problems.length} 道题目，仅展示前 100 道</div>`;
+}
+showLeetCodePreview(limited,preview);
+}).catch(err=>{
+if(preview)preview.innerHTML=`<div style="color:var(--difficulty-hard)">❌ 获取失败：${err.message}。GitHub 仓库可能不存在或网络受限。</div><div style="font-size:12px;color:var(--text-muted);margin-top:8px">💡 建议：手动下载仓库 README，使用"文件上传"方式导入</div>`;
 });
 }
 
 function showLeetCodePreview(questions,preview){
 if(!preview)return;
 if(!questions.length){preview.innerHTML='<div style="color:var(--text-muted)">未获取到题目</div>';return}
-preview.innerHTML=`<div style="padding:12px;background:var(--bg-primary);border-radius:var(--radius);margin-bottom:12px"><div style="font-size:14px;font-weight:600;margin-bottom:8px">✅ 获取到 ${questions.length} 道题目</div><div style="max-height:300px;overflow-y:auto">${questions.map((q,i)=>`<div style="font-size:13px;color:var(--text-secondary);padding:4px 0;border-bottom:1px solid var(--border-color)">${i+1}. ${q.title} <span class="difficulty-tag difficulty-${q.difficulty}" style="font-size:10px">${DIFF_LABELS[q.difficulty]}</span></div>`).join('')}</div></div><button class="btn btn-orange" onclick="confirmLeetCodeImport()">📥 确认导入 ${questions.length} 道题目</button>`;
+preview.innerHTML=`<div style="padding:12px;background:var(--bg-primary);border-radius:var(--radius);margin-bottom:12px"><div style="font-size:14px;font-weight:600;margin-bottom:8px">✅ 获取到 ${questions.length} 道题目</div><div style="max-height:300px;overflow-y:auto">${questions.map((q,i)=>`<div style="font-size:13px;color:var(--text-secondary);padding:6px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${i+1}. ${q.title}</span><div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="difficulty-tag difficulty-${q.difficulty}" style="font-size:10px">${DIFF_LABELS[q.difficulty]}</span>${q.acRate?`<span style="font-size:10px;color:var(--accent-cyan)">${q.acRate}</span>`:''}</div></div>`).join('')}</div></div><button class="btn btn-orange" onclick="confirmLeetCodeImport()">📥 确认导入 ${questions.length} 道题目</button>`;
 window._pendingLcImport=questions;
 }
 
