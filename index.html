@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CodeInterview - 计算机面试刷题平台</title>
+<meta name="description" content="面向计算机求职面试的刷题平台，涵盖算法、操作系统、计算机网络、数据库、系统设计等高频面试题">
+<meta name="keywords" content="面试题,刷题,算法,LeetCode,计算机面试,数据结构,操作系统,网络,数据库">
+<meta property="og:title" content="CodeInterview - 计算机面试刷题平台">
+<meta property="og:description" content="111+精选面试题，支持收录、刷题、统计">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;--accent-cyan:#22d3ee;--accent-gold:#f59e0b;--accent-orange:#f97316;--difficulty-easy:#22c55e;--difficulty-medium:#f59e0b;--difficulty-hard:#ef4444;--border-color:#334155;--shadow:0 4px 6px -1px rgba(0,0,0,.3);--radius:8px;--transition:.3s ease}
-[data-theme="light"]{--bg-primary:#f8fafc;--bg-secondary:#fff;--bg-tertiary:#e2e8f0;--text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;--border-color:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1)}
+:root{--bg-primary:#0a0e1a;--bg-secondary:#111827;--bg-tertiary:#1f2937;--bg-elevated:#1a2332;--text-primary:#e8edf5;--text-secondary:#8b9cc0;--text-muted:#5a6a8a;--accent-cyan:#00e5ff;--accent-gold:#ffb300;--accent-orange:#ff6d00;--accent-purple:#b388ff;--difficulty-easy:#00e676;--difficulty-medium:#ffab00;--difficulty-hard:#ff1744;--border-color:#1e2d42;--glass:rgba(17,24,39,.7);--shadow:0 8px 32px rgba(0,0,0,.4);--glow-cyan:0 0 20px rgba(0,229,255,.15);--glow-gold:0 0 20px rgba(255,179,0,.15);--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1)}
+[data-theme="light"]{--bg-primary:#f0f4f8;--bg-secondary:#fff;--bg-tertiary:#e2e8f0;--bg-elevated:#f7fafc;--text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;--border-color:#d1d9e6;--glass:rgba(255,255,255,.85);--shadow:0 8px 32px rgba(0,0,0,.08);--glow-cyan:0 0 20px rgba(0,229,255,.08);--glow-gold:0 0 20px rgba(255,179,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 code,pre,.code-font{font-family:'Cascadia Code','Fira Code','Consolas',monospace}
@@ -120,6 +127,10 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 .ring-chart .ring-center{position:absolute;text-align:center}
 .ring-chart .ring-center .ring-value{font-size:28px;font-weight:700;color:var(--accent-cyan)}
 .ring-chart .ring-center .ring-label{font-size:12px;color:var(--text-muted)}
+.progress-ring{transform:rotate(-90deg);width:100%;height:100%}
+.progress-ring-circle{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.progress-ring-bg{stroke:var(--bg-tertiary)}
+.progress-ring-fill{stroke:url(#gradient)}
 .checkin-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:16px 0}
 .calendar-cell{aspect-ratio:1;border-radius:4px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted)}
 .calendar-cell.checked{background:rgba(34,211,238,.3);color:var(--accent-cyan)}
@@ -163,6 +174,43 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 .keyboard-hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:8px 16px;font-size:12px;color:var(--text-muted);z-index:50;display:none;gap:16px}
 .keyboard-hint.show{display:flex}
 .keyboard-hint kbd{background:var(--bg-tertiary);padding:2px 6px;border-radius:4px;font-family:monospace;border:1px solid var(--border-color)}
+.guide-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.guide-content{background:var(--bg-secondary);border-radius:16px;padding:40px;max-width:500px;text-align:center;border:1px solid var(--border-color);box-shadow:var(--shadow);animation:guideIn .5s ease}
+@keyframes guideIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.guide-content h2{font-size:24px;margin-bottom:12px;color:var(--accent-cyan)}
+.guide-content p{color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.guide-features{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;text-align:left}
+.guide-feature{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-primary);border-radius:8px;font-size:14px;color:var(--text-secondary)}
+.guide-feature .feature-icon{font-size:24px}
+.achievement-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.achievement-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:16px;text-align:center;transition:var(--transition);position:relative;overflow:hidden}
+.achievement-card.unlocked{border-color:var(--accent-gold);box-shadow:var(--glow-gold)}
+.achievement-card.locked{opacity:.5}
+.achievement-icon{font-size:36px;margin-bottom:8px;display:block}
+.achievement-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.achievement-desc{font-size:11px;color:var(--text-muted)}
+.achievement-date{font-size:10px;color:var(--accent-cyan);margin-top:4px}
+.share-poster{background:linear-gradient(135deg,var(--bg-primary),var(--bg-tertiary));border:2px solid var(--accent-cyan);border-radius:16px;padding:32px;text-align:center;max-width:400px;margin:0 auto;position:relative;overflow:hidden}
+.share-poster::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(34,211,238,.15),transparent 70%)}
+.share-poster-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;position:relative}
+.share-poster-subtitle{color:var(--text-muted);font-size:14px;margin-bottom:24px;position:relative}
+.share-stats-row{display:flex;justify-content:center;gap:24px;margin-bottom:24px;position:relative}
+.share-stat{text-align:center}
+.share-stat-value{font-size:36px;font-weight:900;color:var(--accent-cyan)}
+.share-stat-label{font-size:12px;color:var(--text-muted)}
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px}
+.pagination button{padding:6px 12px;border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);border-radius:6px;cursor:pointer;font-size:13px;transition:var(--transition)}
+.pagination button:hover:not(:disabled){border-color:var(--accent-cyan);color:var(--accent-cyan)}
+.pagination button:disabled{opacity:.3;cursor:not-allowed}
+.pagination .page-info{font-size:13px;color:var(--text-muted);min-width:80px;text-align:center}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tag-item{padding:4px 10px;border-radius:12px;font-size:11px;background:var(--bg-tertiary);color:var(--text-secondary);cursor:pointer;transition:var(--transition);border:1px solid transparent}
+.tag-item:hover{border-color:var(--accent-cyan);color:var(--accent-cyan)}
+.tag-item.active{background:rgba(34,211,238,.15);color:var(--accent-cyan);border-color:var(--accent-cyan)}
+.fade-in{animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.slide-up{animation:slideUp .4s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:768px){
 .sidebar{position:fixed;left:-260px;top:56px;bottom:0;z-index:90;transition:left .3s ease;box-shadow:var(--shadow);display:flex}
 .sidebar.open-mobile{left:0}
@@ -380,13 +428,46 @@ getFavorites(){return this.get('favorites',[])},setFavorites(v){this.set('favori
 getCollected(){return this.get('collected',[])},setCollected(v){this.set('collected',v)},
 getSources(){return this.get('sources',DEFAULT_SOURCES)},setSources(v){this.set('sources',v)},
 getCheckins(){return this.get('checkins',[])},setCheckins(v){this.set('checkins',v)},
+getAchievements(){return this.get('achievements',[])},setAchievements(v){this.set('achievements',v)},
 getTodayCount(){const t=new Date().toDateString();return this.getMastered().filter(id=>{const m=this.get('m_meta_'+id,null);return m&&new Date(m.date).toDateString()===t}).length},
 getStreak(){const c=this.getCheckins();if(!c.length)return 0;let s=0;const t=new Date();for(let i=0;i<365;i++){const d=new Date(t);d.setDate(d.getDate()-i);if(c.includes(d.toDateString()))s++;else if(i>0)break}return s},
-checkin(){const c=this.getCheckins();const t=new Date().toDateString();if(!c.includes(t)){c.push(t);this.setCheckins(c)}},
-toggleMastered(id){const m=this.getMastered();const i=m.indexOf(id);if(i>=0)m.splice(i,1);else{m.push(id);this.set('m_meta_'+id,{date:new Date().toISOString()});this.checkin()}this.setMastered(m)},
+checkin(){const c=this.getCheckins();const t=new Date().toDateString();if(!c.includes(t)){c.push(t);this.setCheckins(c);this.checkAchievements()}},
+toggleMastered(id){const m=this.getMastered();const i=m.indexOf(id);if(i>=0)m.splice(i,1);else{m.push(id);this.set('m_meta_'+id,{date:new Date().toISOString()});this.checkin()}this.setMastered(m);this.checkAchievements()},
 toggleFavorite(id){const f=this.getFavorites();const i=f.indexOf(id);if(i>=0)f.splice(i,1);else f.push(id);this.setFavorites(f)},
 addCollected(qs){const c=this.getCollected();qs.forEach(q=>{q.id=q.id||('col-'+Date.now()+'-'+Math.random().toString(36).substr(2,5));q.collectedAt=new Date().toISOString();q.source=q.source||'手动添加';c.push(q)});this.setCollected(c);return qs},
-getTheme(){return this.get('theme','dark')},setTheme(v){this.set('theme',v)}
+getTheme(){return this.get('theme','dark')},setTheme(v){this.set('theme',v)},
+getFirstVisit(){return this.get('firstVisit',true)},setFirstVisit(v){this.set('firstVisit',v)},
+checkAchievements(){
+const achievements=this.getAchievements();
+const mastered=this.getMastered();
+const checkins=this.getCheckins();
+const streak=this.getStreak();
+const allQ=getAllQuestions();
+const newAchievements=[];
+const achievementDefs=[
+{id:'first-question',name:'初出茅庐',icon:'🌱',desc:'完成第一道题目',check:()=>mastered.length>=1},
+{id:'ten-questions',name:'小试牛刀',icon:'⭐',desc:'掌握10道题目',check:()=>mastered.length>=10},
+{id:'fifty-questions',name:'渐入佳境',icon:'🎯',desc:'掌握50道题目',check:()=>mastered.length>=50},
+{id:'hundred-questions',name:'题海无涯',icon:'🏆',desc:'掌握100道题目',check:()=>mastered.length>=100},
+{id:'streak-3',name:'三日坚持',icon:'🔥',desc:'连续打卡3天',check:()=>streak>=3},
+{id:'streak-7',name:'周周坚持',icon:'💪',desc:'连续打卡7天',check:()=>streak>=7},
+{id:'streak-30',name:'月度达人',icon:'👑',desc:'连续打卡30天',check:()=>streak>=30},
+{id:'collector',name:'收藏家',icon:'📚',desc:'收藏10道题目',check:()=>this.getFavorites().length>=10},
+{id:'contributor',name:'贡献者',icon:'🤝',desc:'收录5道题目',check:()=>this.getCollected().length>=5},
+{id:'all-categories',name:'全能选手',icon:'🎖️',desc:'每个分类至少掌握1题',check:()=>CATEGORIES.every(c=>mastered.some(mid=>allQ.find(q=>q.id===mid)?.category===c.id))}
+];
+achievementDefs.forEach(def=>{
+if(!achievements.find(a=>a.id===def.id)&&def.check()){
+const achievement={...def,unlockedAt:new Date().toISOString()};
+achievements.push(achievement);
+newAchievements.push(achievement);
+}
+});
+if(newAchievements.length){
+this.setAchievements(achievements);
+setTimeout(()=>{newAchievements.forEach(a=>toast(`🏆 成就解锁：${a.name}`,'success'))},500);
+}
+}
 };
 
 function getAllQuestions(){
@@ -407,7 +488,7 @@ detectDiff(t){for(const k of DIFFICULTY_KEYWORDS.hard)if(t.includes(k))return'ha
 
 let currentPage='dashboard';
 let currentParams={};
-let questionFilters={search:'',category:'',difficulty:'',status:'',source:'',view:'list'};
+let questionFilters={search:'',category:'',difficulty:'',status:'',source:'',view:'list',page:1,pageSize:20};
 let collectTab=0;
 let parsedResults=[];
 
@@ -453,7 +534,40 @@ const dailyQ=allQ[seed%allQ.length];
 const recentCollected=collected.slice(-3).reverse();
 const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);
 const weekCollected=collected.filter(q=>new Date(q.collectedAt)>weekAgo).length;
-return`<div class="dashboard-hero"><h2>👋 欢迎回来，继续刷题！</h2><p>已掌握 ${mastered.length} / ${allQ.length} 题，收藏 ${favorites.length} 题，收录 ${collected.length} 题</p></div><div class="stat-grid"><div class="stat-card"><div class="stat-number">${todayCount}</div><div class="stat-label">今日刷题</div></div><div class="stat-card"><div class="stat-number">${streak}</div><div class="stat-label">连续打卡</div></div><div class="stat-card"><div class="stat-number">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number">${allQ.length-mastered.length}</div><div class="stat-label">待攻克</div></div></div><div class="quick-actions"><div class="quick-action" onclick="navigate('practice',{mode:'daily'})"><div class="action-icon">🎯</div><div class="action-title">每日一题</div><div class="action-desc">今日推荐题目</div></div><div class="quick-action" onclick="navigate('practice',{mode:'random'})"><div class="action-icon">🎲</div><div class="action-title">随机刷题</div><div class="action-desc">随机抽取未掌握题</div></div><div class="quick-action" onclick="navigate('collect')"><div class="action-icon">📥</div><div class="action-title">收录新题</div><div class="action-desc">从网页或手动收录</div></div><div class="quick-action" onclick="navigate('stats')"><div class="action-icon">📈</div><div class="action-title">查看统计</div><div class="action-desc">各分类进度详情</div></div></div>${dailyQ?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-gold)">🎯 今日一题</h3><div class="question-card" onclick="navigate('detail',{id:'${dailyQ.id}'})"><div class="q-info"><div class="q-title">${dailyQ.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${dailyQ.difficulty}">${DIFF_LABELS[dailyQ.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[dailyQ.category]||dailyQ.category}</span></div></div></div></div>`:''}${recentCollected.length?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-orange)">📥 最近收录</h3>${recentCollected.map(q=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="source-badge collected">收录</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span style="font-size:11px;color:var(--text-muted)">${q.source||'未知来源'}</span></div></div></div>`).join('')}<div style="margin-top:12px;text-align:center"><span style="font-size:13px;color:var(--text-muted)">本周收录 ${weekCollected} 道 · 总收录 ${collected.length} 道</span></div></div>`:''}<div class="card"><h3 style="margin-bottom:12px">📊 分类进度</h3>${CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length,pct=cq.length?Math.round(cm/cq.length*100):0;return`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${cm}/${cq.length} (${pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div></div>`}).join('')}</div>`;
+const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
+const achievements=Store.getAchievements();
+const recentAchievements=achievements.slice(-3).reverse();
+if(Store.getFirstVisit()){
+setTimeout(()=>showFirstVisitGuide(),500);
+}
+return`<div class="dashboard-hero fade-in"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px"><div><h2>👋 欢迎回来，继续刷题！</h2><p style="color:var(--text-secondary);margin-top:8px">${mastered.length===0?'🚀 从第一题开始你的刷题之旅吧！':`已掌握 ${mastered.length} / ${allQ.length} 题，继续加油！`}</p></div><div class="ring-chart" style="width:120px;height:120px;min-width:120px"><svg viewBox="0 0 120 120" class="progress-ring"><defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--accent-cyan)"/><stop offset="100%" stop-color="var(--accent-gold)"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="progress-ring-circle progress-ring-bg"/><circle cx="60" cy="60" r="52" class="progress-ring-circle progress-ring-fill" stroke-dasharray="${2*Math.PI*52}" stroke-dashoffset="${2*Math.PI*52*(1-totalPct/100)}"/></svg><div class="ring-center" style="width:90px;height:90px;border-radius:50%;background:var(--bg-secondary)"><div class="ring-value">${totalPct}%</div><div class="ring-label">掌握率</div></div></div></div>`题</p></div><div class="stat-grid"><div class="stat-card"><div class="stat-number" style="color:var(--accent-cyan)">${todayCount}</div><div class="stat-label">今日刷题</div></div><div class="stat-card"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div><div class="stat-card"><div class="stat-number" style="color:var(--difficulty-easy)">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number" style="color:var(--difficulty-hard)">${allQ.length-mastered.length}</div><div class="stat-label">待攻克</div></div></div>${recentAchievements.length?`<div class="card slide-up" style="animation-delay:.2s"><h3 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">🏆 最近成就 <span style="font-size:12px;color:var(--text-muted);font-weight:400">（${achievements.length}/10）</span></h3><div class="achievement-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">${recentAchievements.map(a=>`<div class="achievement-card unlocked"><span class="achievement-icon">${a.icon}</span><div class="achievement-name">${a.name}</div><div class="achievement-desc">${a.desc}</div><div class="achievement-date">${new Date(a.unlockedAt).toLocaleDateString()}</div></div>`).join('')}</div></div>`:''}<div class="quick-actions slide-up" style="animation-delay:.3s"><div class="quick-action" onclick="navigate('practice',{mode:'daily'})"><div class="action-icon">🎯</div><div class="action-title">每日一题</div><div class="action-desc">今日推荐题目</div></div><div class="quick-action" onclick="navigate('practice',{mode:'random'})"><div class="action-icon">🎲</div><div class="action-title">随机刷题</div><div class="action-desc">随机抽取未掌握题</div></div><div class="quick-action" onclick="navigate('collect')"><div class="action-icon">📥</div><div class="action-title">收录新题</div><div class="action-desc">从网页或手动收录</div></div><div class="quick-action" onclick="showSharePoster()"><div class="action-icon">📤</div><div class="action-title">分享进度</div><div class="action-desc">生成进度海报</div></div><div class="quick-action" onclick="navigate('stats')"><div class="action-icon">🏅</div><div class="action-title">查看成就</div><div class="action-desc">里程碑徽章墙</div></div><div class="quick-action" onclick="exportData()"><div class="action-icon">💾</div><div class="action-title">导出数据</div><div class="action-desc">备份学习记录</div></div></div>${dailyQ?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-gold)">🎯 今日一题</h3><div class="question-card" onclick="navigate('detail',{id:'${dailyQ.id}'})"><div class="q-info"><div class="q-title">${dailyQ.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${dailyQ.difficulty}">${DIFF_LABELS[dailyQ.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[dailyQ.category]||dailyQ.category}</span></div></div></div></div>`:''}${recentCollected.length?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-orange)">📥 最近收录</h3>${recentCollected.map(q=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="source-badge collected">收录</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span style="font-size:11px;color:var(--text-muted)">${q.source||'未知来源'}</span></div></div></div>`).join('')}<div style="margin-top:12px;text-align:center"><span style="font-size:13px;color:var(--text-muted)">本周收录 ${weekCollected} 道 · 总收录 ${collected.length} 道</span></div></div>`:''}<div class="card"><h3 style="margin-bottom:12px">📊 分类进度</h3>${CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length,pct=cq.length?Math.round(cm/cq.length*100):0;return`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${cm}/${cq.length} (${pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div></div>`}).join('')}</div>`;
+}
+
+function showFirstVisitGuide(){
+const overlay=document.createElement('div');
+overlay.className='guide-overlay';
+overlay.id='guideOverlay';
+overlay.innerHTML=`<div class="guide-content"><h2>⌨️ 欢迎使用 CodeInterview</h2><p>面向计算机求职面试的刷题平台<br>涵盖算法、操作系统、网络、数据库等高频面试题</p><div class="guide-features"><div class="guide-feature"><span class="feature-icon">📚</span><span><strong>111+ 精选面试题</strong><br>覆盖8大技术分类</span></div><div class="guide-feature"><span class="feature-icon">✅</span><span><strong>标记掌握 & 收藏</strong><br>追踪学习进度</span></div><div class="guide-feature"><span class="feature-icon">🎯</span><span><strong>多种练习模式</strong><br>每日一题 / 专项 / 随机</span></div><div class="guide-feature"><span class="feature-icon">🌐</span><span><strong>收录新题目</strong><br>从网页或手动添加</span></div><div class="guide-feature"><span class="feature-icon">📊</span><span><strong>数据统计</strong><br>可视化进度追踪</span></div><div class="guide-feature"><span class="feature-icon">🏆</span><span><strong>成就系统</strong><br>解锁里程碑徽章</span></div></div><button class="btn btn-primary" style="width:100%;padding:14px;font-size:16px" onclick="closeGuide()">开始刷题之旅 →</button></div>`;
+document.body.appendChild(overlay);
+}
+
+function closeGuide(){
+const overlay=document.getElementById('guideOverlay');
+if(overlay){overlay.remove();Store.setFirstVisit(false)}
+}
+
+function showSharePoster(){
+const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites(),streak=Store.getStreak();
+const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
+const modal=document.createElement('div');
+modal.className='guide-overlay';
+modal.id='shareModal';
+modal.innerHTML=`<div class="share-poster"><div class="share-poster-title">CodeInterview</div><div class="share-poster-subtitle">计算机面试刷题平台</div><div class="share-stats-row"><div class="share-stat"><div class="share-stat-value">${mastered.length}</div><div class="share-stat-label">已掌握</div></div><div class="share-stat"><div class="share-stat-value">${totalPct}%</div><div class="share-stat-label">掌握率</div></div><div class="share-stat"><div class="share-stat-value">${streak}</div><div class="share-stat-label">连续打卡</div></div></div><div style="position:relative;padding:16px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:20px"><p style="font-size:13px;color:var(--text-secondary);position:relative">"${mastered.length===0?'我正在使用 CodeInterview 刷题，一起加入吧！':`我已完成 ${mastered.length} 道面试题，掌握率 ${totalPct}%，连续打卡 ${streak} 天！`}"</p></div><button class="btn btn-primary" style="position:relative;width:100%" onclick="downloadSharePoster()">📷 保存海报</button><button class="btn btn-outline" style="position:relative;margin-top:8px;width:100%" onclick="document.getElementById('shareModal').remove()">关闭</button></div>`;
+document.body.appendChild(modal);
+}
+
+function downloadSharePoster(){
+toast('海报生成功能开发中...','info');
 }
 
 function renderQuestions(){
@@ -469,7 +583,12 @@ else if(questionFilters.status==='favorited')filtered=filtered.filter(q=>favorit
 if(questionFilters.source==='builtin')filtered=filtered.filter(q=>q.sourceType==='builtin');
 else if(questionFilters.source==='collected')filtered=filtered.filter(q=>q.sourceType==='collected');
 const isGrid=questionFilters.view==='grid';
-return`<div class="search-bar"><input class="search-input" placeholder="搜索题目..." value="${questionFilters.search}" oninput="questionFilters.search=this.value;renderPage()"><select class="search-input" onchange="questionFilters.difficulty=this.value;renderPage()"><option value="">全部难度</option><option value="easy" ${questionFilters.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${questionFilters.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${questionFilters.difficulty==='hard'?'selected':''}>困难</option></select><select class="search-input" onchange="questionFilters.status=this.value;renderPage()"><option value="">全部状态</option><option value="mastered" ${questionFilters.status==='mastered'?'selected':''}>已掌握</option><option value="unmastered" ${questionFilters.status==='unmastered'?'selected':''}>未掌握</option><option value="favorited" ${questionFilters.status==='favorited'?'selected':''}>已收藏</option></select><select class="search-input" onchange="questionFilters.source=this.value;renderPage()"><option value="">全部来源</option><option value="builtin" ${questionFilters.source==='builtin'?'selected':''}>内置题</option><option value="collected" ${questionFilters.source==='collected'?'selected':''}>收录题</option></select><div class="view-toggle"><button class="${!isGrid?'active':''}" onclick="questionFilters.view='list';renderPage()">列表</button><button class="${isGrid?'active':''}" onclick="questionFilters.view='grid';renderPage()">卡片</button></div></div><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">共 ${filtered.length} 道题目</div>${filtered.length===0?'<div class="empty-state"><div class="empty-icon">🔍</div><p>没有找到匹配的题目</p></div>':`<div class="${isGrid?'question-grid':''}">${filtered.map((q,i)=>{const im=mastered.includes(q.id),if2=favorites.includes(q.id);return`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><span class="source-badge ${q.sourceType}">${q.sourceType==='builtin'?'内置':'收录'}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="收藏" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'}">${if2?'⭐':'☆'}</button><button onclick="Store.toggleMastered('${q.id}');renderPage()" title="掌握" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'}">${im?'✅':'⬜'}</button></div></div>`}).join('')}</div>`}`;
+const page=questionFilters.page||1;
+const pageSize=questionFilters.pageSize||20;
+const totalPages=Math.ceil(filtered.length/pageSize);
+const paged=filtered.slice((page-1)*pageSize,page*pageSize);
+const startIdx=(page-1)*pageSize;
+return`<div class="search-bar"><input class="search-input" placeholder="搜索题目..." value="${questionFilters.search}" oninput="questionFilters.search=this.value;questionFilters.page=1;renderPage()"><select class="search-input" onchange="questionFilters.difficulty=this.value;questionFilters.page=1;renderPage()"><option value="">全部难度</option><option value="easy" ${questionFilters.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${questionFilters.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${questionFilters.difficulty==='hard'?'selected':''}>困难</option></select><select class="search-input" onchange="questionFilters.status=this.value;questionFilters.page=1;renderPage()"><option value="">全部状态</option><option value="mastered" ${questionFilters.status==='mastered'?'selected':''}>已掌握</option><option value="unmastered" ${questionFilters.status==='unmastered'?'selected':''}>未掌握</option><option value="favorited" ${questionFilters.status==='favorited'?'selected':''}>已收藏</option></select><select class="search-input" onchange="questionFilters.source=this.value;questionFilters.page=1;renderPage()"><option value="">全部来源</option><option value="builtin" ${questionFilters.source==='builtin'?'selected':''}>内置题</option><option value="collected" ${questionFilters.source==='collected'?'selected':''}>收录题</option></select><div class="view-toggle"><button class="${!isGrid?'active':''}" onclick="questionFilters.view='list';renderPage()">列表</button><button class="${isGrid?'active':''}" onclick="questionFilters.view='grid';renderPage()">卡片</button></div></div><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">共 ${filtered.length} 道题目${totalPages>1?`，第 ${page}/${totalPages} 页`:''}</div>${filtered.length===0?'<div class="empty-state"><div class="empty-icon">🔍</div><p>没有找到匹配的题目</p></div>':`<div class="${isGrid?'question-grid':''}">${paged.map((q,i)=>{const im=mastered.includes(q.id),if2=favorites.includes(q.id);return`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${startIdx+i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><span class="source-badge ${q.sourceType}">${q.sourceType==='builtin'?'内置':'收录'}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="收藏" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'}">${if2?'⭐':'☆'}</button><button onclick="Store.toggleMastered('${q.id}');renderPage()" title="掌握" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'}">${im?'✅':'⬜'}</button></div></div>`}).join('')}</div>${totalPages>1?`<div class="pagination"><button ${page<=1?'disabled':''} onclick="questionFilters.page=${page-1};renderPage()">← 上一页</button><span class="page-info">${page} / ${totalPages}</span><button ${page>=totalPages?'disabled':''} onclick="questionFilters.page=${page+1};renderPage()">下一页 →</button></div>`:''}`}`;
 }
 
 function renderDetail(){
@@ -625,9 +744,23 @@ const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
 const catStats=CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length;return{...c,total:cq.length,mastered:cm,pct:cq.length?Math.round(cm/cq.length*100):0}});
 const maxTotal=Math.max(...catStats.map(c=>c.total),1);
 const checkins=Store.getCheckins();
+const streak=Store.getStreak();
 const today=new Date();
 const calDays=[];for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);calDays.push(d)}
-return`<div class="stat-grid"><div class="stat-card"><div class="stat-number">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card"><div class="stat-number">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card"><div class="stat-number">${favorites.length}</div><div class="stat-label">收藏数</div></div></div><div style="display:flex;gap:24px;flex-wrap:wrap"><div class="card" style="flex:2;min-width:400px"><h3 style="margin-bottom:16px">📊 分类掌握进度</h3><div class="bar-chart">${catStats.map(c=>`<div class="bar-item"><div class="bar-value">${c.pct}%</div><div class="bar" style="height:${c.total?c.mastered/c.total*100:0}%"></div><div class="bar-label">${c.icon}<br>${c.name.substring(0,4)}</div></div>`).join('')}</div></div><div class="card" style="flex:1;min-width:200px"><h3 style="margin-bottom:16px">🎯 总体掌握率</h3><div style="display:flex;justify-content:center"><div class="ring-chart" style="background:conic-gradient(var(--accent-cyan) 0% ${totalPct}%, var(--bg-tertiary) ${totalPct}% 100%)"><div class="ring-center" style="width:120px;height:120px;border-radius:50%;background:var(--bg-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="ring-value">${totalPct}%</div><div class="ring-label">掌握率</div></div></div></div></div></div><div class="card"><h3 style="margin-bottom:16px">📅 打卡日历（最近30天）</h3><div class="checkin-calendar"><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">日</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">一</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">二</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">三</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">四</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">五</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">六</div>${calDays.map(d=>{const ds=d.toDateString(),isChecked=checkins.includes(ds),isToday=d.toDateString()===today.toDateString();return`<div class="calendar-cell ${isChecked?'checked':''} ${isToday?'today':''}">${d.getDate()}</div>`}).join('')}</div></div><div class="card"><h3 style="margin-bottom:16px">📊 分类详情</h3>${catStats.map(c=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${c.mastered}/${c.total} (${c.pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${c.pct}%"></div></div></div>`).join('')}</div><div class="card"><h3 style="margin-bottom:16px">💾 数据管理</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="exportData()">📤 导出数据</button><button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ 清除所有数据</button></div></div>`;
+const achievements=Store.getAchievements();
+const achievementDefs=[
+{id:'first-question',name:'初出茅庐',icon:'🌱',desc:'完成第一道题目'},
+{id:'ten-questions',name:'小试牛刀',icon:'⭐',desc:'掌握10道题目'},
+{id:'fifty-questions',name:'渐入佳境',icon:'🎯',desc:'掌握50道题目'},
+{id:'hundred-questions',name:'题海无涯',icon:'🏆',desc:'掌握100道题目'},
+{id:'streak-3',name:'三日坚持',icon:'🔥',desc:'连续打卡3天'},
+{id:'streak-7',name:'周周坚持',icon:'💪',desc:'连续打卡7天'},
+{id:'streak-30',name:'月度达人',icon:'👑',desc:'连续打卡30天'},
+{id:'collector',name:'收藏家',icon:'📚',desc:'收藏10道题目'},
+{id:'contributor',name:'贡献者',icon:'🤝',desc:'收录5道题目'},
+{id:'all-categories',name:'全能选手',icon:'🎖️',desc:'每个分类至少掌握1题'}
+];
+return`<div class="stat-grid"><div class="stat-card"><div class="stat-number">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card"><div class="stat-number">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card"><div class="stat-number">${streak}</div><div class="stat-label">连续打卡</div></div></div><div class="card"><h3 style="margin-bottom:16px">🏆 成就徽章 <span style="color:var(--text-muted);font-size:13px;font-weight:400">（${achievements.length}/${achievementDefs.length}）</span></h3><div class="achievement-grid">${achievementDefs.map(def=>{const unlocked=achievements.find(a=>a.id===def.id);return`<div class="achievement-card ${unlocked?'unlocked':'locked'}"><span class="achievement-icon">${unlocked?def.icon:'🔒'}</span><div class="achievement-name">${def.name}</div><div class="achievement-desc">${def.desc}</div>${unlocked?`<div class="achievement-date">${new Date(unlocked.unlockedAt).toLocaleDateString()}</div>`:''}</div>`}).join('')}</div></div><div style="display:flex;gap:24px;flex-wrap:wrap"><div class="card" style="flex:2;min-width:400px"><h3 style="margin-bottom:16px">📊 分类掌握进度</h3><div class="bar-chart">${catStats.map(c=>`<div class="bar-item"><div class="bar-value">${c.pct}%</div><div class="bar" style="height:${c.total?c.mastered/c.total*100:0}%"></div><div class="bar-label">${c.icon}<br>${c.name.substring(0,4)}</div></div>`).join('')}</div></div><div class="card" style="flex:1;min-width:200px"><h3 style="margin-bottom:16px">🎯 总体掌握率</h3><div style="display:flex;justify-content:center"><div class="ring-chart" style="background:conic-gradient(var(--accent-cyan) 0% ${totalPct}%, var(--bg-tertiary) ${totalPct}% 100%)"><div class="ring-center" style="width:120px;height:120px;border-radius:50%;background:var(--bg-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="ring-value">${totalPct}%</div><div class="ring-label">掌握率</div></div></div></div></div></div><div class="card"><h3 style="margin-bottom:16px">📅 打卡日历（最近30天）</h3><div class="checkin-calendar"><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">日</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">一</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">二</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">三</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">四</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">五</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">六</div>${calDays.map(d=>{const ds=d.toDateString();const isToday=ds===today.toDateString();const isChecked=checkins.includes(ds);return`<div class="calendar-cell ${isChecked?'checked':''} ${isToday?'today':''}">${d.getDate()}</div>`}).join('')}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span style="font-size:13px;color:var(--text-muted)">已打卡 ${checkins.length} 天 · 连续 ${streak} 天</span><button class="btn btn-primary btn-sm" onclick="Store.checkin();renderPage()">✅ 今日打卡</button></div></div><div class="card"><h3 style="margin-bottom:16px">💾 数据管理</h3><div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-outline" onclick="exportData()">📤 导出数据</button><label class="btn btn-outline" style="cursor:pointer">📥 导入数据<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label><button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ 清除数据</button></div></div>`;" style="color:var(--text-muted);font-weight:600">五</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">六</div>${calDays.map(d=>{const ds=d.toDateString(),isChecked=checkins.includes(ds),isToday=d.toDateString()===today.toDateString();return`<div class="calendar-cell ${isChecked?'checked':''} ${isToday?'today':''}">${d.getDate()}</div>`}).join('')}</div></div><div class="card"><h3 style="margin-bottom:16px">📊 分类详情</h3>${catStats.map(c=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${c.mastered}/${c.total} (${c.pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${c.pct}%"></div></div></div>`).join('')}</div><div class="card"><h3 style="margin-bottom:16px">💾 数据管理</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="exportData()">📤 导出数据</button><button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ 清除所有数据</button></div></div>`;
 }
 
 function renderPractice(){
