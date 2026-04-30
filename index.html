@@ -211,11 +211,19 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .slide-up{animation:slideUp .4s ease}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.mobile-bottom-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg-secondary);border-top:1px solid var(--border-color);padding:8px 16px;z-index:100;gap:8px;justify-content:space-around;align-items:center}
+.mobile-bottom-bar button{flex:1;padding:10px 0;border:none;background:transparent;color:var(--text-secondary);font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;border-radius:8px;transition:var(--transition)}
+.mobile-bottom-bar button:active{background:var(--bg-tertiary)}
+.mobile-bottom-bar button .bar-icon{font-size:18px}
+.mobile-bottom-bar button .bar-label{font-size:10px}
+.help-fab{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent-cyan);color:#0f172a;border:none;font-size:20px;font-weight:700;cursor:pointer;z-index:90;box-shadow:var(--shadow);display:none;transition:var(--transition)}
+.help-fab:hover{transform:scale(1.1)}
+.help-fab.show{display:flex;align-items:center;justify-content:center}
 @media(max-width:768px){
 .sidebar{position:fixed;left:-260px;top:56px;bottom:0;z-index:90;transition:left .3s ease;box-shadow:var(--shadow);display:flex}
 .sidebar.open-mobile{left:0}
 .mobile-menu-btn{display:block}
-.content{padding:16px}
+.content{padding:16px;padding-bottom:72px}
 .header-stats{display:none}
 nav{overflow-x:auto}
 nav a{padding:8px 10px;font-size:13px}
@@ -223,6 +231,8 @@ nav a{padding:8px 10px;font-size:13px}
 .question-grid{grid-template-columns:1fr}
 .dashboard-hero{padding:20px}
 .quick-actions{grid-template-columns:repeat(2,1fr)}
+.mobile-bottom-bar{display:flex}
+.help-fab{display:none!important}
 }
 </style>
 </head>
@@ -253,6 +263,8 @@ nav a{padding:8px 10px;font-size:13px}
 <span><kbd>M</kbd> 标记掌握</span>
 <span><kbd>Esc</kbd> 返回</span>
 </div>
+<button class="help-fab" id="helpFab" onclick="showKeyboardHelp()" title="快捷键帮助">?</button>
+<div class="mobile-bottom-bar" id="mobileBar"></div>
 
 <script>
 const CATEGORIES=[
@@ -540,7 +552,7 @@ const recentAchievements=achievements.slice(-3).reverse();
 if(Store.getFirstVisit()){
 setTimeout(()=>showFirstVisitGuide(),500);
 }
-return`<div class="dashboard-hero fade-in"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px"><div><h2>👋 欢迎回来，继续刷题！</h2><p style="color:var(--text-secondary);margin-top:8px">${mastered.length===0?'🚀 从第一题开始你的刷题之旅吧！':`已掌握 ${mastered.length} / ${allQ.length} 题，继续加油！`}</p></div><div class="ring-chart" style="width:120px;height:120px;min-width:120px"><svg viewBox="0 0 120 120" class="progress-ring"><defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--accent-cyan)"/><stop offset="100%" stop-color="var(--accent-gold)"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="progress-ring-circle progress-ring-bg"/><circle cx="60" cy="60" r="52" class="progress-ring-circle progress-ring-fill" stroke-dasharray="${2*Math.PI*52}" stroke-dashoffset="${2*Math.PI*52*(1-totalPct/100)}"/></svg><div class="ring-center" style="width:90px;height:90px;border-radius:50%;background:var(--bg-secondary)"><div class="ring-value">${totalPct}%</div><div class="ring-label">掌握率</div></div></div></div>`题</p></div><div class="stat-grid"><div class="stat-card"><div class="stat-number" style="color:var(--accent-cyan)">${todayCount}</div><div class="stat-label">今日刷题</div></div><div class="stat-card"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div><div class="stat-card"><div class="stat-number" style="color:var(--difficulty-easy)">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number" style="color:var(--difficulty-hard)">${allQ.length-mastered.length}</div><div class="stat-label">待攻克</div></div></div>${recentAchievements.length?`<div class="card slide-up" style="animation-delay:.2s"><h3 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">🏆 最近成就 <span style="font-size:12px;color:var(--text-muted);font-weight:400">（${achievements.length}/10）</span></h3><div class="achievement-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">${recentAchievements.map(a=>`<div class="achievement-card unlocked"><span class="achievement-icon">${a.icon}</span><div class="achievement-name">${a.name}</div><div class="achievement-desc">${a.desc}</div><div class="achievement-date">${new Date(a.unlockedAt).toLocaleDateString()}</div></div>`).join('')}</div></div>`:''}<div class="quick-actions slide-up" style="animation-delay:.3s"><div class="quick-action" onclick="navigate('practice',{mode:'daily'})"><div class="action-icon">🎯</div><div class="action-title">每日一题</div><div class="action-desc">今日推荐题目</div></div><div class="quick-action" onclick="navigate('practice',{mode:'random'})"><div class="action-icon">🎲</div><div class="action-title">随机刷题</div><div class="action-desc">随机抽取未掌握题</div></div><div class="quick-action" onclick="navigate('collect')"><div class="action-icon">📥</div><div class="action-title">收录新题</div><div class="action-desc">从网页或手动收录</div></div><div class="quick-action" onclick="showSharePoster()"><div class="action-icon">📤</div><div class="action-title">分享进度</div><div class="action-desc">生成进度海报</div></div><div class="quick-action" onclick="navigate('stats')"><div class="action-icon">🏅</div><div class="action-title">查看成就</div><div class="action-desc">里程碑徽章墙</div></div><div class="quick-action" onclick="exportData()"><div class="action-icon">💾</div><div class="action-title">导出数据</div><div class="action-desc">备份学习记录</div></div></div>${dailyQ?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-gold)">🎯 今日一题</h3><div class="question-card" onclick="navigate('detail',{id:'${dailyQ.id}'})"><div class="q-info"><div class="q-title">${dailyQ.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${dailyQ.difficulty}">${DIFF_LABELS[dailyQ.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[dailyQ.category]||dailyQ.category}</span></div></div></div></div>`:''}${recentCollected.length?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-orange)">📥 最近收录</h3>${recentCollected.map(q=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="source-badge collected">收录</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span style="font-size:11px;color:var(--text-muted)">${q.source||'未知来源'}</span></div></div></div>`).join('')}<div style="margin-top:12px;text-align:center"><span style="font-size:13px;color:var(--text-muted)">本周收录 ${weekCollected} 道 · 总收录 ${collected.length} 道</span></div></div>`:''}<div class="card"><h3 style="margin-bottom:12px">📊 分类进度</h3>${CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length,pct=cq.length?Math.round(cm/cq.length*100):0;return`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${cm}/${cq.length} (${pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div></div>`}).join('')}</div>`;
+return`<div class="dashboard-hero fade-in"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px"><div><h2>👋 欢迎回来，继续刷题！</h2><p style="color:var(--text-secondary);margin-top:8px">${mastered.length===0?'🚀 从第一题开始你的刷题之旅吧！':`已掌握 ${mastered.length} / ${allQ.length} 题，继续加油！`}</p></div><div class="ring-chart" style="width:120px;height:120px;min-width:120px"><svg viewBox="0 0 120 120" class="progress-ring"><defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--accent-cyan)"/><stop offset="100%" stop-color="var(--accent-gold)"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="progress-ring-circle progress-ring-bg"/><circle cx="60" cy="60" r="52" class="progress-ring-circle progress-ring-fill" stroke-dasharray="${2*Math.PI*52}" stroke-dashoffset="${2*Math.PI*52*(1-totalPct/100)}"/></svg><div class="ring-center" style="width:90px;height:90px;border-radius:50%;background:var(--bg-secondary)"><div class="ring-value">${totalPct}%</div><div class="ring-label">掌握率</div></div></div></div></div><div class="stat-grid slide-up"><div class="stat-card"><div class="stat-number" style="color:var(--accent-cyan)">${todayCount}</div><div class="stat-label">今日刷题</div></div><div class="stat-card"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div><div class="stat-card"><div class="stat-number" style="color:var(--difficulty-easy)">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number" style="color:var(--difficulty-hard)">${allQ.length-mastered.length}</div><div class="stat-label">待攻克</div></div></div>${recentAchievements.length?`<div class="card slide-up" style="animation-delay:.2s"><h3 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">🏆 最近成就 <span style="font-size:12px;color:var(--text-muted);font-weight:400">（${achievements.length}/10）</span></h3><div class="achievement-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">${recentAchievements.map(a=>`<div class="achievement-card unlocked"><span class="achievement-icon">${a.icon}</span><div class="achievement-name">${a.name}</div><div class="achievement-desc">${a.desc}</div><div class="achievement-date">${new Date(a.unlockedAt).toLocaleDateString()}</div></div>`).join('')}</div></div>`:''}<div class="quick-actions slide-up" style="animation-delay:.3s"><div class="quick-action" onclick="navigate('practice',{mode:'daily'})"><div class="action-icon">🎯</div><div class="action-title">每日一题</div><div class="action-desc">今日推荐题目</div></div><div class="quick-action" onclick="navigate('practice',{mode:'random'})"><div class="action-icon">🎲</div><div class="action-title">随机刷题</div><div class="action-desc">随机抽取未掌握题</div></div><div class="quick-action" onclick="navigate('collect')"><div class="action-icon">📥</div><div class="action-title">收录新题</div><div class="action-desc">从网页或手动收录</div></div><div class="quick-action" onclick="showSharePoster()"><div class="action-icon">📤</div><div class="action-title">分享进度</div><div class="action-desc">生成进度海报</div></div><div class="quick-action" onclick="navigate('stats')"><div class="action-icon">🏅</div><div class="action-title">查看成就</div><div class="action-desc">里程碑徽章墙</div></div><div class="quick-action" onclick="exportData()"><div class="action-icon">💾</div><div class="action-title">导出数据</div><div class="action-desc">备份学习记录</div></div></div>${dailyQ?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-gold)">🎯 今日一题</h3><div class="question-card" onclick="navigate('detail',{id:'${dailyQ.id}'})"><div class="q-info"><div class="q-title">${dailyQ.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${dailyQ.difficulty}">${DIFF_LABELS[dailyQ.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[dailyQ.category]||dailyQ.category}</span></div></div></div></div>`:''}${recentCollected.length?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-orange)">📥 最近收录</h3>${recentCollected.map(q=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="source-badge collected">收录</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span style="font-size:11px;color:var(--text-muted)">${q.source||'未知来源'}</span></div></div></div>`).join('')}<div style="margin-top:12px;text-align:center"><span style="font-size:13px;color:var(--text-muted)">本周收录 ${weekCollected} 道 · 总收录 ${collected.length} 道</span></div></div>`:''}<div class="card"><h3 style="margin-bottom:12px">📊 分类进度</h3>${CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length,pct=cq.length?Math.round(cm/cq.length*100):0;return`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${cm}/${cq.length} (${pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div></div>`}).join('')}</div>`;
 }
 
 function showFirstVisitGuide(){
@@ -810,27 +822,57 @@ document.getElementById('sidebarOverlay').classList.remove('show');
 
 function setupKeyboardHints(){
 const hint=document.getElementById('keyboardHint');
+const fab=document.getElementById('helpFab');
 hint.classList.toggle('show',currentPage==='detail');
+fab.classList.toggle('show',currentPage==='detail');
+setupMobileBar();
+}
+
+function setupMobileBar(){
+const bar=document.getElementById('mobileBar');
+if(!bar)return;
+if(currentPage==='detail'){
+const allQ=getAllQuestions();
+const q=allQ.find(q=>q.id===currentParams.id);
+if(!q){bar.innerHTML='';return}
+const mastered=Store.getMastered(),favorites=Store.getFavorites();
+const im=mastered.includes(q.id),if2=favorites.includes(q.id);
+const idx=allQ.findIndex(item=>item.id===q.id);
+bar.innerHTML=`<button onclick="if(${idx}>0)navigate('detail',{id:'${allQ[idx-1]?.id}'})"><span class="bar-icon">⬅️</span><span class="bar-label">上一题</span></button><button onclick="Store.toggleMastered('${q.id}');renderPage()"><span class="bar-icon">${im?'✅':'⬜'}</span><span class="bar-label">${im?'已掌握':'掌握'}</span></button><button onclick="toggleAnswer()"><span class="bar-icon">📖</span><span class="bar-label">答案</span></button><button onclick="Store.toggleFavorite('${q.id}');renderPage()"><span class="bar-icon">${if2?'⭐':'☆'}</span><span class="bar-label">${if2?'已收藏':'收藏'}</span></button><button onclick="if(${idx}<allQ.length-1)navigate('detail',{id:'${allQ[idx+1]?.id}'})"><span class="bar-icon">➡️</span><span class="bar-label">下一题</span></button>`;
+}else if(currentPage==='questions'){
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">🏠</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">📚</span><span class="bar-label">题库</span></button><button onclick="navigate('practice',{mode:'random'})"><span class="bar-icon">🎲</span><span class="bar-label">随机</span></button><button onclick="navigate('collect')"><span class="bar-icon">📥</span><span class="bar-label">收录</span></button><button onclick="navigate('stats')"><span class="bar-icon">📊</span><span class="bar-label">统计</span></button>`;
+}else{
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">🏠</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">📚</span><span class="bar-label">题库</span></button><button onclick="navigate('practice',{mode:'daily'})"><span class="bar-icon">🎯</span><span class="bar-label">每日</span></button><button onclick="navigate('collect')"><span class="bar-icon">📥</span><span class="bar-label">收录</span></button><button onclick="navigate('stats')"><span class="bar-icon">📊</span><span class="bar-label">统计</span></button>`;
+}
+}
+
+function showKeyboardHelp(){
+const overlay=document.createElement('div');
+overlay.className='guide-overlay';
+overlay.id='kbHelpOverlay';
+overlay.innerHTML=`<div class="guide-content" style="max-width:400px"><h2>⌨️ 快捷键指南</h2><div style="text-align:left;margin-top:20px"><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-color)"><span style="color:var(--text-secondary)">下一题</span><span><kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">J</kbd> / <kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">↓</kbd></span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-color)"><span style="color:var(--text-secondary)">上一题</span><span><kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">K</kbd> / <kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">↑</kbd></span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-color)"><span style="color:var(--text-secondary)">展开/收起答案</span><span><kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">Enter</kbd></span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-color)"><span style="color:var(--text-secondary)">收藏/取消收藏</span><span><kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">F</kbd></span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-color)"><span style="color:var(--text-secondary)">标记掌握</span><span><kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">M</kbd></span></div><div style="display:flex;justify-content:space-between;padding:12px 0"><span style="color:var(--text-secondary)">返回题库</span><span><kbd style="background:var(--bg-tertiary);padding:4px 10px;border-radius:4px;border:1px solid var(--border-color);font-family:monospace">Esc</kbd></span></div></div><p style="color:var(--text-muted);font-size:12px;margin-top:16px">提示：在输入框中输入时快捷键自动禁用</p><button class="btn btn-primary" style="width:100%;margin-top:16px" onclick="document.getElementById('kbHelpOverlay').remove()">知道了</button></div>`;
+document.body.appendChild(overlay);
 }
 
 document.addEventListener('keydown',function(e){
 if(currentPage!=='detail')return;
 if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+if(e.ctrlKey||e.metaKey||e.altKey)return;
 const allQ=getAllQuestions();
 const q=allQ.find(q=>q.id===currentParams.id);
 if(!q)return;
 const idx=allQ.findIndex(item=>item.id===q.id);
 if(e.key==='j'||e.key==='ArrowDown'){
-const nextQ=idx<allQ.length-1?allQ[idx+1]:null;
+e.preventDefault();const nextQ=idx<allQ.length-1?allQ[idx+1]:null;
 if(nextQ)navigate('detail',{id:nextQ.id});
 }else if(e.key==='k'||e.key==='ArrowUp'){
-const prevQ=idx>0?allQ[idx-1]:null;
+e.preventDefault();const prevQ=idx>0?allQ[idx-1]:null;
 if(prevQ)navigate('detail',{id:prevQ.id});
 }else if(e.key==='Enter'){
-toggleAnswer();
-}else if(e.key==='f'||e.key==='F'){
+e.preventDefault();toggleAnswer();
+}else if(e.key==='f'){
 Store.toggleFavorite(q.id);renderPage();
-}else if(e.key==='m'||e.key==='M'){
+}else if(e.key==='m'){
 Store.toggleMastered(q.id);renderPage();
 }else if(e.key==='Escape'){
 navigate('questions');
@@ -884,6 +926,15 @@ const theme=Store.getTheme();
 document.documentElement.setAttribute('data-theme',theme);
 document.querySelector('.theme-toggle').textContent=theme==='dark'?'🌙':'☀️';
 parseHash();renderPage();
+const mastered=Store.getMastered();
+if(mastered.length>0&&!Store.get('lastBackupReminder',null)){
+const lastReminder=Store.get('lastBackupReminder','');
+const now=new Date().toISOString().slice(0,7);
+if(lastReminder!==now){
+Store.set('lastBackupReminder',now);
+setTimeout(()=>toast('💡 提示：定期导出数据可防止丢失，点击统计页面的"导出数据"按钮','info'),3000);
+}
+}
 }
 
 init();
