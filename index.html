@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeInterview - 计算机面试刷题平台</title>
+<style>
+:root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;--accent-cyan:#22d3ee;--accent-gold:#f59e0b;--accent-orange:#f97316;--difficulty-easy:#22c55e;--difficulty-medium:#f59e0b;--difficulty-hard:#ef4444;--border-color:#334155;--shadow:0 4px 6px -1px rgba(0,0,0,.3);--radius:8px;--transition:.3s ease}
+[data-theme="light"]{--bg-primary:#f8fafc;--bg-secondary:#fff;--bg-tertiary:#e2e8f0;--text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;--border-color:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+code,pre,.code-font{font-family:'Cascadia Code','Fira Code','Consolas',monospace}
+a{color:var(--accent-cyan);text-decoration:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--bg-tertiary);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+#app{display:flex;flex-direction:column;min-height:100vh}
+header{background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-size:20px;font-weight:700;color:var(--accent-cyan);cursor:pointer;display:flex;align-items:center;gap:8px}
+.logo span{color:var(--accent-gold)}
+.header-stats{display:flex;align-items:center;gap:20px;font-size:13px;color:var(--text-secondary)}
+.header-stats .stat-item{display:flex;align-items:center;gap:4px}
+.header-stats .stat-value{color:var(--accent-cyan);font-weight:600}
+.header-right{display:flex;align-items:center;gap:12px}
+nav{display:flex;gap:4px}
+nav a{padding:8px 16px;border-radius:var(--radius);color:var(--text-secondary);font-size:14px;transition:var(--transition);cursor:pointer;white-space:nowrap}
+nav a:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+nav a.active{background:var(--accent-cyan);color:#0f172a;font-weight:600}
+nav a.collect-active{background:var(--accent-orange);color:#fff;font-weight:600}
+.theme-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:var(--transition)}
+.theme-toggle:hover{border-color:var(--accent-cyan)}
+.main-layout{display:flex;flex:1;overflow:hidden}
+.sidebar{width:240px;min-width:240px;background:var(--bg-secondary);border-right:1px solid var(--border-color);overflow-y:auto;padding:16px 0;display:none;flex-direction:column}
+.sidebar.open-mobile{display:flex}
+.sidebar-section{padding:0 12px;margin-bottom:8px}
+.sidebar-title{font-size:11px;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;letter-spacing:1px;font-weight:600}
+.sidebar-item{padding:8px 12px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--text-secondary);transition:var(--transition)}
+.sidebar-item:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.sidebar-item.active{background:rgba(34,211,238,.1);color:var(--accent-cyan)}
+.sidebar-item .count{font-size:12px;background:var(--bg-tertiary);padding:2px 8px;border-radius:10px;color:var(--text-muted)}
+.sidebar-item.active .count{background:rgba(34,211,238,.2);color:var(--accent-cyan)}
+.content{flex:1;overflow-y:auto;padding:24px}
+.card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:var(--transition)}
+.card:hover{border-color:var(--accent-cyan);box-shadow:var(--shadow)}
+.btn{padding:8px 16px;border-radius:var(--radius);border:none;cursor:pointer;font-size:14px;font-weight:500;transition:var(--transition);display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent-cyan);color:#0f172a}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-gold{background:var(--accent-gold);color:#0f172a}
+.btn-gold:hover{opacity:.9}
+.btn-orange{background:var(--accent-orange);color:#fff}
+.btn-orange:hover{opacity:.9;transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border-color);color:var(--text-secondary)}
+.btn-outline:hover{border-color:var(--accent-cyan);color:var(--accent-cyan)}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-danger{background:var(--difficulty-hard);color:#fff}
+.btn-danger:hover{opacity:.9}
+.btn-success{background:var(--difficulty-easy);color:#fff}
+.btn-success:hover{opacity:.9}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.difficulty-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}
+.difficulty-easy{background:rgba(34,197,94,.15);color:var(--difficulty-easy)}
+.difficulty-medium{background:rgba(245,158,11,.15);color:var(--difficulty-medium)}
+.difficulty-hard{background:rgba(239,68,68,.15);color:var(--difficulty-hard)}
+.category-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:rgba(34,211,238,.1);color:var(--accent-cyan);margin-right:4px}
+.source-badge{display:inline-block;padding:1px 6px;border-radius:6px;font-size:10px;font-weight:600}
+.source-badge.builtin{background:rgba(34,211,238,.15);color:var(--accent-cyan)}
+.source-badge.collected{background:rgba(249,115,22,.15);color:var(--accent-orange)}
+.search-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:10px 16px;border-radius:var(--radius);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);font-size:14px;outline:none;transition:var(--transition)}
+.search-input:focus{border-color:var(--accent-cyan)}
+select.search-input{min-width:120px;cursor:pointer;appearance:auto}
+.question-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:16px 20px;margin-bottom:8px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:16px}
+.question-card:hover{border-color:var(--accent-cyan);transform:translateX(4px)}
+.question-card .q-number{font-size:14px;font-weight:700;color:var(--text-muted);min-width:40px}
+.question-card .q-info{flex:1}
+.question-card .q-title{font-size:15px;font-weight:500;margin-bottom:6px;color:var(--text-primary)}
+.question-card .q-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.question-card .q-actions{display:flex;gap:6px;align-items:center}
+.question-card .q-actions button{background:none;border:none;cursor:pointer;font-size:18px;padding:4px;opacity:.5;transition:var(--transition)}
+.question-card .q-actions button:hover{opacity:1}
+.question-card .q-actions button.active{opacity:1}
+.question-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.question-grid .question-card{flex-direction:column;align-items:flex-start;gap:8px}
+.question-grid .question-card .q-number{min-width:auto}
+.view-toggle{display:flex;gap:4px;background:var(--bg-tertiary);border-radius:var(--radius);padding:2px}
+.view-toggle button{padding:6px 12px;border:none;background:transparent;color:var(--text-muted);border-radius:6px;cursor:pointer;font-size:13px;transition:var(--transition)}
+.view-toggle button.active{background:var(--bg-secondary);color:var(--text-primary)}
+.answer-section{max-height:0;overflow:hidden;transition:max-height .5s ease,padding .3s ease;background:var(--bg-primary);border-radius:var(--radius);margin-top:12px}
+.answer-section.open{max-height:5000px;padding:16px;border:1px solid var(--border-color)}
+.answer-section pre{white-space:pre-wrap;word-wrap:break-word;font-size:14px;line-height:1.7;color:var(--text-secondary)}
+.code-editor{width:100%;min-height:200px;padding:16px;background:#0d1117;color:#c9d1d9;border:1px solid var(--border-color);border-radius:var(--radius);font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:14px;line-height:1.6;resize:vertical;outline:none;tab-size:2}
+.code-editor:focus{border-color:var(--accent-cyan)}
+.example-block{background:#0d1117;border:1px solid var(--border-color);border-radius:var(--radius);padding:12px 16px;margin:8px 0;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.6}
+.example-block .example-label{color:var(--accent-cyan);font-weight:600;margin-bottom:4px}
+.tabs{display:flex;border-bottom:2px solid var(--border-color);margin-bottom:20px;overflow-x:auto}
+.tab-btn{padding:10px 20px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:14px;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transition);white-space:nowrap}
+.tab-btn:hover{color:var(--text-primary)}
+.tab-btn.active{color:var(--accent-cyan);border-bottom-color:var(--accent-cyan)}
+.tab-btn.active-orange{color:var(--accent-orange);border-bottom-color:var(--accent-orange)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);font-size:14px;outline:none;transition:var(--transition)}
+.form-group textarea{min-height:120px;resize:vertical;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent-cyan)}
+.progress-bar{height:8px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden;margin-top:6px}
+.progress-bar .fill{height:100%;border-radius:4px;transition:width .5s ease;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-gold))}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:20px;text-align:center}
+.stat-card .stat-number{font-size:32px;font-weight:700;color:var(--accent-cyan)}
+.stat-card .stat-label{font-size:13px;color:var(--text-muted);margin-top:4px}
+.bar-chart{display:flex;align-items:flex-end;gap:12px;height:200px;padding:20px 0}
+.bar-chart .bar-item{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.bar-chart .bar{width:100%;max-width:60px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent-cyan),rgba(34,211,238,.3));transition:height .5s ease;min-height:4px}
+.bar-chart .bar-label{font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center;word-break:break-all}
+.bar-chart .bar-value{font-size:12px;color:var(--accent-cyan);font-weight:600;margin-bottom:4px}
+.ring-chart{width:160px;height:160px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.ring-chart .ring-center{position:absolute;text-align:center}
+.ring-chart .ring-center .ring-value{font-size:28px;font-weight:700;color:var(--accent-cyan)}
+.ring-chart .ring-center .ring-label{font-size:12px;color:var(--text-muted)}
+.checkin-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:16px 0}
+.calendar-cell{aspect-ratio:1;border-radius:4px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted)}
+.calendar-cell.checked{background:rgba(34,211,238,.3);color:var(--accent-cyan)}
+.calendar-cell.today{border:2px solid var(--accent-cyan)}
+.calendar-cell.empty{background:transparent}
+.preview-list{max-height:400px;overflow-y:auto}
+.preview-item{background:var(--bg-primary);border:1px solid var(--border-color);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px}
+.preview-item .preview-title{font-weight:500;margin-bottom:4px}
+.preview-item .preview-meta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text-muted)}
+.preview-item .preview-answer{font-size:13px;color:var(--text-secondary);margin-top:8px;max-height:80px;overflow:hidden;text-overflow:ellipsis}
+.source-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:var(--radius);margin-bottom:8px}
+.source-item .source-url{flex:1;font-size:13px;color:var(--text-secondary);word-break:break-all}
+.toast-container{position:fixed;top:70px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:var(--radius);color:#fff;font-size:14px;animation:slideIn .3s ease,fadeOut .3s ease 2.7s;box-shadow:var(--shadow)}
+.toast-success{background:var(--difficulty-easy)}
+.toast-error{background:var(--difficulty-hard)}
+.toast-info{background:var(--accent-cyan);color:#0f172a}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+.dashboard-hero{background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(245,158,11,.1));border:1px solid var(--border-color);border-radius:12px;padding:32px;margin-bottom:24px}
+.dashboard-hero h2{font-size:24px;margin-bottom:8px}
+.dashboard-hero p{color:var(--text-secondary);font-size:15px}
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.quick-action{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:20px;cursor:pointer;transition:var(--transition);text-align:center}
+.quick-action:hover{border-color:var(--accent-cyan);transform:translateY(-2px);box-shadow:var(--shadow)}
+.quick-action .action-icon{font-size:28px;margin-bottom:8px}
+.quick-action .action-title{font-weight:600;font-size:15px}
+.quick-action .action-desc{font-size:12px;color:var(--text-muted);margin-top:4px}
+.detail-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.detail-header h2{font-size:22px;flex:1}
+.detail-content{font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;white-space:pre-wrap}
+.detail-actions{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty-state .empty-icon{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:15px}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--text-primary);font-size:24px;cursor:pointer}
+.sidebar-overlay{display:none;position:fixed;inset:0;top:56px;background:rgba(0,0,0,.5);z-index:89}
+.sidebar-overlay.show{display:block}
+.loading{display:inline-block;width:20px;height:20px;border:2px solid var(--border-color);border-top-color:var(--accent-cyan);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.keyboard-hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:8px 16px;font-size:12px;color:var(--text-muted);z-index:50;display:none;gap:16px}
+.keyboard-hint.show{display:flex}
+.keyboard-hint kbd{background:var(--bg-tertiary);padding:2px 6px;border-radius:4px;font-family:monospace;border:1px solid var(--border-color)}
+@media(max-width:768px){
+.sidebar{position:fixed;left:-260px;top:56px;bottom:0;z-index:90;transition:left .3s ease;box-shadow:var(--shadow);display:flex}
+.sidebar.open-mobile{left:0}
+.mobile-menu-btn{display:block}
+.content{padding:16px}
+.header-stats{display:none}
+nav{overflow-x:auto}
+nav a{padding:8px 10px;font-size:13px}
+.stat-grid{grid-template-columns:repeat(2,1fr)}
+.question-grid{grid-template-columns:1fr}
+.dashboard-hero{padding:20px}
+.quick-actions{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+<div style="display:flex;align-items:center;gap:16px">
+<button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+<div class="logo" onclick="navigate('dashboard')">⌨️ Code<span>Interview</span></div>
+</div>
+<div class="header-stats" id="headerStats"></div>
+<div class="header-right">
+<nav id="mainNav"></nav>
+<button class="theme-toggle" onclick="toggleTheme()" title="切换主题">🌙</button>
+</div>
+</header>
+<div class="main-layout">
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar"></aside>
+<main class="content" id="content"></main>
+</div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+<div class="keyboard-hint" id="keyboardHint">
+<span><kbd>J</kbd>/<kbd>K</kbd> 上下翻题</span>
+<span><kbd>Enter</kbd> 展开答案</span>
+<span><kbd>F</kbd> 收藏</span>
+<span><kbd>M</kbd> 标记掌握</span>
+<span><kbd>Esc</kbd> 返回</span>
+</div>
+
+<script>
+const CATEGORIES=[
+{id:'algorithm',name:'算法与数据结构',icon:'🧮'},
+{id:'os',name:'操作系统',icon:'🖥️'},
+{id:'network',name:'计算机网络',icon:'🌐'},
+{id:'database',name:'数据库',icon:'🗄️'},
+{id:'system-design',name:'系统设计',icon:'🏗️'},
+{id:'frontend',name:'前端基础',icon:'🎨'},
+{id:'language',name:'Java/Python',icon:'💻'},
+{id:'scenario',name:'场景设计题',icon:'🎯'}
+];
+const CATEGORY_MAP={};CATEGORIES.forEach(c=>CATEGORY_MAP[c.id]=c.name);
+const DIFF_LABELS={easy:'简单',medium:'中等',hard:'困难'};
+
+const BUILTIN_QUESTIONS=[
+{id:'algo-1',title:'反转链表',category:'algorithm',difficulty:'easy',content:'给定单链表的头节点 head，反转链表并返回反转后的链表。\n\n示例：\n输入：1 → 2 → 3 → 4 → 5\n输出：5 → 4 → 3 → 2 → 1',answer:'使用迭代法：\n1. 初始化 prev = null, curr = head\n2. 遍历链表，每次保存 curr.next，将 curr.next 指向 prev\n3. prev 和 curr 分别后移\n4. 返回 prev\n\n时间复杂度 O(n)，空间复杂度 O(1)\n\n递归法：递归到链表末尾，逐层反转指针方向。\n时间复杂度 O(n)，空间复杂度 O(n)（递归栈）',examples:'输入：head = [1,2,3,4,5]\n输出：[5,4,3,2,1]\n\n输入：head = [1,2]\n输出：[2,1]',isAlgo:true},
+{id:'algo-2',title:'二叉树的中序遍历',category:'algorithm',difficulty:'easy',content:'给定二叉树的根节点 root，返回它的中序遍历结果。',answer:'递归法：左子树 → 根节点 → 右子树\n\n迭代法（使用栈）：\n1. 从根节点开始，一直向左走并入栈\n2. 栈顶出栈，访问该节点\n3. 转向右子树，重复步骤1\n\nMorris遍历：利用线索二叉树，空间复杂度 O(1)',examples:'输入：root = [1,null,2,3]\n输出：[1,3,2]',isAlgo:true},
+{id:'algo-3',title:'LRU缓存机制',category:'algorithm',difficulty:'medium',content:'设计一个满足 LRU（最近最少使用）缓存约束的数据结构。\n实现 LRUCache 类：\n- LRUCache(int capacity)：以正整数容量初始化\n- int get(int key)：若关键字存在返回其值，否则返回 -1\n- void put(int key, int value)：写入关键字值，若容量满则淘汰最久未使用的关键字\n\n要求 get 和 put 时间复杂度为 O(1)。',answer:'使用 HashMap + 双向链表：\n1. HashMap 存储 key → 链表节点的映射，实现 O(1) 查找\n2. 双向链表维护访问顺序，最近访问的放头部，尾部为最久未使用\n3. get 时将节点移到头部\n4. put 时若满则删除尾部节点，新节点插入头部\n\n时间复杂度：get O(1)，put O(1)\n空间复杂度：O(capacity)',examples:'LRUCache lRUCache = new LRUCache(2);\nlRUCache.put(1, 1);\nlRUCache.put(2, 2);\nlRUCache.get(1);    // 返回 1\nlRUCache.put(3, 3); // 淘汰 key 2\nlRUCache.get(2);    // 返回 -1',isAlgo:true},
+{id:'algo-4',title:'最长回文子串',category:'algorithm',difficulty:'medium',content:'给你一个字符串 s，找到 s 中最长的回文子串。',answer:'动态规划法：\ndp[i][j] 表示 s[i..j] 是否为回文串\n状态转移：dp[i][j] = (s[i]==s[j]) && (j-i<3 || dp[i+1][j-1])\n时间 O(n²)，空间 O(n²)\n\n中心扩展法：\n枚举每个字符（和每对相邻字符）作为回文中心，向两边扩展\n时间 O(n²)，空间 O(1)\n\nManacher算法：时间 O(n)，空间 O(n)',examples:'输入：s = "babad"\n输出："bab"（"aba" 同样有效）\n\n输入：s = "cbbd"\n输出："bb"',isAlgo:true},
+{id:'algo-5',title:'合并K个升序链表',category:'algorithm',difficulty:'hard',content:'给你一个链表数组，每个链表都已经按升序排列。请将所有链表合并到一个升序链表中，返回合并后的链表。',answer:'方法一：优先队列（最小堆）\n1. 将每个链表的头节点加入最小堆\n2. 每次取出最小节点，将其 next 加入堆\n3. 时间 O(NlogK)，空间 O(K)\n\n方法二：分治合并\n1. 两两配对合并，类似归并排序\n2. 时间 O(NlogK)，空间 O(logK)（递归栈）\n\n其中 N 为所有节点总数，K 为链表数量',examples:'输入：lists = [[1,4,5],[1,3,4],[2,6]]\n输出：[1,1,2,3,4,4,5,6]',isAlgo:true},
+{id:'algo-6',title:'动态规划：零钱兑换',category:'algorithm',difficulty:'medium',content:'给你一个整数数组 coins 表示不同面额的硬币，另给一个整数 amount 表示总金额。计算并返回可以凑成总金额的最少硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。',answer:'动态规划：\ndp[i] 表示凑成金额 i 所需的最少硬币数\n状态转移：dp[i] = min(dp[i-coin] + 1) for coin in coins\n初始条件：dp[0] = 0，其余为 Infinity\n\n时间复杂度 O(amount * n)，n 为硬币种类\n空间复杂度 O(amount)\n\nBFS 也可解：将问题看作图的最短路径问题',examples:'输入：coins = [1,2,5], amount = 11\n输出：3（5+5+1）\n\n输入：coins = [2], amount = 3\n输出：-1',isAlgo:true},
+{id:'algo-7',title:'二叉树的最近公共祖先',category:'algorithm',difficulty:'medium',content:'给定二叉树，找到该树中两个指定节点的最近公共祖先。',answer:'递归法：\n1. 如果当前节点为 null 或等于 p/q，直接返回当前节点\n2. 递归左子树和右子树\n3. 如果左右子树都返回非 null，当前节点就是 LCA\n4. 否则返回非 null 的那一侧\n\n时间复杂度 O(n)，空间复杂度 O(h)，h 为树高',examples:'输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1\n输出：3',isAlgo:true},
+{id:'algo-8',title:'三数之和',category:'algorithm',difficulty:'medium',content:'给你一个整数数组 nums，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i≠j≠k 且三数之和为 0。返回所有不重复的三元组。',answer:'排序 + 双指针：\n1. 数组排序\n2. 固定第一个数 nums[i]，用双指针在 i+1 到末尾找两数之和等于 -nums[i]\n3. 跳过重复元素避免重复结果\n4. 根据三数之和移动左右指针\n\n时间 O(n²)，空间 O(1)（不计结果数组）',examples:'输入：nums = [-1,0,1,2,-1,-4]\n输出：[[-1,-1,2],[-1,0,1]]',isAlgo:true},
+{id:'algo-9',title:'编辑距离',category:'algorithm',difficulty:'hard',content:'给你两个单词 word1 和 word2，返回将 word1 转换成 word2 所使用的最少操作数。可以对一个单词进行插入、删除、替换操作。',answer:'动态规划：\ndp[i][j] 表示 word1 前 i 个字符转换到 word2 前 j 个字符的最少操作数\n\n状态转移：\n- 若 word1[i-1] == word2[j-1]：dp[i][j] = dp[i-1][j-1]\n- 否则：dp[i][j] = min(\n    dp[i-1][j] + 1,    // 删除\n    dp[i][j-1] + 1,    // 插入\n    dp[i-1][j-1] + 1   // 替换\n  )\n\n时间 O(mn)，空间 O(mn)，可优化到 O(min(m,n))',examples:'输入：word1 = "horse", word2 = "ros"\n输出：3\n解释：horse → rorse → rose → ros',isAlgo:true},
+{id:'algo-10',title:'Top K频繁元素',category:'algorithm',difficulty:'medium',content:'给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。',answer:'方法一：最小堆\n1. 统计频率 O(n)\n2. 维护大小为 k 的最小堆 O(nlogk)\n3. 时间 O(nlogk)，空间 O(n)\n\n方法二：桶排序\n1. 统计频率\n2. 以频率为索引建桶\n3. 从高频到低频取 k 个\n4. 时间 O(n)，空间 O(n)\n\n方法三：快速选择\n基于快排的 partition 思想，平均 O(n)',examples:'输入：nums = [1,1,1,2,2,3], k = 2\n输出：[1,2]',isAlgo:true},
+
+{id:'os-1',title:'进程与线程的区别',category:'os',difficulty:'easy',content:'请详细说明进程和线程的区别，包括调度、资源、通信等方面。',answer:'1. 定义：进程是资源分配的基本单位，线程是CPU调度的基本单位\n2. 资源：进程拥有独立的地址空间和资源，线程共享所属进程的资源\n3. 调度：线程切换开销远小于进程切换（不需要切换页表等）\n4. 通信：进程间通信需IPC机制（管道、消息队列、共享内存等），线程间可直接共享内存\n5. 健壮性：一个进程崩溃不影响其他进程，但一个线程崩溃可能导致整个进程崩溃\n6. 系统开销：创建/销毁进程的开销远大于线程'},
+{id:'os-2',title:'死锁的四个必要条件',category:'os',difficulty:'easy',content:'什么是死锁？死锁产生的四个必要条件是什么？如何预防死锁？',answer:'死锁：多个进程因互相等待对方释放资源而永久阻塞的状态。\n\n四个必要条件：\n1. 互斥条件：资源一次只能被一个进程使用\n2. 请求与保持：进程持有资源同时请求新资源\n3. 不可剥夺：已获得的资源不能被强行夺走\n4. 循环等待：进程间形成环形等待链\n\n预防策略（破坏各条件）：\n1. 允许资源共享（破坏互斥）\n2. 一次性申请所有资源（破坏请求保持）\n3. 资源可抢占（破坏不可剥夺）\n4. 资源有序分配（破坏循环等待）\n\n避免策略：银行家算法'},
+{id:'os-3',title:'虚拟内存的原理',category:'os',difficulty:'medium',content:'解释虚拟内存的原理，包括页表、TLB、缺页中断等概念。',answer:'虚拟内存使得程序可以使用超过物理内存的地址空间。\n\n核心机制：\n1. 分页：将虚拟地址空间和物理内存分成固定大小的页（通常4KB）\n2. 页表：存储虚拟页到物理页帧的映射关系\n3. TLB：页表的缓存，加速地址转换\n4. 缺页中断：访问的页不在内存中时，触发中断，从磁盘换入\n\n地址转换过程：\n虚拟地址 → 查TLB → 命中则直接得到物理地址 → 未命中则查页表 → 页表命中则更新TLB → 页表未命中则触发缺页中断\n\n页面置换算法：FIFO、LRU、Clock、LFU'},
+{id:'os-4',title:'进程间通信方式',category:'os',difficulty:'medium',content:'列举并解释常见的进程间通信（IPC）方式。',answer:'1. 管道（Pipe）：半双工，父子进程间使用\n2. 命名管道（FIFO）：可用于无亲缘关系进程\n3. 消息队列：内核中的消息链表，按类型读取\n4. 共享内存：最快的IPC方式，需配合信号量同步\n5. 信号量：用于进程同步和互斥\n6. 信号：异步通知机制（如 SIGKILL, SIGSTOP）\n7. Socket：可用于不同主机间的进程通信\n\n选择依据：数据量、速度、同步需求、是否跨机器'},
+{id:'os-5',title:'进程调度算法',category:'os',difficulty:'medium',content:'常见的进程调度算法有哪些？各有什么优缺点？',answer:'1. FCFS（先来先服务）：简单公平，但短作业可能等待过长（护航效应）\n2. SJF（短作业优先）：平均等待时间最短，但可能饿死长作业\n3. SRTN（最短剩余时间优先）：SJF的抢占版本\n4. RR（时间片轮转）：公平，响应快，时间片大小需权衡\n5. 优先级调度：可抢占/非抢占，可能饿死低优先级\n6. 多级反馈队列：综合以上优点，动态调整优先级\n\n评价指标：CPU利用率、吞吐量、周转时间、等待时间、响应时间'},
+{id:'os-6',title:'用户态和内核态的区别',category:'os',difficulty:'easy',content:'什么是用户态和内核态？如何切换？',answer:'用户态：运行用户程序，受限访问（不能直接访问硬件、不能访问内核地址空间）\n内核态：运行内核代码，完全权限\n\n切换方式：\n1. 系统调用：用户程序主动请求OS服务（trap指令）\n2. 异常：如缺页异常、除零错误\n3. 中断：外部设备产生中断信号\n\n切换开销：保存/恢复寄存器、切换栈、切换地址空间、刷新TLB和缓存'},
+{id:'os-7',title:'信号量与互斥锁的区别',category:'os',difficulty:'medium',content:'信号量和互斥锁有什么区别？各自的使用场景？',answer:'互斥锁：\n- 二值信号量，只有0和1\n- 用于互斥，同一时刻只有一个线程访问\n- 有所有权概念（加锁者解锁）\n\n信号量：\n- 计数器，值可以大于1\n- 用于同步和资源计数\n- 没有所有权概念\n- P操作（wait）减1，V操作（signal）加1\n\n使用场景：\n- 互斥锁：保护临界区\n- 信号量：生产者-消费者问题、读者-写者问题、限制并发数量'},
+{id:'os-8',title:'页面置换算法',category:'os',difficulty:'medium',content:'常见的页面置换算法有哪些？比较它们的性能。',answer:'1. OPT（最优置换）：置换最长时间不被访问的页，理论最优但无法实现\n2. FIFO：置换最早进入内存的页，简单但可能Belady异常\n3. LRU：置换最近最久未使用的页，性能好但实现开销大\n4. Clock（时钟算法）：LRU的近似，使用引用位和循环指针\n5. LFU：置换访问频率最低的页\n\nBelady异常：FIFO中，分配更多物理页帧反而缺页率增加\nLRU不会出现Belady异常，属于栈算法'},
+{id:'os-9',title:'文件系统的实现',category:'os',difficulty:'hard',content:'简述文件系统的实现原理，包括inode、目录结构、磁盘分配方式。',answer:'inode：存储文件元数据（大小、权限、时间戳、数据块指针）\n\n目录结构：目录本身是文件，内容是文件名到inode号的映射\n\n磁盘分配方式：\n1. 连续分配：文件占用连续磁盘块，访问快但有外部碎片\n2. 链接分配：每个块含指向下一块的指针，无外部碎片但随机访问慢\n3. 索引分配：inode含直接指针+间接指针，支持大文件和随机访问\n\nLinux ext4：\n- 使用extent代替传统块指针\n- 支持日志（journal）提高崩溃恢复能力\n- 延迟分配策略减少碎片'},
+{id:'os-10',title:'协程与线程的区别',category:'os',difficulty:'medium',content:'协程和线程有什么区别？协程的优势是什么？',answer:'线程：OS内核调度的执行单元，切换需进入内核态\n协程：用户态的轻量级线程，由程序自身调度\n\n区别：\n1. 调度：线程由OS调度（抢占式），协程由用户调度（协作式）\n2. 切换开销：线程切换需内核态切换（微秒级），协程切换在用户态（纳秒级）\n3. 并发：线程可并行（多核），协程是并发但不并行（单核）\n4. 数量：线程数量受限（通常几千），协程可创建百万个\n5. 同步：线程需锁，协程天然避免竞态\n\n优势：高并发、低开销、无需锁\n典型应用：Go goroutine、Python asyncio、Kotlin协程'},
+
+{id:'net-1',title:'TCP三次握手',category:'network',difficulty:'easy',content:'详细描述TCP三次握手的过程，为什么需要三次？',answer:'三次握手过程：\n1. 客户端 → 服务器：SYN=1, seq=x\n2. 服务器 → 客户端：SYN=1, ACK=1, seq=y, ack=x+1\n3. 客户端 → 服务器：ACK=1, seq=x+1, ack=y+1\n\n为什么需要三次：\n- 防止已失效的连接请求到达服务器，避免服务器误建连接\n- 两次握手无法确认客户端的接收能力\n- 三次握手保证双方都确认了对方的发送和接收能力\n\n状态变化：\n客户端：CLOSED → SYN_SENT → ESTABLISHED\n服务器：LISTEN → SYN_RCVD → ESTABLISHED'},
+{id:'net-2',title:'TCP四次挥手',category:'network',difficulty:'easy',content:'描述TCP四次挥手过程，为什么需要TIME_WAIT状态？',answer:'四次挥手过程：\n1. 主动方 → 被动方：FIN=1, seq=u\n2. 被动方 → 主动方：ACK=1, seq=v, ack=u+1\n3. 被动方 → 主动方：FIN=1, ACK=1, seq=w, ack=u+1\n4. 主动方 → 被动方：ACK=1, seq=u+1, ack=w+1\n\nTIME_WAIT（2MSL）原因：\n1. 确保最后一个ACK能到达对方（若丢失对方会重发FIN）\n2. 确保本连接的所有报文在网络中消失，避免影响新连接\n\n为什么不是三次：\n被动方的FIN和ACK可能不能合并发送（还有数据要传）'},
+{id:'net-3',title:'HTTP与HTTPS的区别',category:'network',difficulty:'easy',content:'HTTP和HTTPS有什么区别？HTTPS的加密过程是怎样的？',answer:'区别：\n1. 端口：HTTP 80，HTTPS 443\n2. 安全性：HTTP明文传输，HTTPS加密传输\n3. 证书：HTTPS需要CA证书\n4. 速度：HTTPS因加密稍慢\n\nHTTPS加密过程（TLS握手）：\n1. 客户端发送支持的加密套件和随机数1\n2. 服务器返回选定的加密套件、证书、随机数2\n3. 客户端验证证书，生成预主密钥，用服务器公钥加密发送\n4. 双方根据随机数1、2和预主密钥生成会话密钥\n5. 后续通信使用对称加密（会话密钥）\n\nHTTPS = HTTP + TLS/SSL\n混合加密：非对称加密交换密钥 + 对称加密传输数据'},
+{id:'net-4',title:'DNS解析过程',category:'network',difficulty:'medium',content:'描述DNS域名解析的完整过程。',answer:'1. 浏览器缓存 → 系统缓存 → hosts文件\n2. 本地DNS服务器（递归查询）\n3. 根DNS服务器（返回顶级域服务器地址）\n4. 顶级域DNS服务器（返回权威DNS服务器地址）\n5. 权威DNS服务器（返回最终IP地址）\n6. 本地DNS服务器缓存结果并返回给客户端\n\n递归查询：客户端只问本地DNS，由本地DNS完成全部查询\n迭代查询：本地DNS依次问根→顶级→权威\n\nDNS记录类型：A（IPv4）、AAAA（IPv6）、CNAME（别名）、MX（邮件）、NS（DNS服务器）'},
+{id:'net-5',title:'TCP与UDP的区别',category:'network',difficulty:'easy',content:'TCP和UDP有什么区别？各自适用场景？',answer:'TCP：面向连接、可靠传输、字节流、有拥塞控制和流量控制、头部20字节\nUDP：无连接、不可靠、数据报文、无拥塞控制、头部8字节\n\nTCP适用：文件传输、邮件、网页浏览（要求可靠性）\nUDP适用：视频直播、DNS查询、游戏（要求实时性）\n\nTCP可靠性机制：\n- 校验和、序列号、确认应答\n- 超时重传、快重传\n- 滑动窗口流量控制\n- 拥塞控制（慢启动、拥塞避免、快恢复）'},
+{id:'net-6',title:'TCP拥塞控制',category:'network',difficulty:'medium',content:'详细描述TCP拥塞控制的四个阶段。',answer:'1. 慢启动：cwnd从1开始，每RTT翻倍（指数增长）\n2. 拥塞避免：cwnd达到ssthresh后，每RTT加1（线性增长）\n3. 快重传：收到3个重复ACK，立即重传丢失报文（不等超时）\n4. 快恢复：ssthresh = cwnd/2，cwnd = ssthresh，进入拥塞避免\n\n若超时：ssthresh = cwnd/2，cwnd = 1，重新慢启动\n\nAIMD（加法增乘法减）：\n- 正常时线性增加（加法增）\n- 拥塞时减半（乘法减）\n这是TCP公平性的基础'},
+{id:'net-7',title:'从输入URL到页面展示的过程',category:'network',difficulty:'medium',content:'描述从浏览器输入URL到页面展示的完整过程。',answer:'1. DNS解析：域名 → IP地址\n2. TCP三次握手建立连接\n3. TLS握手（如果是HTTPS）\n4. 发送HTTP请求\n5. 服务器处理请求并返回响应\n6. 浏览器解析响应：\n   - 解析HTML构建DOM树\n   - 解析CSS构建CSSOM树\n   - 合并为渲染树\n   - 布局（Layout/Reflow）\n   - 绘制（Paint）\n7. 执行JavaScript\n8. TCP四次挥手断开连接（HTTP/1.1默认keep-alive）\n\n涉及协议：DNS、TCP、TLS、HTTP、IP'},
+{id:'net-8',title:'HTTP状态码',category:'network',difficulty:'easy',content:'列举常见HTTP状态码及其含义。',answer:'1xx 信息：100 Continue\n\n2xx 成功：200 OK、201 Created、204 No Content\n\n3xx 重定向：301 永久重定向、302 临时重定向、304 Not Modified\n\n4xx 客户端错误：400 Bad Request、401 Unauthorized、403 Forbidden、404 Not Found\n\n5xx 服务器错误：500 Internal Server Error、502 Bad Gateway、503 Service Unavailable'},
+{id:'net-9',title:'OSI七层模型',category:'network',difficulty:'easy',content:'描述OSI七层模型，每层的功能和协议。',answer:'7. 应用层：为用户提供服务 → HTTP, FTP, DNS, SMTP\n6. 表示层：数据格式转换、加密 → SSL/TLS, JPEG\n5. 会话层：建立和管理会话 → RPC, SQL\n4. 传输层：端到端可靠传输 → TCP, UDP\n3. 网络层：路由和寻址 → IP, ICMP, OSPF\n2. 数据链路层：帧传输、MAC寻址 → Ethernet, PPP\n1. 物理层：比特流传输 → 网线、光纤\n\nTCP/IP四层模型：应用层、传输层、网络层、网络接口层'},
+{id:'net-10',title:'Cookie、Session与Token',category:'network',difficulty:'medium',content:'比较Cookie、Session和Token三种认证方式的区别。',answer:'Cookie：\n- 存储在浏览器端\n- 每次请求自动携带\n- 有大小限制（4KB）\n- 有CSRF风险\n\nSession：\n- 存储在服务器端\n- 通过Session ID关联（通常存在Cookie中）\n- 服务器需维护Session存储\n- 不利于分布式/微服务\n\nToken（JWT）：\n- 服务端签发，客户端存储\n- 自包含用户信息（无需查库）\n- 无状态，利于分布式\n- 可设置过期时间\n\n选择：单体应用用Session，分布式/移动端用Token'},
+
+{id:'db-1',title:'数据库事务的ACID特性',category:'database',difficulty:'easy',content:'解释数据库事务的ACID特性。',answer:'A - 原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部回滚（通过undo log实现）\n\nC - 一致性（Consistency）：事务执行前后，数据库从一个一致状态变为另一个一致状态\n\nI - 隔离性（Isolation）：并发事务之间互不影响（通过锁和MVCC实现）\n\nD - 持久性（Durability）：事务提交后，数据永久保存（通过redo log实现）\n\nACID中，C是目标，AID是手段'},
+{id:'db-2',title:'MySQL索引原理',category:'database',difficulty:'medium',content:'MySQL索引的底层原理是什么？B+树索引有什么优势？',answer:'InnoDB使用B+树作为索引结构：\n\nB+树特点：\n1. 非叶子节点只存键值，叶子节点存数据\n2. 叶子节点通过链表连接，支持范围查询\n3. 树高度低（通常3-4层），减少磁盘IO\n\n为什么不用B树：\n- B树每个节点都存数据，导致非叶子节点能存的键更少，树更高\n- B树范围查询需要中序遍历\n\n为什么不用哈希：\n- 哈希不支持范围查询和排序\n- 哈希冲突处理复杂\n\n聚簇索引：数据和主键索引存在一起\n二级索引：叶子节点存主键值，需回表查询'},
+{id:'db-3',title:'MySQL事务隔离级别',category:'database',difficulty:'medium',content:'MySQL有哪些事务隔离级别？各解决什么问题？',answer:'1. 读未提交（READ UNCOMMITTED）：可能脏读、不可重复读、幻读\n2. 读已提交（READ COMMITTED）：解决脏读（Oracle默认）\n3. 可重复读（REPEATABLE READ）：解决脏读和不可重复读（MySQL默认）\n4. 串行化（SERIALIZABLE）：解决所有并发问题，但性能差\n\n并发问题：\n- 脏读：读到未提交的数据\n- 不可重复读：同一事务两次读取结果不同（行级别）\n- 幻读：同一事务两次查询行数不同（范围级别）\n\nMySQL的RR级别通过MVCC+间隙锁在一定程度上解决了幻读'},
+{id:'db-4',title:'MVCC原理',category:'database',difficulty:'hard',content:'解释MySQL InnoDB中MVCC的实现原理。',answer:'MVCC（多版本并发控制）让读操作不加锁，提高并发性能。\n\n实现机制：\n1. 隐藏列：每行有DB_TRX_ID（最后修改的事务ID）和DB_ROLL_PTR（回滚指针）\n2. undo log：通过回滚指针形成版本链\n3. ReadView：决定当前事务能看到哪个版本\n\nReadView包含：\n- m_ids：创建时所有活跃事务ID\n- min_trx_id：最小活跃事务ID\n- max_trx_id：下一个将分配的事务ID\n- creator_trx_id：创建者事务ID\n\n可见性判断：\n- trx_id < min_trx_id → 可见\n- trx_id >= max_trx_id → 不可见\n- min_trx_id <= trx_id < max_trx_id 且不在m_ids中 → 可见\n\nRC级别：每次SELECT创建新ReadView\nRR级别：第一次SELECT创建ReadView，后续复用'},
+{id:'db-5',title:'SQL优化方法',category:'database',difficulty:'medium',content:'常见的SQL优化方法有哪些？',answer:'1. 索引优化：\n   - 使用EXPLAIN分析执行计划\n   - 避免索引失效（函数操作、隐式转换、LIKE前缀%）\n   - 覆盖索引减少回表\n   - 联合索引遵循最左前缀原则\n\n2. 查询优化：\n   - 避免SELECT *，只查需要的列\n   - 小表驱动大表\n   - 用EXISTS替代IN（大数据集时）\n   - 避免子查询，改用JOIN\n\n3. 表结构优化：\n   - 适当冗余减少JOIN\n   - 垂直拆分/水平拆分\n   - 选择合适的数据类型'},
+{id:'db-6',title:'Redis数据类型及应用场景',category:'database',difficulty:'easy',content:'Redis有哪些数据类型？各自的应用场景？',answer:'5种基本类型：\n1. String：缓存、计数器、分布式锁\n2. Hash：对象存储、用户信息\n3. List：消息队列、最新列表\n4. Set：去重、交集/并集运算、标签\n5. Sorted Set：排行榜、延迟队列\n\n3种特殊类型：\n6. HyperLogLog：基数统计（UV计数）\n7. Bitmap：位运算（签到、在线状态）\n8. GEO：地理位置\n\nStream：消息队列（5.0+）'},
+{id:'db-7',title:'Redis持久化方式',category:'database',difficulty:'medium',content:'Redis的RDB和AOF持久化方式有什么区别？',answer:'RDB（快照）：\n- 定时将内存数据保存到磁盘\n- 优点：文件小、恢复快\n- 缺点：可能丢失两次快照间的数据\n\nAOF（追加日志）：\n- 记录每个写操作到日志文件\n- 优点：数据安全性高（每秒同步最多丢1秒）\n- 缺点：文件大、恢复慢\n- 策略：always/everysec/no\n- AOF重写：压缩日志文件\n\n混合持久化（4.0+）：\n- RDB格式写AOF文件前半部分\n- 增量命令用AOF格式追加\n- 兼顾恢复速度和数据安全'},
+{id:'db-8',title:'数据库三大范式',category:'database',difficulty:'easy',content:'解释数据库的三大范式。',answer:'第一范式（1NF）：字段不可再分，每列都是原子值\n\n第二范式（2NF）：在1NF基础上，非主键字段完全依赖主键，消除部分依赖\n（主要针对联合主键，非主键字段不能只依赖部分主键）\n\n第三范式（3NF）：在2NF基础上，非主键字段直接依赖主键，消除传递依赖\n（如：学生表不应存院系名称，因院系名称依赖院系编号而非学号）\n\n实际开发中，为了性能常做反范式设计（适当冗余减少JOIN）'},
+{id:'db-9',title:'MySQL锁机制',category:'database',difficulty:'hard',content:'MySQL中有哪些锁？InnoDB的行锁有哪几种？',answer:'按粒度：\n1. 全局锁：FTWRL，用于备份\n2. 表级锁：表锁、元数据锁（MDL）、意向锁\n3. 行级锁（InnoDB）：\n   - Record Lock：锁定索引记录\n   - Gap Lock：锁定索引间隙（防止插入）\n   - Next-Key Lock：Record + Gap（左开右闭）\n   - Insert Intention Lock：插入意向锁\n\n按模式：\n- 共享锁（S）：读锁\n- 排他锁（X）：写锁\n\n意向锁：\n- 意向共享锁（IS）、意向排他锁（IX）\n- 快速判断表中是否有行锁，避免逐行检查\n\n死锁检测：wait-for graph，检测到死锁回滚代价最小的事务'},
+{id:'db-10',title:'数据库分库分表策略',category:'database',difficulty:'hard',content:'什么情况下需要分库分表？有哪些策略？',answer:'何时分库分表：\n- 单表数据量超过千万\n- QPS超过单库承受能力\n- 慢SQL无法优化\n\n垂直拆分：\n- 垂直分库：按业务拆分（用户库、订单库）\n- 垂直分表：将不常用字段拆到扩展表\n\n水平拆分：\n- 水平分库：按分片键路由到不同库\n- 水平分表：同一库内按分片键拆分多表\n\n分片策略：\n1. Hash取模：均匀分布，但扩容困难\n2. Range范围：易扩容，但可能热点\n3. 一致性哈希：扩容只影响相邻节点\n\n问题与方案：\n- 分布式事务：Seata、消息最终一致性\n- 跨库JOIN：冗余字段、应用层组装\n- 全局ID：Snowflake、号段模式'},
+
+{id:'sd-1',title:'设计一个短链接系统',category:'system-design',difficulty:'medium',content:'请设计一个短链接生成系统，支持长链接转短链接和短链接跳转。',answer:'核心功能：\n1. 长链接 → 短链接（编码）\n2. 短链接 → 长链接（解码+302跳转）\n\n短链接生成方案：\n1. 自增ID + Base62编码：1→1, 100→1C, 简单但可预测\n2. MD5/SHA256哈希 + 取前N位：分布均匀但可能冲突\n3. 预生成短码：离线生成存入数据库，使用时取出\n\n存储：\n- MySQL：短码为主键，存原始URL\n- 读写分离 + 分库分表\n\n高可用：\n- 缓存：Redis缓存热点短链接\n- 布隆过滤器：快速判断短码是否存在\n\n估算：6位Base62可表示568亿组合，足够使用'},
+{id:'sd-2',title:'设计一个消息队列',category:'system-design',difficulty:'hard',content:'设计一个分布式消息队列，需要考虑哪些方面？',answer:'核心功能：发布-订阅、点对点、消息持久化、消息确认\n\n架构：\n1. Broker：消息服务器，负责存储和转发\n2. Producer：消息生产者\n3. Consumer：消息消费者\n4. NameServer/ZooKeeper：路由注册与发现\n\n关键设计：\n1. 存储模型：基于文件追加写（Kafka）高吞吐；基于数据库事务支持好\n2. 消费模型：推模式实时性好但可能压垮消费者；拉模式消费者控制节奏但有延迟\n3. 可靠性：消息持久化+副本、消费确认机制、死信队列\n4. 顺序性：分区有序\n5. 消息去重：幂等消费'},
+{id:'sd-3',title:'设计一个限流系统',category:'system-design',difficulty:'medium',content:'如何设计一个分布式限流系统？',answer:'限流算法：\n1. 固定窗口计数器：简单但有临界突刺问题\n2. 滑动窗口计数器：解决临界问题，实现稍复杂\n3. 漏桶算法：恒定速率处理，平滑流量\n4. 令牌桶算法：允许突发流量，最常用\n\n分布式限流：\n1. Redis + Lua脚本：原子操作实现计数\n2. 网关层限流：Nginx/OpenResty\n3. 限流服务：独立限流微服务\n\n限流粒度：全局、用户级、IP级、接口级\n\n降级策略：排队等待、降级返回、熔断'},
+{id:'sd-4',title:'设计一个缓存系统',category:'system-design',difficulty:'medium',content:'如何设计一个高可用的缓存系统？',answer:'缓存策略：\n1. Cache Aside：应用先查缓存，未命中查DB并回填\n2. Read/Write Through：缓存代理读写\n3. Write Behind：异步写入DB\n\n缓存问题：\n1. 缓存穿透：查询不存在的数据 → 布隆过滤器/缓存空值\n2. 缓存击穿：热点key过期 → 互斥锁/永不过期\n3. 缓存雪崩：大量key同时过期 → 过期时间加随机值\n\n高可用：\n1. Redis Sentinel：自动故障转移\n2. Redis Cluster：分片 + 副本\n3. 多级缓存：本地缓存 + 分布式缓存\n\n一致性：延迟双删、订阅binlog更新缓存'},
+{id:'sd-5',title:'设计一个负载均衡系统',category:'system-design',difficulty:'medium',content:'设计一个负载均衡系统，说明常见算法和架构。',answer:'负载均衡算法：\n1. 轮询（Round Robin）：依次分配\n2. 加权轮询：按权重分配\n3. 最少连接：分配给连接数最少的服务器\n4. IP Hash：同一IP分配到同一服务器\n5. 一致性哈希：减少节点变动影响\n6. 随机：简单随机分配\n\nDNS负载均衡：第一层负载均衡，地理位置路由\n四层负载均衡（LVS）：基于IP+端口，性能极高\n七层负载均衡（Nginx）：基于HTTP协议，功能丰富\n\n健康检查：主动探测、被动检测'},
+{id:'sd-6',title:'设计一个秒杀系统',category:'system-design',difficulty:'hard',content:'如何设计一个高并发秒杀系统？',answer:'核心挑战：瞬时高并发、超卖、防刷\n\n架构设计：\n1. 前端：按钮防抖、验证码、CDN静态资源\n2. 网关层：限流、黑名单、负载均衡\n3. 服务层：库存预扣减（Redis原子操作）、异步下单（MQ削峰）、分布式锁防超卖\n4. 数据层：读写分离、库存扣减用乐观锁\n\n防超卖：Redis DECR原子操作、数据库乐观锁（版本号）\n\n流量削峰：消息队列异步处理、答题/验证码分散请求\n\n兜底方案：熔断降级、兜底页面、限流排队'},
+{id:'sd-7',title:'微服务架构设计',category:'system-design',difficulty:'medium',content:'微服务架构的优缺点？需要哪些基础设施？',answer:'优点：独立部署、独立扩展、技术栈灵活、故障隔离、团队自治\n\n缺点：分布式复杂性、运维成本高、服务间调用复杂\n\n基础设施：\n1. 服务注册与发现：Nacos、Consul\n2. 配置中心：Apollo、Nacos\n3. API网关：Kong、Spring Cloud Gateway\n4. 负载均衡：Ribbon、LoadBalancer\n5. 熔断降级：Sentinel、Hystrix\n6. 链路追踪：SkyWalking、Zipkin\n7. 消息队列：Kafka、RocketMQ\n8. 日志：ELK\n9. 监控：Prometheus + Grafana'},
+{id:'sd-8',title:'设计一个分布式ID生成器',category:'system-design',difficulty:'medium',content:'如何设计一个全局唯一的分布式ID生成方案？',answer:'方案对比：\n1. UUID：简单、无中心化；无序、太长、无业务含义\n2. 数据库自增：简单有序；单点瓶颈、暴露数据量\n3. 号段模式：批量获取ID段，本地分配；减少DB压力；重启可能浪费号段\n4. Snowflake雪花算法：1位符号+41位时间戳+10位机器ID+12位序列号；有序、高性能、无依赖；时钟回拨问题\n5. Redis自增：INCR命令原子递增；简单高效；依赖Redis'},
+{id:'sd-9',title:'设计一个搜索引擎',category:'system-design',difficulty:'hard',content:'设计一个站内搜索引擎，支持全文检索和关键词高亮。',answer:'核心流程：数据采集→文本预处理→建立索引→查询处理→结果排序\n\n倒排索引：分词后，每个词对应包含它的文档列表，支持快速全文检索\n\n技术选型：\n1. Elasticsearch：基于Lucene，分布式、近实时，支持复杂查询、聚合\n2. Solr：传统企业搜索，成熟稳定\n\n中文分词：ik_max_word / ik_smart、结巴分词\n\n相关性排序：TF-IDF、BM25、自定义评分\n\n高亮：ES内置highlight、前端标记匹配词'},
+{id:'sd-10',title:'高可用系统设计原则',category:'system-design',difficulty:'medium',content:'设计高可用系统需要考虑哪些原则和策略？',answer:'设计原则：\n1. 避免单点故障：冗余部署\n2. 故障隔离：舱壁模式、熔断\n3. 快速失败：超时控制、重试策略\n4. 降级策略：核心功能优先\n5. 限流保护：防止雪崩\n\n高可用策略：\n1. 多副本：主从、多主\n2. 故障转移：自动检测+切换\n3. 熔断器：Circuit Breaker模式\n4. 超时与重试：指数退避\n5. 优雅降级：返回缓存/默认值\n6. 异步解耦：消息队列\n7. 数据备份：异地多活\n\n度量：99.9%=年停机8.76h，99.99%=52.6min，99.999%=5.26min'},
+
+{id:'fe-1',title:'事件循环机制',category:'frontend',difficulty:'medium',content:'解释JavaScript的事件循环（Event Loop）机制。',answer:'执行顺序：\n1. 执行同步代码（主线程）\n2. 微任务队列清空（Promise.then, MutationObserver）\n3. 取一个宏任务执行（setTimeout, setInterval, I/O）\n4. 再清空微任务\n5. 必要时渲染UI\n6. 回到步骤3\n\n示例：\nconsole.log(1);  // 同步\nsetTimeout(() => console.log(2), 0);  // 宏任务\nPromise.resolve().then(() => console.log(3));  // 微任务\nconsole.log(4);  // 同步\n\n输出：1, 4, 3, 2\n\nNode.js事件循环：timers → pending → idle/prepare → poll → check → close callbacks'},
+{id:'fe-2',title:'闭包及其应用',category:'frontend',difficulty:'medium',content:'什么是闭包？闭包的应用场景和注意事项？',answer:'闭包：函数与其词法环境的组合，内部函数可以访问外部函数的变量。\n\n形成条件：\n1. 函数嵌套\n2. 内部函数引用外部函数的变量\n3. 内部函数被返回或传递\n\n应用场景：\n1. 数据私有化（模块模式）\n2. 柯里化\n3. 防抖/节流\n4. 函数工厂\n\n注意事项：\n1. 内存泄漏：闭包会保持对外部变量的引用\n2. 循环中的闭包：var声明的变量共享作用域\n3. 性能：过度使用闭包会增加内存消耗'},
+{id:'fe-3',title:'浏览器渲染原理',category:'frontend',difficulty:'medium',content:'描述浏览器从接收HTML到渲染页面的完整过程。',answer:'1. 解析HTML → DOM树\n2. 解析CSS → CSSOM树\n3. DOM + CSSOM → 渲染树（Render Tree）\n4. 布局（Layout/Reflow）：计算元素位置和大小\n5. 绘制（Paint）：填充像素\n6. 合成（Composite）：GPU合成各层\n\n优化点：\n- Reflow（重排）：改变几何属性触发，代价大\n- Repaint（重绘）：改变外观属性触发，代价小\n\n减少Reflow：批量修改DOM、使用transform代替top/left、使用documentFragment、避免逐条修改样式'},
+{id:'fe-4',title:'React Hooks原理',category:'frontend',difficulty:'medium',content:'解释React Hooks的原理和常见Hooks的使用。',answer:'Hooks原理：\n- 基于链表结构，每次渲染按顺序读取Hook状态\n- 不能在条件语句中使用Hook（会破坏顺序）\n\n常见Hooks：\n1. useState：状态管理\n2. useEffect：副作用（类似componentDidMount/Update/Unmount）\n3. useCallback：缓存函数引用\n4. useMemo：缓存计算结果\n5. useRef：跨渲染保持引用\n6. useContext：跨组件传递数据\n7. useReducer：复杂状态逻辑\n\n闭包陷阱：useEffect中引用的变量可能是旧的闭包值\n解决：useRef保存最新值，或正确设置依赖数组'},
+{id:'fe-5',title:'CSS布局方式',category:'frontend',difficulty:'easy',content:'列举常见的CSS布局方式及其特点。',answer:'1. Flex布局：一维布局（行或列），display: flex，主轴/交叉轴对齐，适用：导航栏、卡片排列\n\n2. Grid布局：二维布局（行和列），display: grid，grid-template-rows/columns，适用：复杂页面布局\n\n3. 浮动布局：float: left/right，需清除浮动，传统方案\n\n4. 定位布局：position: relative/absolute/fixed/sticky，适用：弹窗、固定导航\n\n5. 响应式布局：媒体查询 @media，rem/vw/vh 单位，移动优先/桌面优先'},
+{id:'fe-6',title:'Vue响应式原理',category:'frontend',difficulty:'medium',content:'Vue 2和Vue 3的响应式原理有什么区别？',answer:'Vue 2（Object.defineProperty）：\n- 劫持对象属性的getter/setter\n- 缺点：无法检测属性添加/删除、数组索引修改\n- 需要$set/$delete弥补\n\nVue 3（Proxy）：\n- 代理整个对象\n- 优点：可检测属性添加/删除、数组变化\n- 性能更好：懒代理（只在访问时才代理嵌套对象）\n\n依赖收集：getter中收集依赖（Watcher/Effect），setter中触发更新\n\nVue 3优化：Effect副作用系统、computed懒求值、watch精确控制、shallowRef/shallowReactive浅层响应、markRaw跳过代理'},
+{id:'fe-7',title:'前端性能优化',category:'frontend',difficulty:'medium',content:'前端性能优化有哪些常见方法？',answer:'加载优化：\n1. 代码分割（Code Splitting）\n2. 懒加载（图片/组件）\n3. Tree Shaking\n4. 压缩（HTML/CSS/JS/图片）\n5. CDN加速\n6. 预加载（preload/prefetch）\n7. HTTP/2多路复用\n\n渲染优化：\n1. 减少重排重绘\n2. 虚拟列表\n3. requestAnimationFrame\n4. Web Worker处理计算\n5. 防抖节流\n\n缓存优化：浏览器缓存、Service Worker、本地存储\n\n监控：Performance API、Lighthouse、Core Web Vitals（LCP/FID/CLS）'},
+{id:'fe-8',title:'Webpack构建流程',category:'frontend',difficulty:'medium',content:'描述Webpack的构建流程和核心概念。',answer:'构建流程：\n1. 初始化参数：合并配置文件和命令行参数\n2. 开始编译：创建Compiler对象\n3. 确定入口：从entry开始递归解析\n4. 编译模块：调用loader处理各类型文件\n5. 完成模块编译：得到模块内容和依赖关系\n6. 输出资源：根据依赖关系组装chunk\n7. 输出完成：将chunk写入文件系统\n\n核心概念：Entry、Output、Loader、Plugin、Module、Chunk\n\n优化：splitChunks分包、TerserPlugin压缩、DllPlugin预编译、缓存'},
+{id:'fe-9',title:'跨域解决方案',category:'frontend',difficulty:'easy',content:'前端跨域有哪些解决方案？',answer:'同源策略：协议+域名+端口相同\n\n解决方案：\n1. CORS（推荐）：服务端设置Access-Control-Allow-Origin\n2. 代理服务器：开发环境webpack-dev-server proxy；生产环境Nginx反向代理\n3. JSONP：只支持GET，利用script标签不受同源限制\n4. postMessage：跨窗口通信\n5. WebSocket：不受同源策略限制\n6. Nginx：反向代理，服务端解决'},
+{id:'fe-10',title:'DOM操作与虚拟DOM',category:'frontend',difficulty:'medium',content:'什么是虚拟DOM？它的工作原理和优势？',answer:'虚拟DOM：用JS对象描述DOM结构\n\n工作原理（Diff算法）：\n1. 状态变化 → 生成新虚拟DOM树\n2. 新旧虚拟DOM对比（Diff）\n3. 计算最小变更（Patch）\n4. 批量更新真实DOM\n\nDiff策略：同层比较不跨层、不同类型节点替换、Key属性复用节点、同类型节点更新属性\n\n优势：\n1. 减少DOM操作次数\n2. 批量更新，避免频繁重排\n3. 跨平台（React Native）\n\n注意：虚拟DOM不一定比直接操作DOM快，优势在于声明式编程模型'},
+
+{id:'lang-1',title:'Java垃圾回收机制',category:'language',difficulty:'medium',content:'解释Java的垃圾回收机制，常见的GC算法和收集器。',answer:'判断垃圾：\n1. 引用计数法：有循环引用问题\n2. 可达性分析：从GC Roots出发，不可达的对象为垃圾\n\nGC算法：\n1. 标记-清除：有碎片\n2. 标记-整理：无碎片但效率低\n3. 复制算法：无碎片但浪费空间\n4. 分代收集：结合以上算法\n\nJVM内存分代：\n- 新生代（Eden + S0 + S1）：复制算法\n- 老年代：标记-整理/清除\n\n常见收集器：Serial、ParNew、Parallel Scavenge、CMS、G1、ZGC'},
+{id:'lang-2',title:'Java多线程与锁',category:'language',difficulty:'hard',content:'Java中synchronized和ReentrantLock的区别？',answer:'synchronized：JVM层面关键字、自动释放锁、不可中断、非公平锁、锁升级：偏向锁→轻量级锁→重量级锁\n\nReentrantLock：API层面类、需手动释放（finally中unlock）、可中断（lockInterruptibly）、可公平/非公平、支持Condition条件变量、支持tryLock超时获取\n\nAQS原理：核心是volatile int state + CLH队列\n独占模式：state=0可获取，>0被占用\n共享模式：state表示可用资源数'},
+{id:'lang-3',title:'Java集合框架',category:'language',difficulty:'medium',content:'HashMap的底层实现原理？JDK 1.7和1.8的区别？',answer:'JDK 1.7：数组 + 链表\nJDK 1.8：数组 + 链表 + 红黑树\n\nPut流程：\n1. 计算hash（扰动函数减少冲突）\n2. 定位数组下标 (n-1)&hash\n3. 位置为空则直接插入\n4. 否则遍历链表/红黑树\n5. 链表长度≥8且数组长度≥64 → 树化\n6. 红黑树节点≤6 → 链表化\n\n扩容：负载因子0.75，容量达阈值时2倍扩容\n1.8优化：元素在新数组位置 = 原位置 或 原位置+旧容量\n\n线程不安全，替代：ConcurrentHashMap'},
+{id:'lang-4',title:'Java类加载机制',category:'language',difficulty:'medium',content:'描述Java的类加载机制和双亲委派模型。',answer:'类加载过程：\n1. 加载：读取class文件，生成Class对象\n2. 验证：格式、元数据、字节码、符号引用\n3. 准备：为静态变量分配内存并设初始值\n4. 解析：符号引用→直接引用\n5. 初始化：执行clinit方法\n\n双亲委派模型：\n1. 自底向上检查是否已加载\n2. 自顶向下尝试加载\n3. Bootstrap → Extension → Application\n\n打破双亲委派：SPI机制（JDBC）、Tomcat、OSGi、自定义类加载器'},
+{id:'lang-5',title:'Python GIL',category:'language',difficulty:'medium',content:'什么是Python的GIL？它对多线程有什么影响？',answer:'GIL（全局解释器锁）：CPython中，同一时刻只有一个线程执行Python字节码。\n\n影响：\n- CPU密集型：多线程无法利用多核，甚至比单线程慢\n- IO密集型：多线程有效（IO时释放GIL）\n\n解决方案：\n1. multiprocessing：多进程绕过GIL\n2. C扩展：释放GIL后执行C代码\n3. asyncio：协程处理IO密集型\n4. PyPy：无GIL版本（实验性）\n5. Python 3.12+：PEP 703尝试移除GIL'},
+{id:'lang-6',title:'Python装饰器',category:'language',difficulty:'easy',content:'解释Python装饰器的原理，并实现一个计时装饰器。',answer:'装饰器：接受一个函数作为参数，返回一个新函数，在不修改原函数代码的情况下扩展功能。\n\n本质是高阶函数+闭包。\n\n带参数的装饰器需要三层嵌套。\n\nfunctools.wraps：保留原函数的元信息（__name__, __doc__）。\n\n常见应用：日志记录、性能计时、权限验证、缓存（lru_cache）、重试机制、单例模式\n\n类装饰器：实现__call__方法的类也可以作为装饰器'},
+{id:'lang-7',title:'Python生成器与迭代器',category:'language',difficulty:'easy',content:'Python中生成器和迭代器的区别？yield关键字的作用？',answer:'迭代器：实现__iter__和__next__方法的对象\n生成器：使用yield的函数，是一种特殊的迭代器\n\nyield作用：暂停函数执行返回值、下次调用从暂停处继续、自动实现迭代器协议\n\n生成器优势：惰性求值节省内存、可表示无限序列、协程基础\n\n生成器表达式：(x*x for x in range(10))\n列表推导式：[x*x for x in range(10)]\n\nsend()方法：向生成器发送值，实现双向通信\nyield from：委托给子生成器'},
+{id:'lang-8',title:'Java Spring框架核心',category:'language',difficulty:'medium',content:'Spring框架的IoC和AOP是什么？',answer:'IoC（控制反转）：\n- 对象的创建和依赖管理交给Spring容器\n- 实现：依赖注入（DI）\n- 方式：构造器注入、Setter注入、字段注入\n\nAOP（面向切面编程）：\n- 将横切关注点（日志、事务、权限）从业务代码中分离\n- 核心概念：切面、切点、通知、连接点\n- 通知类型：Before、After、Around、AfterReturning、AfterThrowing\n- 实现方式：JDK动态代理（接口）、CGLIB（类）\n\nSpring Boot：自动配置、起步依赖、内嵌服务器'},
+{id:'lang-9',title:'Python内存管理',category:'language',difficulty:'medium',content:'Python的内存管理机制是怎样的？',answer:'1. 引用计数：每个对象维护引用计数，引用为0时立即回收，缺点：循环引用\n2. 标记-清除：解决循环引用，从根对象遍历，标记可达对象，清除未标记对象\n3. 分代回收：三代（0代新对象、1代、2代老对象），新对象更可能被回收，阈值触发回收\n\n内存池：pymalloc小对象（≤512字节）使用内存池，大对象直接用系统malloc\n\n内存泄漏常见原因：循环引用（含__del__）、全局变量/缓存无限增长、闭包持有大对象引用'},
+{id:'lang-10',title:'Java JVM内存模型',category:'language',difficulty:'hard',content:'描述JVM的内存模型和各区域的作用。',answer:'1. 堆（Heap）：存储对象实例，GC主要区域，分新生代/老年代，所有线程共享\n2. 方法区/元空间：类信息、常量、静态变量，JDK8后移到本地内存（元空间）\n3. 虚拟机栈：每个线程私有，栈帧：局部变量表、操作数栈、动态链接、返回地址\n4. 本地方法栈：Native方法服务\n5. 程序计数器：当前执行的字节码行号，唯一不会OOM的区域\n\nJMM（Java内存模型）：主内存+工作内存，volatile保证可见性和禁止指令重排，happens-before规则'},
+
+{id:'sc-1',title:'设计一个微博Feed流',category:'scenario',difficulty:'hard',content:'设计一个微博/朋友圈的Feed流系统。',answer:'推模式（写扩散）：发帖时写入所有粉丝的收件箱，读时直接获取，适合粉丝少的用户\n\n拉模式（读扩散）：发帖时只写自己的发件箱，读时合并所有关注人的发件箱，适合粉丝多的用户\n\n推拉结合：大V用拉模式，普通用户用推模式\n\n存储：Redis Sorted Set按时间排序\n\n优化：分页加载（游标分页）、缓存热点用户、异步推送到粉丝收件箱'},
+{id:'sc-2',title:'设计一个在线协同编辑器',category:'scenario',difficulty:'hard',content:'设计一个类似Google Docs的在线协同编辑器。',answer:'核心问题：多人同时编辑同一文档，如何保证一致性？\n\nOT算法（Operational Transformation）：对操作进行转换，使并发操作结果一致，需要中心化服务器协调，Google Docs使用此方案\n\nCRDT（Conflict-free Replicated Data Types）：数据结构本身保证最终一致性，无需中心化协调，适合P2P场景\n\n架构：WebSocket实时通信、操作日志存储、版本向量/逻辑时钟、冲突检测与解决\n\n技术选型：Yjs、Automerge、ShareDB'},
+{id:'sc-3',title:'设计一个推荐系统',category:'scenario',difficulty:'hard',content:'设计一个内容推荐系统的架构。',answer:'推荐流程：召回 → 粗排 → 精排 → 重排\n\n召回层：协同过滤（User-CF/Item-CF）、内容召回、向量召回（Embedding+ANN）、热门召回、兴趣召回\n\n排序层：粗排轻量模型快速筛选；精排复杂模型精确打分（LR/FM/DeepFM/DIN）\n\n重排：多样性、新颖性、业务规则\n\n特征工程：用户特征、物品特征、上下文特征、交叉特征\n\n评估指标：离线AUC/NDCG/Recall，在线CTR/停留时长/转化率'},
+{id:'sc-4',title:'设计一个即时通讯系统',category:'scenario',difficulty:'hard',content:'设计一个类似微信的即时通讯系统。',answer:'核心功能：单聊、群聊、消息已读、离线消息\n\n协议选择：WebSocket全双工低延迟；MQTT轻量级适合移动端\n\n消息流转：发送方→服务器→接收方，离线消息存入数据库，上线后拉取\n\n存储设计：消息表按会话ID分表、会话表、未读计数Redis计数器\n\n群聊优化：写扩散消息写入每个成员收件箱；读扩散消息存一份成员拉取；大群用读扩散\n\n消息可靠性：消息ID递增、ACK确认、消息去重、端到端加密'},
+{id:'sc-5',title:'设计一个爬虫系统',category:'scenario',difficulty:'medium',content:'设计一个分布式爬虫系统。',answer:'架构：URL调度器→下载器→解析器→存储器\n\n关键组件：URL去重（布隆过滤器）、去重队列（Redis Set）、请求调度（优先级队列）、反爬策略（代理池、UA轮换、验证码识别）\n\n分布式方案：消息队列分发任务、Redis共享URL状态、各节点独立抓取\n\n反反爬：请求频率控制、IP代理池、Cookie管理、JS渲染（Puppeteer/Playwright）、验证码识别\n\n框架：Scrapy、PySpider'},
+{id:'sc-6',title:'设计一个支付系统',category:'scenario',difficulty:'hard',content:'设计一个在线支付系统的核心架构。',answer:'核心流程：创建订单→发起支付→第三方支付→回调通知→更新订单状态\n\n关键设计：\n1. 幂等性：同一笔支付只处理一次\n2. 一致性：本地事务+消息最终一致性\n3. 对账：定期与第三方对账\n4. 补偿：超时查询+主动补偿\n\n架构：支付网关、支付路由、账户系统、清结算\n\n安全：HTTPS+签名验证、敏感信息加密、风控系统、防重复提交\n\n容灾：异步化处理、补偿机制、对账修复'},
+{id:'sc-7',title:'设计一个日志收集系统',category:'scenario',difficulty:'medium',content:'设计一个分布式日志收集和分析系统。',answer:'架构：ELK Stack\n1. Filebeat：日志采集\n2. Logstash：日志处理和转换\n3. Elasticsearch：日志存储和搜索\n4. Kibana：可视化分析\n\n替代方案：Fluentd+ES+Kibana、Loki+Promtail+Grafana（轻量级）\n\n日志格式：JSON格式便于解析，包含时间戳、级别、服务名、traceId、消息\n\n关键设计：日志分级、日志轮转、采样、链路追踪、告警\n\n性能优化：批量写入、索引生命周期管理、冷热数据分离'},
+{id:'sc-8',title:'设计一个配置中心',category:'scenario',difficulty:'medium',content:'设计一个分布式配置中心。',answer:'核心功能：配置增删改查、配置变更实时推送、版本管理、灰度发布、多环境管理\n\n架构：管理界面→配置服务→客户端SDK\n\n存储：MySQL配置数据、Redis缓存热点配置\n\n实时推送：长轮询、WebSocket、MQ广播\n\n高可用：配置服务集群部署、本地缓存、多机房同步\n\n开源方案：Apollo、Nacos、Spring Cloud Config'},
+{id:'sc-9',title:'设计一个网关系统',category:'scenario',difficulty:'medium',content:'设计一个API网关系统。',answer:'核心功能：路由转发、负载均衡、认证鉴权、限流熔断、日志监控、协议转换、灰度发布\n\n架构：Netty异步非阻塞、前置过滤器链、路由匹配、后置过滤器链\n\n技术选型：Kong（基于Nginx+Lua）、Spring Cloud Gateway（基于WebFlux）\n\n性能优化：异步非阻塞IO、连接池复用、缓存热点路由、限流保护\n\n安全：JWT验证、IP黑白名单、CORS配置、SQL注入防护'},
+{id:'sc-10',title:'设计一个任务调度系统',category:'scenario',difficulty:'medium',content:'设计一个分布式任务调度系统。',answer:'核心功能：定时任务调度（Cron表达式）、任务分片、故障转移、任务依赖、幂等执行\n\n架构：调度中心（管理任务触发执行）、执行器（执行具体任务）、注册中心（执行器注册与发现）\n\n分布式调度：数据库行锁（SELECT FOR UPDATE）、分布式锁（Redis/ZooKeeper）\n\n分片策略：按取模分片、按范围分片、按哈希分片\n\n容错：心跳检测、失败重试、故障转移、超时控制\n\n开源方案：XXL-Job、Elastic-Job、PowerJob'},
+
+{id:'algo-11',title:'二分查找及其变体',category:'algorithm',difficulty:'easy',content:'实现二分查找算法，并说明如何查找第一个等于目标值的元素、最后一个等于目标值的元素。',answer:'基础二分查找：\nleft=0, right=n-1\nwhile left<=right:\n  mid = left+(right-left)/2\n  if nums[mid]==target: return mid\n  elif nums[mid]<target: left=mid+1\n  else: right=mid-1\n\n查找第一个等于目标值：\n当 nums[mid]==target 时，right=mid-1（继续向左找）\n最后检查 left 是否越界且 nums[left]==target\n\n查找最后一个等于目标值：\n当 nums[mid]==target 时，left=mid+1（继续向右找）\n最后检查 right 是否越界且 nums[right]==target\n\n时间复杂度 O(logn)，注意 mid 防溢出用 left+(right-left)/2',examples:'输入：nums = [1,2,3,3,3,4,5], target = 3\n基础查找：返回 3（任意一个）\n查找第一个：返回 2\n查找最后一个：返回 4',isAlgo:true},
+{id:'algo-12',title:'接雨水问题',category:'algorithm',difficulty:'hard',content:'给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。',answer:'方法一：双指针\n1. 左右指针从两端向中间移动\n2. 维护左边最大值和右边最大值\n3. 较小的一侧决定当前能接的雨水量\n4. 时间 O(n)，空间 O(1)\n\n方法二：动态规划\n1. 预处理左/右两侧最大值数组\n2. 每个位置能接的雨水 = min(左最大,右最大) - 当前高度\n3. 时间 O(n)，空间 O(n)\n\n方法三：单调栈\n1. 维护递减栈\n2. 遇到更高柱子时，弹出栈顶计算雨水\n3. 时间 O(n)，空间 O(n)',examples:'输入：height = [0,1,0,2,1,0,1,3,2,1,2,1]\n输出：6',isAlgo:true},
+{id:'algo-13',title:'无重复字符的最长子串',category:'algorithm',difficulty:'medium',content:'给定一个字符串 s，请你找出其中不含有重复字符的最长子串的长度。',answer:'滑动窗口法：\n1. 用 HashMap 记录字符最近出现的位置\n2. 左指针 left，右指针遍历字符串\n3. 当遇到重复字符时，左指针移动到重复字符上次出现位置的下一个\n4. 更新最大长度\n\n时间复杂度 O(n)，空间复杂度 O(min(m,n))，m 为字符集大小\n\n关键：left = max(left, map[char] + 1)\n不能直接 left = map[char] + 1，因为可能 left 已经越过了该位置',examples:'输入：s = "abcabcbb"\n输出：3（"abc"）\n\n输入：s = "bbbbb"\n输出：1',isAlgo:true},
+{id:'algo-14',title:'合并两个有序链表',category:'algorithm',difficulty:'easy',content:'将两个升序链表合并为一个新的升序链表并返回。',answer:'迭代法：\n1. 创建虚拟头节点 dummy\n2. 比较两个链表当前节点值，较小的接入结果链表\n3. 某个链表遍历完后，将另一个链表剩余部分接入\n4. 时间 O(n+m)，空间 O(1)\n\n递归法：\n1. 比较两个链表头节点\n2. 较小节点的 next 指向递归合并结果\n3. 时间 O(n+m)，空间 O(n+m)（递归栈）',examples:'输入：l1 = [1,2,4], l2 = [1,3,4]\n输出：[1,1,2,3,4,4]',isAlgo:true},
+{id:'algo-15',title:'最大子数组和',category:'algorithm',difficulty:'medium',content:'给你一个整数数组 nums，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。',answer:'Kadane算法（动态规划）：\n1. dp[i] 表示以 nums[i] 结尾的最大子数组和\n2. dp[i] = max(dp[i-1] + nums[i], nums[i])\n3. 结果为 max(dp[i])\n4. 可优化为只用一个变量\n\n时间复杂度 O(n)，空间复杂度 O(1)\n\n分治法：\n最大子数组要么在左半部分、右半部分，要么跨越中点\n时间 O(nlogn)',examples:'输入：nums = [-2,1,-3,4,-1,2,1,-5,4]\n输出：6（子数组 [4,-1,2,1]）',isAlgo:true},
+
+{id:'os-11',title:'select、poll和epoll的区别',category:'os',difficulty:'medium',content:'比较Linux中select、poll和epoll三种IO多路复用机制的区别。',answer:'select：\n- 最大连接数限制（FD_SETSIZE=1024）\n- 每次调用需要复制全部fd到内核\n- 返回后需线性遍历所有fd\n- 水平触发\n\npoll：\n- 无最大连接数限制（用链表）\n- 仍需复制全部fd到内核\n- 返回后仍需线性遍历\n- 水平触发\n\nepoll：\n- 无连接数限制\n- 只复制变化的fd（事件驱动）\n- 返回已就绪的fd，无需遍历\n- 支持水平触发（LT）和边缘触发（ET）\n- ET模式更高效但编程更复杂\n\nepoll适用场景：高并发、长连接（如Web服务器）\nselect适用场景：低并发、跨平台兼容'},
+{id:'os-12',title:'Linux内存管理',category:'os',difficulty:'medium',content:'Linux是如何管理内存的？简述malloc的实现原理。',answer:'Linux内存管理：\n1. 虚拟地址空间：每个进程有独立的虚拟地址空间\n2. 分页机制：4KB页面，多级页表\n3. 内存分配：\n   - brk/mmap系统调用\n   - 伙伴系统管理物理页\n   - slab分配器管理小对象\n\nmalloc实现：\n1. 小分配（<128KB）：通过brk移动堆顶指针\n2. 大分配（>=128KB）：通过mmap映射新区域\n3. 用户空间维护空闲链表管理已分配内存\n4. free时可能触发munmap或合并空闲块\n\n内存碎片：\n- 内部碎片：分配大于请求\n- 外部碎片：空闲内存不连续'},
+{id:'os-13',title:'线程同步方式',category:'os',difficulty:'medium',content:'线程间有哪些同步方式？各有什么特点？',answer:'1. 互斥锁（Mutex）：保护临界区，同一时刻只有一个线程进入\n2. 读写锁：读共享、写独占，适合读多写少场景\n3. 自旋锁：忙等待，适用于临界区很短的场景\n4. 条件变量：配合互斥锁使用，等待/通知机制\n5. 信号量：计数器，控制同时访问的线程数\n6. 屏障（Barrier）：所有线程到达后一起继续\n7. 事件（Event）：Windows下的通知机制\n\n选择原则：\n- 简单互斥 → Mutex\n- 读多写少 → 读写锁\n- 等待条件 → 条件变量\n- 临界区极短 → 自旋锁'},
+
+{id:'net-11',title:'HTTP/1.1、HTTP/2和HTTP/3的区别',category:'network',difficulty:'medium',content:'比较HTTP/1.1、HTTP/2和HTTP/3的主要区别。',answer:'HTTP/1.1：\n- 文本协议\n- 长连接（keep-alive）\n- 管道化（有队头阻塞问题）\n- 每个TCP连接同一时刻只处理一个请求\n\nHTTP/2：\n- 二进制帧\n- 多路复用（一个TCP连接并行多个请求）\n- 头部压缩（HPACK算法）\n- 服务器推送\n- 仍有TCP层队头阻塞\n\nHTTP/3（QUIC）：\n- 基于UDP的QUIC协议\n- 解决TCP队头阻塞\n- 0-RTT连接建立\n- 连接迁移（换网络不断连）\n- 内置TLS 1.3加密\n- 前向纠错（FEC）'},
+{id:'net-12',title:'TCP滑动窗口与流量控制',category:'network',difficulty:'medium',content:'解释TCP滑动窗口机制和流量控制原理。',answer:'滑动窗口：\n- 发送方维护发送窗口，接收方维护接收窗口\n- 接收方通过ACK报文通告窗口大小（rwnd）\n- 发送方已发送未确认的数据量不超过rwnd\n\n流量控制：\n- 目的：防止发送方发送过快导致接收方缓冲区溢出\n- 机制：接收方通告窗口大小控制发送速率\n- 零窗口探测：窗口为0时，发送方定期发送1字节探测\n- 糊涂窗口综合征：避免发送小报文（Nagle算法和Clark方案）\n\n与拥塞控制区别：\n- 流量控制：端到端，防止接收方溢出\n- 拥塞控制：全局性，防止网络过载'},
+{id:'net-13',title:'XSS和CSRF攻击及防御',category:'network',difficulty:'medium',content:'什么是XSS和CSRF攻击？如何防御？',answer:'XSS（跨站脚本攻击）：\n- 反射型：恶意脚本在URL中，服务器反射到页面\n- 存储型：恶意脚本存入数据库，其他用户访问时执行\n- DOM型：前端JS直接操作DOM导致\n\n防御：\n1. 输入过滤和输出编码\n2. CSP（Content Security Policy）\n3. HttpOnly Cookie\n4. 使用框架内置的XSS防护\n\nCSRF（跨站请求伪造）：\n- 攻击者诱导用户访问恶意页面\n- 利用用户已登录的身份发送请求\n\n防御：\n1. CSRF Token\n2. SameSite Cookie属性\n3. 验证Referer/Origin\n4. 关键操作二次确认'},
+{id:'net-14',title:'浏览器缓存机制',category:'network',difficulty:'medium',content:'解释浏览器的强缓存和协商缓存机制。',answer:'强缓存（不发送请求）：\n1. Expires：绝对过期时间（HTTP/1.0）\n2. Cache-Control：\n   - max-age=3600（相对过期秒数）\n   - no-cache（跳过强缓存，进入协商缓存）\n   - no-store（不缓存）\n   - public/private\n\n协商缓存（发送请求验证）：\n1. Last-Modified / If-Modified-Since：\n   - 服务器返回Last-Modified\n   - 客户端下次带If-Modified-Since\n   - 未修改返回304\n\n2. ETag / If-None-Match：\n   - 服务器返回ETag（资源唯一标识）\n   - 客户端下次带If-None-Match\n   - 比Last-Modified更精确\n\n优先级：Cache-Control > Expires > ETag > Last-Modified'},
+
+{id:'db-11',title:'ConcurrentHashMap如何保证线程安全',category:'database',difficulty:'hard',content:'ConcurrentHashMap是如何保证线程安全的？JDK 1.7和1.8的实现有什么区别？',answer:'JDK 1.7：\n- Segment分段锁机制\n- 将数据分为16个Segment\n- 每个Segment有独立的ReentrantLock\n- 不同Segment可并发操作\n- 默认并发度16\n\nJDK 1.8：\n- 取消Segment，改为CAS + synchronized\n- 锁粒度：从Segment级别细化到桶（Node）级别\n- put流程：\n  1. 计算hash定位桶\n  2. 桶为空：CAS写入\n  3. 桶不为空：synchronized锁住头节点\n  4. 链表长度>=8转红黑树\n- size()：baseCount + CounterCell数组累加\n\n1.8优化：锁粒度更细、并发度更高、查询效率更高（红黑树）'},
+{id:'db-12',title:'Redis集群方案',category:'database',difficulty:'medium',content:'Redis有哪些集群方案？各自的优缺点？',answer:'1. 主从复制：\n- 一主多从，读写分离\n- 主写从读，主自动同步数据到从\n- 缺点：主节点单点，故障需手动切换\n\n2. 哨兵模式（Sentinel）：\n- 在主从基础上增加哨兵监控\n- 自动故障检测和转移\n- 缺点：写仍是单点，内存受限于单机\n\n3. Redis Cluster：\n- 数据分片（16384个hash slot）\n- 每个节点负责一部分slot\n- 支持水平扩展\n- ASK/MOVED重定向\n- 缺点：不支持多key事务（跨slot）\n\n选择：\n- 小规模：主从+哨兵\n- 大规模：Redis Cluster\n- 需要强一致：不推荐Redis'},
+{id:'db-13',title:'MySQL主从复制原理',category:'database',difficulty:'medium',content:'MySQL主从复制的原理是什么？有哪些复制方式？',answer:'复制原理：\n1. 主节点将变更写入binlog\n2. 从节点IO线程连接主节点，拉取binlog写入relay log\n3. 从节点SQL线程读取relay log，重放SQL语句\n\n复制方式：\n1. 异步复制：主写完binlog即返回，可能丢数据\n2. 半同步复制：至少一个从节点确认接收后才返回\n3. 全同步复制：所有从节点都确认（性能差）\n\nbinlog格式：\n1. Statement：记录SQL语句，日志小但可能不一致\n2. Row：记录行变更，日志大但一致性好\n3. Mixed：混合模式\n\n延迟问题：\n- 从库SQL线程单线程重放\n- 5.7+支持多线程并行复制'},
+{id:'db-14',title:'数据库连接池原理',category:'database',difficulty:'easy',content:'数据库连接池的原理是什么？有哪些关键参数？',answer:'原理：\n- 预先创建一定数量的数据库连接放入池中\n- 应用需要连接时从池中获取，用完归还\n- 避免频繁创建和销毁连接的开销\n\n关键参数：\n1. 最小连接数（minIdle）：池中保持的最小连接\n2. 最大连接数（maxActive）：池中最大连接数\n3. 获取连接超时时间（maxWait）\n4. 连接最大空闲时间（maxIdle）\n5. 连接最大存活时间（maxAge）\n6. 连接有效性检查（validationQuery）\n\n常见连接池：\n- HikariCP：性能最优，Spring Boot默认\n- Druid：功能丰富，监控能力强\n- C3P0：老牌，性能一般'},
+
+{id:'sd-11',title:'设计一个分布式限流系统',category:'system-design',difficulty:'hard',content:'如何设计一个支持亿级流量的分布式限流系统？',answer:'分层限流架构：\n1. CDN层：地理位置限流\n2. 网关层：Nginx限流（令牌桶）\n3. 服务层：应用级限流\n4. 数据层：连接池/线程池限流\n\n核心算法：\n1. 令牌桶：允许突发流量，恒定速率生成令牌\n2. 漏桶：平滑流量，恒定速率处理\n3. 滑动窗口：精确统计时间窗口内请求数\n\n分布式实现：\n1. Redis + Lua脚本：原子计数\n2. 令牌中心：预分配令牌到各节点\n3. 网关统一限流 + 本地限流双保险\n\n限流粒度：全局、用户、IP、接口\n\n降级策略：排队等待、返回默认值、熔断'},
+{id:'sd-12',title:'设计一个分布式事务方案',category:'system-design',difficulty:'hard',content:'如何保证分布式系统中的数据一致性？常见分布式事务方案？',answer:'CAP定理：一致性、可用性、分区容忍性不可兼得\n\n分布式事务方案：\n1. 2PC（两阶段提交）：\n   - 准备阶段 + 提交阶段\n   - 同步阻塞，单点故障问题\n\n2. 3PC：增加CanCommit阶段，超时机制\n\n3. TCC（Try-Confirm-Cancel）：\n   - 业务层面的两阶段提交\n   - 需实现三个接口\n   - 适合资金类业务\n\n4. Saga模式：\n   - 长事务拆分为多个本地事务\n   - 每步有补偿操作\n   - 适合流程长的业务\n\n5. 本地消息表：\n   - 本地事务+消息表\n   - 后台线程异步发送消息\n   - 最终一致性\n\n6. 事务消息：\n   - RocketMQ半消息机制\n   - 保证消息发送和本地事务原子性'},
+{id:'sd-13',title:'设计一个API网关',category:'system-design',difficulty:'medium',content:'设计一个高可用的API网关系统。',answer:'核心功能：\n1. 路由转发：根据URL/Header路由到后端服务\n2. 负载均衡：轮询/加权/最少连接\n3. 认证鉴权：JWT/OAuth2\n4. 限流熔断：令牌桶+滑动窗口\n5. 协议转换：HTTP↔gRPC\n6. 日志监控：请求日志、指标采集\n7. 灰度发布：按规则分流\n\n高可用设计：\n1. 多节点无状态部署\n2. 健康检查+自动摘除\n3. 配置热更新\n4. 优雅上下线\n\n性能优化：\n1. 异步非阻塞（Netty/WebFlux）\n2. 连接池复用\n3. 本地缓存路由规则\n4. 批量转发\n\n开源方案：Kong、Spring Cloud Gateway、APISIX'},
+
+{id:'fe-11',title:'防抖与节流',category:'frontend',difficulty:'easy',content:'什么是防抖和节流？各自的应用场景和实现方式？',answer:'防抖（debounce）：\n- 事件触发后等待一段时间再执行\n- 在等待期间再次触发则重新计时\n- 只执行最后一次\n- 应用：搜索框输入、窗口resize\n\n节流（throttle）：\n- 事件触发后立即执行，但在指定时间内只执行一次\n- 应用：滚动事件、鼠标移动、按钮防重复点击\n\n实现要点：\n- 防抖用setTimeout+clearTimeout\n- 节流用时间戳或setTimeout\n- 注意this指向和参数传递\n- leading/trailing选项控制首次和末次执行'},
+{id:'fe-12',title:'Promise原理与手写实现',category:'frontend',difficulty:'hard',content:'解释Promise的原理，并说明如何手写一个简易Promise。',answer:'Promise核心：\n1. 三种状态：pending → fulfilled/rejected\n2. 状态一旦变更不可逆\n3. then方法返回新Promise（链式调用）\n4. 微任务：then回调在微任务队列执行\n\n手写要点：\n1. 构造函数接收executor，立即执行\n2. resolve/reject函数改变状态和值\n3. then方法收集回调，状态变更后执行\n4. 处理异步：pending时存入回调数组\n5. 处理链式调用：then返回新Promise\n6. 处理值穿透：then非函数时值透传\n\nPromise.all：所有成功才成功，一个失败即失败\nPromise.race：取最先完成的结果\nPromise.allSettled：等待所有完成\nPromise.any：取最先成功的'},
+{id:'fe-13',title:'深拷贝与浅拷贝',category:'frontend',difficulty:'medium',content:'JavaScript中深拷贝和浅拷贝的区别？如何实现深拷贝？',answer:'浅拷贝：只复制一层，嵌套对象仍共享引用\n- Object.assign()、展开运算符...\n- 数组：slice()、concat()\n\n深拷贝：递归复制所有层级，完全独立\n\n实现方式：\n1. JSON.parse(JSON.stringify(obj))\n   - 缺点：忽略undefined、函数、Symbol\n   - 不支持循环引用、Date、RegExp\n\n2. 递归实现：\n   - 判断类型（typeof/instanceof）\n   - 处理循环引用（WeakMap记录）\n   - 处理特殊对象（Date、RegExp、Map、Set）\n   - 处理函数（直接引用或toString）\n\n3. structuredClone()：\n   - 浏览器原生API\n   - 支持循环引用和更多类型\n\n4. 第三方库：lodash.cloneDeep'},
+{id:'fe-14',title:'React与Vue的核心区别',category:'frontend',difficulty:'medium',content:'React和Vue有哪些核心区别？各自的优势？',answer:'核心区别：\n1. 数据流：React单向数据流，Vue双向绑定\n2. 模板：React用JSX，Vue用模板语法\n3. 状态管理：React用Hooks/外部库，Vue内置响应式\n4. 更新策略：React自顶向下reconcile，Vue依赖追踪精确更新\n5. 组件写法：React函数组件为主，Vue SFC单文件组件\n\nReact优势：\n- 生态更丰富（React Native等）\n- 更灵活，适合大型应用\n- 函数式编程风格\n- 社区更大\n\nVue优势：\n- 上手更容易\n- 文档更友好\n- 模板更直观\n- 内置方案更完整（Router、Pinia）\n\n选择：\n- 大型复杂项目 → React\n- 快速开发、中小项目 → Vue\n- 团队熟悉度最重要'},
+{id:'fe-15',title:'前端模块化发展历程',category:'frontend',difficulty:'medium',content:'前端模块化有哪些规范？各自的特点？',answer:'1. IIFE（立即执行函数）：最早期，避免全局污染\n\n2. CommonJS（CJS）：\n   - Node.js采用\n   - require/module.exports\n   - 同步加载，运行时执行\n   - 输出值拷贝\n\n3. AMD（异步模块定义）：\n   - require.js实现\n   - 异步加载，适合浏览器\n   - 语法较复杂\n\n4. CMD：\n   - sea.js实现\n   - 按需加载\n\n5. ES Modules（ESM）：\n   - import/export\n   - 静态分析，编译时确定依赖\n   - 输出值引用（可动态更新）\n   - Tree Shaking基础\n   - 浏览器和Node.js都支持\n\nCJS vs ESM：\n- CJS运行时加载，ESM编译时解析\n- CJS输出拷贝，ESM输出引用\n- ESM支持Tree Shaking'},
+
+{id:'lang-11',title:'Java volatile关键字',category:'language',difficulty:'medium',content:'Java中volatile关键字的作用和原理？',answer:'volatile两大作用：\n1. 保证可见性：一个线程修改后，其他线程立即可见\n2. 禁止指令重排序\n\n底层原理：\n1. 可见性：写操作后插入StoreLoad屏障，强制刷新到主内存\n2. 有序性：通过内存屏障（Memory Barrier）禁止重排\n3. 读取时强制从主内存读，写入时强制刷到主内存\n\nvolatile不保证原子性：\n- i++操作不是原子的（读-改-写三步）\n- 需要原子性请用AtomicInteger或synchronized\n\n应用场景：\n1. 状态标志位（boolean flag）\n2. 双重检查锁定（DCL单例模式）\n3. 读多写少的场景\n\nDCL单例：\nvolatile防止对象初始化一半就被其他线程获取'},
+{id:'lang-12',title:'Java线程池原理',category:'language',difficulty:'medium',content:'Java线程池的工作原理是什么？有哪些关键参数？',answer:'ThreadPoolExecutor核心参数：\n1. corePoolSize：核心线程数\n2. maximumPoolSize：最大线程数\n3. keepAliveTime：空闲线程存活时间\n4. workQueue：任务队列\n5. threadFactory：线程工厂\n6. handler：拒绝策略\n\n任务提交流程：\n1. 线程数<corePoolSize → 创建核心线程\n2. 核心线程满 → 任务放入队列\n3. 队列满 → 创建非核心线程\n4. 线程数=maximumPoolSize且队列满 → 拒绝策略\n\n拒绝策略：\n1. AbortPolicy：抛异常（默认）\n2. CallerRunsPolicy：调用者线程执行\n3. DiscardPolicy：静默丢弃\n4. DiscardOldestPolicy：丢弃最老任务\n\n队列选择：\n- LinkedBlockingQueue：无界（FixedThreadPool）\n- SynchronousQueue：不存储（CachedThreadPool）\n- ArrayBlockingQueue：有界'},
+{id:'lang-13',title:'Python asyncio异步编程',category:'language',difficulty:'medium',content:'Python的asyncio异步编程模型是怎样的？',answer:'asyncio核心概念：\n1. 事件循环（Event Loop）：调度和执行协程\n2. 协程（Coroutine）：async def定义的函数\n3. Task：对协程的封装，可被事件循环调度\n4. Future：异步操作的最终结果\n\n使用方式：\n1. async def定义协程\n2. await等待异步操作\n3. asyncio.run()运行主协程\n4. asyncio.gather()并发执行多个协程\n5. asyncio.create_task()创建任务\n\n适用场景：\n- IO密集型：网络请求、文件读写\n- 高并发服务：Web服务器、爬虫\n\n不适用：\n- CPU密集型：应使用multiprocessing\n\n与多线程对比：\n- 协程更轻量（微秒级切换 vs 毫秒级）\n- 无锁问题（单线程）\n- 但不能利用多核'},
+{id:'lang-14',title:'Java Spring Bean生命周期',category:'language',difficulty:'medium',content:'描述Spring Bean的完整生命周期。',answer:'Bean生命周期：\n1. 实例化（Instantiation）：创建Bean实例\n2. 属性赋值（Populate）：注入依赖\n3. BeanNameAware.setBeanName()\n4. BeanFactoryAware.setBeanFactory()\n5. ApplicationContextAware.setApplicationContext()\n6. BeanPostProcessor.postProcessBeforeInitialization()\n7. InitializingBean.afterPropertiesSet()\n8. 自定义init-method\n9. BeanPostProcessor.postProcessAfterInitialization()\n   - AOP代理在此步骤创建\n10. Bean就绪，可使用\n11. DisposableBean.destroy()\n12. 自定义destroy-method\n\n关键扩展点：\n- BeanPostProcessor：对所有Bean生效\n- @PostConstruct/@PreDestroy：JSR-250注解\n- InitializingBean/DisposableBean：接口方式'},
+
+{id:'sc-11',title:'设计一个外卖订单系统',category:'scenario',difficulty:'hard',content:'设计一个外卖平台的订单系统，支持下单、支付、骑手派单、订单追踪。',answer:'核心流程：\n1. 用户下单 → 2. 商家接单 → 3. 支付 → 4. 骑手派单 → 5. 取餐 → 6. 配送 → 7. 完成\n\n关键设计：\n1. 订单状态机：待支付→待接单→制作中→待取餐→配送中→已完成\n2. 骑手派单：\n   - 贪心算法：距离最近优先\n   - 考虑因素：距离、方向、订单量、时间窗\n   - 实时调度：基于GPS位置动态派单\n3. 高并发：\n   - 读写分离\n   - 消息队列异步处理\n   - Redis缓存热点商家\n4. 数据一致性：\n   - 订单创建+库存扣减事务\n   - 支付回调幂等处理\n5. 订单追踪：\n   - WebSocket推送骑手位置\n   - 地理围栏触发状态变更'},
+{id:'sc-12',title:'设计一个视频弹幕系统',category:'scenario',difficulty:'medium',content:'设计一个支持高并发的视频弹幕系统。',answer:'核心功能：发送弹幕、实时弹幕、弹幕存储、弹幕过滤\n\n架构：\n1. 发送弹幕：\n   - 客户端 → API网关 → 弹幕服务 → 消息队列\n   - 异步写入存储\n\n2. 实时弹幕：\n   - WebSocket长连接推送\n   - 按视频ID分组（Room概念）\n   - Redis Pub/Sub分发\n\n3. 历史弹幕：\n   - 按视频ID+时间范围查询\n   - MySQL存储 + Redis缓存热点视频\n   - 弹幕按时间轴索引\n\n4. 弹幕过滤：\n   - 敏感词过滤（DFA算法）\n   - 频率限制\n   - 用户举报\n\n性能优化：\n- 热门视频弹幕聚合推送\n- 弹幕预加载\n- CDN加速WebSocket'},
+{id:'sc-13',title:'设计一个在线教育直播系统',category:'scenario',difficulty:'hard',content:'设计一个在线教育直播系统，支持直播上课、互动问答、白板同步。',answer:'核心功能：\n1. 视频直播：老师推流，学生拉流\n2. 互动问答：学生提问，老师回答\n3. 白板同步：老师画板实时同步\n4. 课堂管理：签到、举手、禁言\n\n架构：\n1. 直播流：\n   - 老师端：WebRTC推流 → 媒体服务器\n   - 学生端：CDN拉流（HLS/FLV）\n   - 互动模式：WebRTC P2P/SFU\n\n2. 白板同步：\n   - 操作序列化（OT/CRDT）\n   - WebSocket广播\n   - 增量同步\n\n3. 互动问答：\n   - 消息队列削峰\n   - 优先级排序（付费/举手）\n   - 延迟适中（1-3秒可接受）\n\n4. 录制回放：\n   - 流录制 + 白板操作录制\n   - 回放时同步播放\n\n技术选型：\n- 媒体服务器：Janus/Mediasoup\n- 白板：Canvas + WebSocket'}
+];
+
+const DEFAULT_SOURCES=[
+{id:'src-1',name:'GitHub - CyC2018/CS-Notes',url:'https://raw.githubusercontent.com/CyC2018/CS-Notes/master/README.md',type:'github'},
+{id:'src-2',name:'GitHub - 0voice/interview_internal_reference',url:'https://raw.githubusercontent.com/0voice/interview_internal_reference/master/README.md',type:'github'},
+{id:'src-3',name:'GitHub - doocs/advanced-java',url:'https://raw.githubusercontent.com/doocs/advanced-java/main/README.md',type:'github'}
+];
+
+const KEYWORD_CATEGORY_MAP={
+algorithm:['数组','链表','树','排序','二叉树','动态规划','递归','哈希','栈','队列','图','算法','遍历','搜索','回溯','贪心','分治','双指针','滑动窗口','前缀和','并查集','拓扑排序','最短路径','二分查找','字符串匹配','字典树','线段树','单调栈','位运算','数学'],
+os:['进程','线程','内存','死锁','调度','虚拟内存','文件系统','信号量','操作系统','内核','中断','系统调用','上下文切换','页面置换','管道','shell','fork','协程','并发','并行','同步','互斥','临界区','用户态','内核态'],
+network:['TCP','UDP','HTTP','HTTPS','DNS','IP','三次握手','四次挥手','Socket','OSI','网络','协议','路由','CDN','代理','NAT','WebSocket','RESTful','RPC','跨域','CORS','Cookie','Session','Token','请求','响应','状态码'],
+database:['SQL','索引','事务','MySQL','Redis','范式','主键','外键','锁','MVCC','数据库','存储','查询','分库','分表','主从','读写分离','B树','B+树','哈希索引','聚簇索引','覆盖索引','慢查询','ACID','隔离级别','脏读','幻读'],
+'system-design':['分布式','缓存','消息队列','负载均衡','微服务','高可用','限流','熔断','降级','系统设计','架构','CAP','BASE','一致性','幂等','服务发现','配置中心','网关','链路追踪','容灾','灰度发布','容器','K8s','Docker'],
+frontend:['DOM','CSS','JavaScript','React','Vue','浏览器','渲染','事件循环','Webpack','前端','组件','状态管理','路由','虚拟DOM','Diff','Hooks','TypeScript','Babel','SSR','PWA','Service Worker','Canvas','SVG','动画','响应式','Flex','Grid'],
+language:['Java','Python','JVM','GC','Spring','MyBatis','GIL','装饰器','生成器','迭代器','类加载','反射','注解','泛型','集合','多线程','并发','锁','异常','IO','NIO','序列化','lambda','协程','异步','闭包'],
+scenario:['场景','设计一个','实现一个','如何设计','架构设计','系统设计','Feed','推荐','搜索','支付','IM','爬虫','配置中心','网关','调度','日志','监控','协同','编辑器','电商','社交','直播']
+};
+
+const DIFFICULTY_KEYWORDS={
+hard:['实现','手写','设计一个','架构','从零','完整','高并发','分布式','海量','大规模','亿级'],
+easy:['什么是','解释','区别','简述','描述','列举','说出','定义','概念','基本']
+};
+
+const Store={
+_cache:{},
+get(k,d){if(this._cache[k]!==undefined)return this._cache[k];try{const v=localStorage.getItem('ci_'+k);const r=v?JSON.parse(v):d;this._cache[k]=r;return r}catch{return d}},
+set(k,v){this._cache[k]=v;try{localStorage.setItem('ci_'+k,JSON.stringify(v))}catch(e){console.warn('Storage full',e)}},
+getMastered(){return this.get('mastered',[])},setMastered(v){this.set('mastered',v)},
+getFavorites(){return this.get('favorites',[])},setFavorites(v){this.set('favorites',v)},
+getCollected(){return this.get('collected',[])},setCollected(v){this.set('collected',v)},
+getSources(){return this.get('sources',DEFAULT_SOURCES)},setSources(v){this.set('sources',v)},
+getCheckins(){return this.get('checkins',[])},setCheckins(v){this.set('checkins',v)},
+getTodayCount(){const t=new Date().toDateString();return this.getMastered().filter(id=>{const m=this.get('m_meta_'+id,null);return m&&new Date(m.date).toDateString()===t}).length},
+getStreak(){const c=this.getCheckins();if(!c.length)return 0;let s=0;const t=new Date();for(let i=0;i<365;i++){const d=new Date(t);d.setDate(d.getDate()-i);if(c.includes(d.toDateString()))s++;else if(i>0)break}return s},
+checkin(){const c=this.getCheckins();const t=new Date().toDateString();if(!c.includes(t)){c.push(t);this.setCheckins(c)}},
+toggleMastered(id){const m=this.getMastered();const i=m.indexOf(id);if(i>=0)m.splice(i,1);else{m.push(id);this.set('m_meta_'+id,{date:new Date().toISOString()});this.checkin()}this.setMastered(m)},
+toggleFavorite(id){const f=this.getFavorites();const i=f.indexOf(id);if(i>=0)f.splice(i,1);else f.push(id);this.setFavorites(f)},
+addCollected(qs){const c=this.getCollected();qs.forEach(q=>{q.id=q.id||('col-'+Date.now()+'-'+Math.random().toString(36).substr(2,5));q.collectedAt=new Date().toISOString();q.source=q.source||'手动添加';c.push(q)});this.setCollected(c);return qs},
+getTheme(){return this.get('theme','dark')},setTheme(v){this.set('theme',v)}
+};
+
+function getAllQuestions(){
+const b=BUILTIN_QUESTIONS.map(q=>({...q,sourceType:'builtin'}));
+const c=Store.getCollected().map(q=>({...q,sourceType:'collected'}));
+return[...b,...c];
+}
+
+const ParseEngine={
+parse(t){if(!t||!t.trim())return[];let r;r=this.parseQA(t);if(r.length)return r;r=this.parseNumbered(t);if(r.length)return r;r=this.parseMarkdown(t);if(r.length)return r;r=this.parseParagraphs(t);return r},
+parseQA(t){const r=[];const re=/(?:Q[:：]|问题[:：])\s*([\s\S]+?)(?=(?:A[:：]|答案[:：]))\s*(?:A[:：]|答案[:：])\s*([\s\S]+?)(?=(?:Q[:：]|问题[:：])|$)/gi;let m;while((m=re.exec(t))!==null)r.push({title:m[1].trim().substring(0,200),answer:m[2].trim(),category:this.detectCat(m[1]+' '+m[2]),difficulty:this.detectDiff(m[1])});return r},
+parseNumbered(t){const r=[];const ls=t.split('\n');let cur=null;const re=/^\s*(\d+)[.、．)\s]+(.+)/;for(const l of ls){const m=l.match(re);if(m){if(cur)r.push(cur);cur={title:m[2].trim().substring(0,200),answer:'',category:this.detectCat(m[2]),difficulty:this.detectDiff(m[2])}}else if(cur&&l.trim())cur.answer+=(cur.answer?'\n':'')+l.trim()}if(cur)r.push(cur);return r},
+parseMarkdown(t){const r=[];const ps=t.split(/^(#{1,3})\s+(.+)$/m);for(let i=1;i<ps.length;i+=3){const title=ps[i+1]?.trim();const content=ps[i+2]?.trim();if(title)r.push({title:title.substring(0,200),answer:content||'',category:this.detectCat(title+' '+(content||'')),difficulty:this.detectDiff(title)})}return r},
+parseParagraphs(t){const r=[];const ps=t.split(/\n{2,}/).filter(p=>p.trim());for(let i=0;i<ps.length;i+=2){const title=ps[i].trim().substring(0,200);const answer=ps[i+1]?.trim()||'';if(title.length>5)r.push({title,answer,category:this.detectCat(title+' '+answer),difficulty:this.detectDiff(title)})}return r},
+detectCat(t){const s={};for(const[c,ks]of Object.entries(KEYWORD_CATEGORY_MAP)){s[c]=0;for(const k of ks)if(t.includes(k))s[c]+=1}const b=Object.entries(s).sort((a,b)=>b[1]-a[1])[0];return b[1]>0?b[0]:'algorithm'},
+detectDiff(t){for(const k of DIFFICULTY_KEYWORDS.hard)if(t.includes(k))return'hard';for(const k of DIFFICULTY_KEYWORDS.easy)if(t.includes(k))return'easy';return'medium'}
+};
+
+let currentPage='dashboard';
+let currentParams={};
+let questionFilters={search:'',category:'',difficulty:'',status:'',source:'',view:'list'};
+let collectTab=0;
+let parsedResults=[];
+
+function navigate(p,params={}){currentPage=p;currentParams=params;window.location.hash=p+(params.id?'/'+params.id:'');renderPage()}
+function parseHash(){const h=window.location.hash.slice(1)||'dashboard';const ps=h.split('/');currentPage=ps[0];currentParams=ps[1]?{id:ps[1]}:{}}
+window.addEventListener('hashchange',()=>{parseHash();renderPage()});
+
+function renderPage(){
+const content=document.getElementById('content');
+const sidebar=document.getElementById('sidebar');
+const nav=document.getElementById('mainNav');
+const hs=document.getElementById('headerStats');
+const allQ=getAllQuestions();
+const mastered=Store.getMastered();
+const todayCount=Store.getTodayCount();
+const streak=Store.getStreak();
+hs.innerHTML=`<div class="stat-item">今日 <span class="stat-value">${todayCount}</span> 题</div><div class="stat-item">连续 <span class="stat-value">${streak}</span> 天</div><div class="stat-item">已掌握 <span class="stat-value">${mastered.length}/${allQ.length}</span></div>`;
+const navItems=[{id:'dashboard',label:'首页',icon:'📊'},{id:'questions',label:'题库',icon:'📚'},{id:'collect',label:'收录中心',icon:'📥'},{id:'favorites',label:'收藏夹',icon:'⭐'},{id:'stats',label:'统计',icon:'📈'}];
+nav.innerHTML=navItems.map(n=>`<a class="${currentPage===n.id?(n.id==='collect'?'collect-active':'active'):''}" onclick="navigate('${n.id}')">${n.icon} ${n.label}</a>`).join('');
+renderSidebar();
+const pages={dashboard:renderDashboard,questions:renderQuestions,detail:renderDetail,collect:renderCollect,favorites:renderFavorites,stats:renderStats,practice:renderPractice};
+content.innerHTML=(pages[currentPage]||renderDashboard)();
+content.scrollTop=0;
+if(currentPage==='detail')setupCodeEditor();
+setupKeyboardHints();
+closeSidebar();
+}
+
+function renderSidebar(){
+const sidebar=document.getElementById('sidebar');
+const allQ=getAllQuestions();
+if(currentPage==='questions'||currentPage==='detail'){
+const cc={};CATEGORIES.forEach(c=>{cc[c.id]=allQ.filter(q=>q.category===c.id).length});
+sidebar.innerHTML=`<div class="sidebar-section"><div class="sidebar-title">题目分类</div><div class="sidebar-item ${!currentParams.category?'active':''}" onclick="navigate('questions')">全部题目 <span class="count">${allQ.length}</span></div>${CATEGORIES.map(c=>`<div class="sidebar-item ${currentParams.category===c.id?'active':''}" onclick="navigate('questions',{category:'${c.id}'})">${c.icon} ${c.name} <span class="count">${cc[c.id]||0}</span></div>`).join('')}</div><div class="sidebar-section" style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border-color)"><div class="sidebar-title">刷题模式</div><div class="sidebar-item" onclick="navigate('practice',{mode:'daily'})">🎯 每日一题</div><div class="sidebar-item" onclick="navigate('practice',{mode:'category'})">📖 专项练习</div><div class="sidebar-item" onclick="navigate('practice',{mode:'random'})">🎲 随机刷题</div></div>`;
+sidebar.style.display='flex';
+}else{sidebar.style.display='none'}
+}
+
+function renderDashboard(){
+const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites(),collected=Store.getCollected(),streak=Store.getStreak(),todayCount=Store.getTodayCount();
+const today=new Date().toDateString(),seed=today.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+const dailyQ=allQ[seed%allQ.length];
+const recentCollected=collected.slice(-3).reverse();
+const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);
+const weekCollected=collected.filter(q=>new Date(q.collectedAt)>weekAgo).length;
+return`<div class="dashboard-hero"><h2>👋 欢迎回来，继续刷题！</h2><p>已掌握 ${mastered.length} / ${allQ.length} 题，收藏 ${favorites.length} 题，收录 ${collected.length} 题</p></div><div class="stat-grid"><div class="stat-card"><div class="stat-number">${todayCount}</div><div class="stat-label">今日刷题</div></div><div class="stat-card"><div class="stat-number">${streak}</div><div class="stat-label">连续打卡</div></div><div class="stat-card"><div class="stat-number">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number">${allQ.length-mastered.length}</div><div class="stat-label">待攻克</div></div></div><div class="quick-actions"><div class="quick-action" onclick="navigate('practice',{mode:'daily'})"><div class="action-icon">🎯</div><div class="action-title">每日一题</div><div class="action-desc">今日推荐题目</div></div><div class="quick-action" onclick="navigate('practice',{mode:'random'})"><div class="action-icon">🎲</div><div class="action-title">随机刷题</div><div class="action-desc">随机抽取未掌握题</div></div><div class="quick-action" onclick="navigate('collect')"><div class="action-icon">📥</div><div class="action-title">收录新题</div><div class="action-desc">从网页或手动收录</div></div><div class="quick-action" onclick="navigate('stats')"><div class="action-icon">📈</div><div class="action-title">查看统计</div><div class="action-desc">各分类进度详情</div></div></div>${dailyQ?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-gold)">🎯 今日一题</h3><div class="question-card" onclick="navigate('detail',{id:'${dailyQ.id}'})"><div class="q-info"><div class="q-title">${dailyQ.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${dailyQ.difficulty}">${DIFF_LABELS[dailyQ.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[dailyQ.category]||dailyQ.category}</span></div></div></div></div>`:''}${recentCollected.length?`<div class="card"><h3 style="margin-bottom:12px;color:var(--accent-orange)">📥 最近收录</h3>${recentCollected.map(q=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="source-badge collected">收录</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span style="font-size:11px;color:var(--text-muted)">${q.source||'未知来源'}</span></div></div></div>`).join('')}<div style="margin-top:12px;text-align:center"><span style="font-size:13px;color:var(--text-muted)">本周收录 ${weekCollected} 道 · 总收录 ${collected.length} 道</span></div></div>`:''}<div class="card"><h3 style="margin-bottom:12px">📊 分类进度</h3>${CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length,pct=cq.length?Math.round(cm/cq.length*100):0;return`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${cm}/${cq.length} (${pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div></div>`}).join('')}</div>`;
+}
+
+function renderQuestions(){
+const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites();
+if(currentParams.category)questionFilters.category=currentParams.category;else questionFilters.category='';
+let filtered=[...allQ];
+if(questionFilters.category)filtered=filtered.filter(q=>q.category===questionFilters.category);
+if(questionFilters.difficulty)filtered=filtered.filter(q=>q.difficulty===questionFilters.difficulty);
+if(questionFilters.search){const s=questionFilters.search.toLowerCase();filtered=filtered.filter(q=>q.title.toLowerCase().includes(s)||(q.content&&q.content.toLowerCase().includes(s)))}
+if(questionFilters.status==='mastered')filtered=filtered.filter(q=>mastered.includes(q.id));
+else if(questionFilters.status==='unmastered')filtered=filtered.filter(q=>!mastered.includes(q.id));
+else if(questionFilters.status==='favorited')filtered=filtered.filter(q=>favorites.includes(q.id));
+if(questionFilters.source==='builtin')filtered=filtered.filter(q=>q.sourceType==='builtin');
+else if(questionFilters.source==='collected')filtered=filtered.filter(q=>q.sourceType==='collected');
+const isGrid=questionFilters.view==='grid';
+return`<div class="search-bar"><input class="search-input" placeholder="搜索题目..." value="${questionFilters.search}" oninput="questionFilters.search=this.value;renderPage()"><select class="search-input" onchange="questionFilters.difficulty=this.value;renderPage()"><option value="">全部难度</option><option value="easy" ${questionFilters.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${questionFilters.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${questionFilters.difficulty==='hard'?'selected':''}>困难</option></select><select class="search-input" onchange="questionFilters.status=this.value;renderPage()"><option value="">全部状态</option><option value="mastered" ${questionFilters.status==='mastered'?'selected':''}>已掌握</option><option value="unmastered" ${questionFilters.status==='unmastered'?'selected':''}>未掌握</option><option value="favorited" ${questionFilters.status==='favorited'?'selected':''}>已收藏</option></select><select class="search-input" onchange="questionFilters.source=this.value;renderPage()"><option value="">全部来源</option><option value="builtin" ${questionFilters.source==='builtin'?'selected':''}>内置题</option><option value="collected" ${questionFilters.source==='collected'?'selected':''}>收录题</option></select><div class="view-toggle"><button class="${!isGrid?'active':''}" onclick="questionFilters.view='list';renderPage()">列表</button><button class="${isGrid?'active':''}" onclick="questionFilters.view='grid';renderPage()">卡片</button></div></div><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">共 ${filtered.length} 道题目</div>${filtered.length===0?'<div class="empty-state"><div class="empty-icon">🔍</div><p>没有找到匹配的题目</p></div>':`<div class="${isGrid?'question-grid':''}">${filtered.map((q,i)=>{const im=mastered.includes(q.id),if2=favorites.includes(q.id);return`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><span class="source-badge ${q.sourceType}">${q.sourceType==='builtin'?'内置':'收录'}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="收藏" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'}">${if2?'⭐':'☆'}</button><button onclick="Store.toggleMastered('${q.id}');renderPage()" title="掌握" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'}">${im?'✅':'⬜'}</button></div></div>`}).join('')}</div>`}`;
+}
+
+function renderDetail(){
+const allQ=getAllQuestions(),q=allQ.find(q=>q.id===currentParams.id);
+if(!q)return'<div class="empty-state"><div class="empty-icon">❓</div><p>题目不存在</p></div>';
+const mastered=Store.getMastered(),favorites=Store.getFavorites(),im=mastered.includes(q.id),if2=favorites.includes(q.id);
+const idx=allQ.findIndex(item=>item.id===q.id),prevQ=idx>0?allQ[idx-1]:null,nextQ=idx<allQ.length-1?allQ[idx+1]:null;
+return`<div class="detail-header"><button class="btn btn-outline btn-sm" onclick="navigate('questions')">← 返回题库</button><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?'✅ 已掌握':'⬜ 标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?'⭐ 已收藏':'☆ 收藏'}</button><button class="btn btn-outline" onclick="toggleAnswer()">📖 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">参考答案</h4><pre>${q.answer||'暂无答案'}</pre></div>${q.isAlgo?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">💻 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
+}
+
+function toggleAnswer(){const e=document.getElementById('answerSection');if(e)e.classList.toggle('open')}
+function setupCodeEditor(){const e=document.getElementById('codeEditor');if(!e)return;e.addEventListener('keydown',function(ev){if(ev.key==='Tab'){ev.preventDefault();const s=this.selectionStart,en=this.selectionEnd;this.value=this.value.substring(0,s)+'  '+this.value.substring(en);this.selectionStart=this.selectionEnd=s+2}})}
+
+function renderCollect(){
+const tabs=['手动收录','网页收录','批量导入','题源管理','收录记录'];
+const fns=[renderCollectManual,renderCollectWeb,renderCollectBatch,renderCollectSources,renderCollectRecords];
+return`<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap"><button class="btn btn-orange" onclick="collectTab=0;renderPage()">+ 收录新题目</button><button class="btn btn-outline" onclick="collectTab=1;renderPage()">🌐 从网页收录</button><button class="btn btn-outline" onclick="collectTab=2;renderPage()">📋 批量导入</button></div><div class="tabs">${tabs.map((t,i)=>`<button class="tab-btn ${collectTab===i?'active-orange':''}" onclick="collectTab=${i};renderPage()">${t}</button>`).join('')}</div><div class="tab-content active">${fns[collectTab]()}</div>`;
+}
+
+function renderCollectManual(){
+return`<div class="card"><h3 style="margin-bottom:16px">手动收录新题目</h3><div class="form-group"><label>题干 *</label><input type="text" id="cTitle" placeholder="输入题目内容"></div><div style="display:flex;gap:12px"><div class="form-group" style="flex:1"><label>分类</label><select id="cCategory">${CATEGORIES.map(c=>`<option value="${c.id}">${c.icon} ${c.name}</option>`).join('')}</select></div><div class="form-group" style="flex:1"><label>难度</label><select id="cDifficulty"><option value="easy">简单</option><option value="medium" selected>中等</option><option value="hard">困难</option></select></div></div><div class="form-group"><label>题目描述（可选）</label><textarea id="cContent" placeholder="详细描述题目..."></textarea></div><div class="form-group"><label>参考答案</label><textarea id="cAnswer" placeholder="输入参考答案（支持Markdown格式）..." style="min-height:160px"></textarea></div><div class="form-group"><label>来源（可选）</label><input type="text" id="cSource" placeholder="如：https://example.com"></div><button class="btn btn-orange" onclick="submitManualCollect()">📥 收录题目</button></div>`;
+}
+
+function renderCollectWeb(){
+return`<div class="card"><h3 style="margin-bottom:16px">🌐 从网页收录</h3><div class="form-group"><label>网页 URL</label><div style="display:flex;gap:8px"><input type="text" id="webUrl" placeholder="https://example.com/interview-questions" style="flex:1"><button class="btn btn-primary btn-sm" onclick="fetchWebPage()">获取</button></div></div><div style="text-align:center;color:var(--text-muted);margin:16px 0;font-size:13px">—— 或直接粘贴网页文本内容 ——</div><div class="form-group"><label>网页文本内容</label><textarea id="webText" placeholder="粘贴包含面试题的网页文本内容...&#10;&#10;支持以下格式自动识别：&#10;1. 编号列表：1. xxx  2. xxx&#10;2. Q&A 格式：Q: xxx A: xxx&#10;3. Markdown 标题：# xxx" style="min-height:200px"></textarea></div><button class="btn btn-orange" onclick="parseWebText()">🔍 解析题目</button></div>${parsedResults.length?`<div class="card"><h3 style="margin-bottom:16px">解析结果预览 <span style="color:var(--text-muted);font-size:13px;font-weight:400">（共 ${parsedResults.length} 道题目）</span></h3><div class="preview-list">${parsedResults.map((q,i)=>`<div class="preview-item"><div class="preview-title">${i+1}. ${q.title}</div><div class="preview-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><select onchange="parsedResults[${i}].category=this.value" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:4px;padding:2px 6px;font-size:12px">${CATEGORIES.map(c=>`<option value="${c.id}" ${q.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select><select onchange="parsedResults[${i}].difficulty=this.value" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:4px;padding:2px 6px;font-size:12px"><option value="easy" ${q.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${q.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${q.difficulty==='hard'?'selected':''}>困难</option></select></div>${q.answer?`<div class="preview-answer">${q.answer.substring(0,150)}${q.answer.length>150?'...':''}</div>`:''}</div>`).join('')}</div><div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-orange" onclick="confirmCollectParsed()">✅ 确认收录全部</button><button class="btn btn-outline" onclick="parsedResults=[];renderPage()">清除</button></div></div>`:''}`;
+}
+
+function renderCollectBatch(){
+return`<div class="card"><h3 style="margin-bottom:16px">📋 批量导入</h3><p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">粘贴 JSON 格式的题目数组，一键导入。格式示例：</p><pre style="background:var(--bg-primary);padding:12px;border-radius:var(--radius);font-size:12px;color:var(--text-secondary);margin-bottom:16px;overflow-x:auto">[
+  {
+    "title": "题目内容",
+    "category": "algorithm",
+    "difficulty": "medium",
+    "content": "题目描述",
+    "answer": "参考答案"
+  }
+]</pre><div class="form-group"><label>JSON 数据</label><textarea id="batchJson" placeholder="粘贴 JSON 格式的题目数组..." style="min-height:200px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px"></textarea></div><button class="btn btn-orange" onclick="submitBatchImport()">📥 批量导入</button></div>`;
+}
+
+function renderCollectSources(){
+const sources=Store.getSources();
+return`<div class="card"><h3 style="margin-bottom:16px">📡 题源管理</h3><div class="form-group"><label>添加新题源</label><div style="display:flex;gap:8px"><input type="text" id="srcName" placeholder="题源名称" style="flex:1"><input type="text" id="srcUrl" placeholder="https://..." style="flex:2"><button class="btn btn-orange btn-sm" onclick="addSource()">添加</button></div></div><div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="refreshAllSources()">🔄 刷新全部题源</button></div>${sources.length?sources.map(s=>`<div class="source-item"><div class="source-url"><strong>${s.name||'未命名'}</strong><br><span style="font-size:12px">${s.url}</span></div><button class="btn btn-outline btn-sm" onclick="refreshSource('${s.id}')">刷新</button><button class="btn btn-danger btn-sm" onclick="removeSource('${s.id}')">删除</button></div>`).join(''):'<p style="color:var(--text-muted)">暂无题源</p>'}</div>`;
+}
+
+function renderCollectRecords(){
+const collected=Store.getCollected();
+const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);
+const weekCollected=collected.filter(q=>new Date(q.collectedAt)>weekAgo).length;
+const sources={};collected.forEach(q=>{const s=q.source||'手动添加';sources[s]=(sources[s]||0)+1});
+return`<div class="stat-grid"><div class="stat-card"><div class="stat-number">${collected.length}</div><div class="stat-label">总收录</div></div><div class="stat-card"><div class="stat-number">${weekCollected}</div><div class="stat-label">本周收录</div></div></div><div class="card"><h3 style="margin-bottom:16px">收录来源统计</h3>${Object.entries(sources).map(([s,c])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color)"><span style="font-size:13px">${s}</span><span style="color:var(--accent-orange);font-weight:600">${c} 道</span></div>`).join('')||'<p style="color:var(--text-muted)">暂无收录记录</p>'}</div>${collected.length?`<div class="card"><h3 style="margin-bottom:16px">收录历史</h3>${collected.slice().reverse().slice(0,20).map(q=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="source-badge collected">收录</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span style="font-size:11px;color:var(--text-muted)">${q.source||'手动添加'} · ${new Date(q.collectedAt).toLocaleDateString()}</span></div></div></div>`).join('')}</div>`:''}`;
+}
+
+function submitManualCollect(){
+const title=document.getElementById('cTitle')?.value?.trim();
+if(!title){toast('请输入题干','error');return}
+const q={title,category:document.getElementById('cCategory')?.value||'algorithm',difficulty:document.getElementById('cDifficulty')?.value||'medium',content:document.getElementById('cContent')?.value||'',answer:document.getElementById('cAnswer')?.value||'',source:document.getElementById('cSource')?.value||'手动添加'};
+Store.addCollected([q]);toast('收录成功！','success');renderPage();
+}
+
+function parseWebText(){
+const text=document.getElementById('webText')?.value?.trim();
+if(!text){toast('请输入网页文本内容','error');return}
+parsedResults=ParseEngine.parse(text);
+if(!parsedResults.length){toast('未能识别出题目，请检查格式','error');return}
+toast(`成功解析 ${parsedResults.length} 道题目`,'success');renderPage();
+}
+
+function fetchWebPage(){
+const url=document.getElementById('webUrl')?.value?.trim();
+if(!url){toast('请输入URL','error');return}
+toast('正在获取页面...','info');
+fetch(url).then(r=>r.text()).then(t=>{
+const el=document.createElement('div');el.innerHTML=t;
+const text=el.innerText||el.textContent||'';
+document.getElementById('webText').value=text;
+toast('页面内容已获取，请点击解析','success');
+}).catch(()=>{toast('获取失败（可能跨域限制），请手动复制网页内容粘贴','error')});
+}
+
+function confirmCollectParsed(){
+if(!parsedResults.length){toast('没有可收录的题目','error');return}
+Store.addCollected(parsedResults.map(q=>({...q})));
+toast(`成功收录 ${parsedResults.length} 道题目！`,'success');
+parsedResults=[];renderPage();
+}
+
+function submitBatchImport(){
+const json=document.getElementById('batchJson')?.value?.trim();
+if(!json){toast('请输入JSON数据','error');return}
+try{
+const qs=JSON.parse(json);
+if(!Array.isArray(qs)){toast('数据必须是数组格式','error');return}
+const valid=qs.filter(q=>q.title).map(q=>({title:q.title,category:q.category||'algorithm',difficulty:q.difficulty||'medium',content:q.content||'',answer:q.answer||'',source:q.source||'批量导入'}));
+if(!valid.length){toast('未找到有效题目','error');return}
+Store.addCollected(valid);toast(`成功导入 ${valid.length} 道题目！`,'success');renderPage();
+}catch(e){toast('JSON格式错误：'+e.message,'error')}
+}
+
+function addSource(){
+const name=document.getElementById('srcName')?.value?.trim();
+const url=document.getElementById('srcUrl')?.value?.trim();
+if(!url){toast('请输入URL','error');return}
+const sources=Store.getSources();
+sources.push({id:'src-'+Date.now(),name:name||url,url,type:'custom'});
+Store.setSources(sources);toast('题源已添加','success');renderPage();
+}
+
+function removeSource(id){
+const sources=Store.getSources().filter(s=>s.id!==id);
+Store.setSources(sources);toast('题源已删除','success');renderPage();
+}
+
+function refreshSource(id){
+const sources=Store.getSources();
+const src=sources.find(s=>s.id===id);
+if(!src)return;
+toast('正在刷新: '+src.name,'info');
+fetch(src.url).then(r=>r.text()).then(t=>{
+const results=ParseEngine.parse(t);
+if(!results.length){toast('未识别到新题目','error');return}
+parsedResults=results;collectTab=1;
+toast(`识别到 ${results.length} 道题目，请查看预览`,'success');renderPage();
+}).catch(()=>{toast('获取失败，请手动复制内容粘贴','error')});
+}
+
+function refreshAllSources(){
+const sources=Store.getSources();
+if(!sources.length){toast('暂无题源','error');return}
+toast('正在刷新全部题源...','info');
+let allResults=[];
+let chain=Promise.resolve();
+sources.forEach(src=>{
+chain=chain.then(()=>fetch(src.url).then(r=>r.text()).then(t=>{
+allResults=allResults.concat(ParseEngine.parse(t));
+}).catch(()=>{}));
+});
+chain.then(()=>{
+if(!allResults.length){toast('未识别到新题目','error');return}
+parsedResults=allResults;collectTab=1;
+toast(`共识别到 ${allResults.length} 道题目，请查看预览`,'success');renderPage();
+});
+}
+
+function renderFavorites(){
+const allQ=getAllQuestions(),favorites=Store.getFavorites();
+const favQ=allQ.filter(q=>favorites.includes(q.id));
+return`<h2 style="margin-bottom:16px">⭐ 收藏夹</h2>${favQ.length===0?'<div class="empty-state"><div class="empty-icon">⭐</div><p>还没有收藏任何题目</p></div>':favQ.map((q,i)=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="取消收藏" style="color:var(--accent-gold)">⭐</button></div></div>`).join('')}`;
+}
+
+function renderStats(){
+const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites(),collected=Store.getCollected();
+const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
+const catStats=CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length;return{...c,total:cq.length,mastered:cm,pct:cq.length?Math.round(cm/cq.length*100):0}});
+const maxTotal=Math.max(...catStats.map(c=>c.total),1);
+const checkins=Store.getCheckins();
+const today=new Date();
+const calDays=[];for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);calDays.push(d)}
+return`<div class="stat-grid"><div class="stat-card"><div class="stat-number">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card"><div class="stat-number">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card"><div class="stat-number">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card"><div class="stat-number">${favorites.length}</div><div class="stat-label">收藏数</div></div></div><div style="display:flex;gap:24px;flex-wrap:wrap"><div class="card" style="flex:2;min-width:400px"><h3 style="margin-bottom:16px">📊 分类掌握进度</h3><div class="bar-chart">${catStats.map(c=>`<div class="bar-item"><div class="bar-value">${c.pct}%</div><div class="bar" style="height:${c.total?c.mastered/c.total*100:0}%"></div><div class="bar-label">${c.icon}<br>${c.name.substring(0,4)}</div></div>`).join('')}</div></div><div class="card" style="flex:1;min-width:200px"><h3 style="margin-bottom:16px">🎯 总体掌握率</h3><div style="display:flex;justify-content:center"><div class="ring-chart" style="background:conic-gradient(var(--accent-cyan) 0% ${totalPct}%, var(--bg-tertiary) ${totalPct}% 100%)"><div class="ring-center" style="width:120px;height:120px;border-radius:50%;background:var(--bg-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="ring-value">${totalPct}%</div><div class="ring-label">掌握率</div></div></div></div></div></div><div class="card"><h3 style="margin-bottom:16px">📅 打卡日历（最近30天）</h3><div class="checkin-calendar"><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">日</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">一</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">二</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">三</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">四</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">五</div><div class="calendar-cell" style="color:var(--text-muted);font-weight:600">六</div>${calDays.map(d=>{const ds=d.toDateString(),isChecked=checkins.includes(ds),isToday=d.toDateString()===today.toDateString();return`<div class="calendar-cell ${isChecked?'checked':''} ${isToday?'today':''}">${d.getDate()}</div>`}).join('')}</div></div><div class="card"><h3 style="margin-bottom:16px">📊 分类详情</h3>${catStats.map(c=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${c.icon} ${c.name}</span><span style="color:var(--text-muted)">${c.mastered}/${c.total} (${c.pct}%)</span></div><div class="progress-bar"><div class="fill" style="width:${c.pct}%"></div></div></div>`).join('')}</div><div class="card"><h3 style="margin-bottom:16px">💾 数据管理</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="exportData()">📤 导出数据</button><button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ 清除所有数据</button></div></div>`;
+}
+
+function renderPractice(){
+const mode=currentParams.mode||'daily';
+const allQ=getAllQuestions(),mastered=Store.getMastered();
+let questions=[];
+if(mode==='daily'){
+const today=new Date().toDateString(),seed=today.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+questions=[allQ[seed%allQ.length]];
+}else if(mode==='category'){
+const cat=currentParams.category||'algorithm';
+questions=allQ.filter(q=>q.category===cat&&!mastered.includes(q.id));
+if(!questions.length)questions=allQ.filter(q=>q.category===cat);
+}else if(mode==='random'){
+const unmastered=allQ.filter(q=>!mastered.includes(q.id));
+if(unmastered.length){const shuffled=[...unmastered].sort(()=>Math.random()-.5);questions=shuffled.slice(0,10)}
+else{questions=[...allQ].sort(()=>Math.random()-.5).slice(0,10)}
+}
+const modeLabels={daily:'🎯 每日一题',category:'📖 专项练习',random:'🎲 随机刷题'};
+return`<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">🎉</div><p>恭喜！该分类已全部掌握</p></div>':questions.map((q,i)=>{const im=mastered.includes(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3><div class="detail-content" style="margin-bottom:12px">${(q.content||'').substring(0,200)}${(q.content||'').length>200?'...':''}</div><div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?'✅ 已掌握':'⬜ 标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}`;
+}
+
+function toast(msg,type='info'){
+const c=document.getElementById('toastContainer');
+const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;
+c.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+function toggleTheme(){
+const current=Store.getTheme();
+const next=current==='dark'?'light':'dark';
+Store.setTheme(next);
+document.documentElement.setAttribute('data-theme',next);
+document.querySelector('.theme-toggle').textContent=next==='dark'?'🌙':'☀️';
+}
+
+function toggleSidebar(){
+const s=document.getElementById('sidebar');
+const o=document.getElementById('sidebarOverlay');
+s.classList.toggle('open-mobile');
+o.classList.toggle('show');
+}
+function closeSidebar(){
+document.getElementById('sidebar').classList.remove('open-mobile');
+document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+function setupKeyboardHints(){
+const hint=document.getElementById('keyboardHint');
+hint.classList.toggle('show',currentPage==='detail');
+}
+
+document.addEventListener('keydown',function(e){
+if(currentPage!=='detail')return;
+if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+const allQ=getAllQuestions();
+const q=allQ.find(q=>q.id===currentParams.id);
+if(!q)return;
+const idx=allQ.findIndex(item=>item.id===q.id);
+if(e.key==='j'||e.key==='ArrowDown'){
+const nextQ=idx<allQ.length-1?allQ[idx+1]:null;
+if(nextQ)navigate('detail',{id:nextQ.id});
+}else if(e.key==='k'||e.key==='ArrowUp'){
+const prevQ=idx>0?allQ[idx-1]:null;
+if(prevQ)navigate('detail',{id:prevQ.id});
+}else if(e.key==='Enter'){
+toggleAnswer();
+}else if(e.key==='f'||e.key==='F'){
+Store.toggleFavorite(q.id);renderPage();
+}else if(e.key==='m'||e.key==='M'){
+Store.toggleMastered(q.id);renderPage();
+}else if(e.key==='Escape'){
+navigate('questions');
+}
+});
+
+function exportData(){
+const data={
+mastered:Store.getMastered(),
+favorites:Store.getFavorites(),
+collected:Store.getCollected(),
+checkins:Store.getCheckins(),
+sources:Store.getSources(),
+exportDate:new Date().toISOString()
+};
+const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;a.download='codeinterview-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+URL.revokeObjectURL(url);toast('数据已导出','success');
+}
+
+function importData(event){
+const file=event.target.files[0];
+if(!file)return;
+const reader=new FileReader();
+reader.onload=function(e){
+try{
+const data=JSON.parse(e.target.result);
+if(data.mastered)Store.setMastered(data.mastered);
+if(data.favorites)Store.setFavorites(data.favorites);
+if(data.collected)Store.setCollected(data.collected);
+if(data.checkins)Store.setCheckins(data.checkins);
+if(data.sources)Store.setSources(data.sources);
+toast('数据导入成功！','success');renderPage();
+}catch(err){toast('导入失败：'+err.message,'error')}
+};
+reader.readAsText(file);
+event.target.value='';
+}
+
+function clearAllData(){
+if(!confirm('确定要清除所有数据吗？此操作不可恢复！'))return;
+const keys=Object.keys(localStorage).filter(k=>k.startsWith('ci_'));
+keys.forEach(k=>localStorage.removeItem(k));
+Store._cache={};
+toast('数据已清除','success');renderPage();
+}
+
+function init(){
+const theme=Store.getTheme();
+document.documentElement.setAttribute('data-theme',theme);
+document.querySelector('.theme-toggle').textContent=theme==='dark'?'🌙':'☀️';
+parseHash();renderPage();
+}
+
+init();
+</script>
+</body>
+</html>
