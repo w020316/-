@@ -4,3 +4,8 @@ __pycache__/
 .DS_Store
 Thumbs.db
 node_modules/
+debug.log
+pm2/
+pm3/
+pm_review/
+screenshots/
