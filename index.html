@@ -75,7 +75,10 @@ nav a.collect-active{background:var(--accent-orange);color:#fff;font-weight:600}
 .btn-danger{background:var(--difficulty-hard);color:#fff}
 .btn-danger:hover{opacity:.9}
 .btn-success{background:var(--difficulty-easy);color:#fff}
-.btn:focus-visible,.question-card:focus-visible,nav a:focus-visible,.sidebar-item:focus-visible,.quick-action:focus-visible,.stat-card:focus-visible,.achievement-card:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent-cyan);outline-offset:2px;border-radius:4px}.btn-success:hover{opacity:.9)}
+.btn-success:hover{opacity:.9}
+.btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color)}
+.btn-secondary:hover{border-color:var(--accent-cyan);color:var(--accent-cyan)}
+.btn:focus-visible,.question-card:focus-visible,nav a:focus-visible,.sidebar-item:focus-visible,.quick-action:focus-visible,.stat-card:focus-visible,.achievement-card:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent-cyan);outline-offset:2px;border-radius:4px}
 .btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:rippleAnim .6s ease-out;pointer-events:none}@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .difficulty-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}
@@ -736,7 +739,66 @@ document.body.appendChild(modal);
 }
 
 function downloadSharePoster(){
-toast('海报生成功能开发中...','info');
+const canvas=document.createElement('canvas');
+canvas.width=400;height=560;
+const ctx=canvas.getContext('2d');
+const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+ctx.fillStyle=isDark?'#0a0e1a':'#f0f4f8';
+ctx.fillRect(0,0,400,560);
+ctx.fillStyle='#00e5ff';
+ctx.font='bold 32px Fira Sans, sans-serif';
+ctx.textAlign='center';
+ctx.fillText('面试通',200,60);
+ctx.fillStyle=isDark?'#8b9cc0':'#475569';
+ctx.font='16px Fira Sans, sans-serif';
+ctx.fillText('计算机面试刷题平台',200,95);
+ctx.strokeStyle='#00e5ff';
+ctx.lineWidth=2;
+ctx.beginPath();
+ctx.moveTo(50,115);
+ctx.lineTo(350,115);
+ctx.stroke();
+const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites(),streak=Store.getStreak();
+const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
+const stats=[
+{label:'已掌握',value:mastered.length+' 题',color:'#00e676'},
+{label:'掌握率',value:totalPct+'%',color:'#00e5ff'},
+{label:'连续打卡',value:streak+' 天',color:'#ffb300'}
+];
+stats.forEach((s,i)=>{
+const x=80+i*120;
+ctx.fillStyle=s.color;
+ctx.font='bold 28px Fira Sans, sans-serif';
+ctx.textAlign='center';
+ctx.fillText(s.value,x,180);
+ctx.fillStyle=isDark?'#7a8ba8':'#5a6778';
+ctx.font='13px Fira Sans, sans-serif';
+ctx.fillText(s.label,x,205);
+});
+ctx.fillStyle=isDark?'#1f2937':'#e2e8f0';
+ctx.beginPath();
+ctx.roundRect(30,235,340,180,12);
+ctx.fill();
+ctx.fillStyle=isDark?'#e8edf5':'#0f172a';
+ctx.font='bold 15px Fira Sans, sans-serif';
+ctx.textAlign='center';
+const quote=mastered.length===0?'我正在使用面试通刷题，一起加入吧！':`我已完成 ${mastered.length} 道面试题\n掌握率 ${totalPct}%，连续打卡 ${streak} 天！`;
+const lines=quote.split('\n');
+lines.forEach((line,i)=>{ctx.fillText(line,200,280+i*25)});
+ctx.fillStyle=isDark?'#7a8ba8':'#5a6778';
+ctx.font='12px Fira Sans, sans-serif';
+ctx.fillText('扫码或访问',200,450);
+ctx.fillStyle='#00e5ff';
+ctx.font='14px Fira Sans, sans-serif';
+ctx.fillText('https://w020316.github.io/-/',200,475);
+ctx.fillStyle=isDark?'#5a6778':'#94a3b8';
+ctx.font='11px Fira Sans, sans-serif';
+ctx.fillText('面试通 © 2026 · 2600+精选题目',200,530);
+const link=document.createElement('a');
+link.download='面试通-刷题海报-'+new Date().toISOString().slice(0,10)+'.png';
+link.href=canvas.toDataURL('image/png');
+link.click();
+toast('海报已保存！','success');
 }
 
 function renderQuestions(){
@@ -1222,6 +1284,8 @@ const streak=Store.getStreak();
 const today=new Date();
 const calDays=[];for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);calDays.push(d)}
 const achievements=Store.getAchievements();
+const diffStats={easy:{total:0,mastered:0},medium:{total:0,mastered:0},hard:{total:0,mastered:0}};
+allQ.forEach(q=>{if(diffStats[q.difficulty]){diffStats[q.difficulty].total++;if(mastered.includes(q.id))diffStats[q.difficulty].mastered++}});
 return`<div class="stat-grid"><div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card" style="border-left:3px solid var(--difficulty-easy)"><div class="stat-number" style="color:var(--difficulty-easy)">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card" style="border-left:3px solid var(--accent-gold)"><div class="stat-number" style="color:var(--accent-gold)">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div></div>
 
 <div style="display:flex;gap:16px;flex-wrap:wrap">
@@ -1230,7 +1294,12 @@ return`<div class="stat-grid"><div class="stat-card" style="border-left:3px soli
 <div class="bar-chart">${catStats.map(c=>`<div class="bar-item"><div class="bar-value">${c.pct}%</div><div class="bar" style="height:${c.total?c.mastered/c.total*100:0}%"></div><div class="bar-label">${c.name.substring(0,2)}<br>${c.name.substring(2,4)}</div></div>`).join('')}</div>
 </div>
 <div class="card" style="flex:1;min-width:240px">
-<h3 style="margin-bottom:16px">${svgIcon('i-target','icon-sm')} 知识点雷达图</h3>
+<h3 style="margin-bottom:16px">${svgIcon('i-target','icon-sm')} 难度分布</h3>
+<div style="display:flex;flex-direction:column;gap:16px;padding:8px 0">
+${['easy','medium','hard'].map(d=>{const s=diffStats[d];const pct=s.total?Math.round(s.mastered/s.total*100):0;const colors={easy:'var(--difficulty-easy)',medium:'var(--difficulty-medium)',hard:'var(--difficulty-hard)'};const labels={easy:'简单',medium:'中等',hard:'困难'};return`<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:14px;font-weight:500;color:${colors[d]}">${labels[d]}</span><span style="font-size:13px;color:var(--text-muted)">${s.mastered}/${s.total} (${pct}%)</span></div><div style="height:8px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${colors[d]};border-radius:4px;transition:width .5s"></div></div></div>`}).join('')}
+</div>
+</div>
+</div>
 <svg viewBox="0 0 200 200" style="width:100%;max-width:240px;margin:0 auto;display:block">
 ${(()=>{
 const cats=catStats.slice(0,8);const cx=100,cy=100,r=70;
@@ -1379,6 +1448,16 @@ const idx=allQ.findIndex(item=>item.id===q.id);
 bar.innerHTML=`<button onclick="if(${idx}>0)navigate('detail',{id:'${allQ[idx-1]?.id}'})"><span class="bar-icon">${svgIcon('i-arrow-left','icon-sm')}</span><span class="bar-label">上一题</span></button><button onclick="Store.toggleMastered('${q.id}');renderPage()"><span class="bar-icon" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'}">${svgIcon('i-check','icon-sm')}</span><span class="bar-label">${im?'已掌握':'掌握'}</span></button><button onclick="toggleAnswer()"><span class="bar-icon">${svgIcon('i-eye','icon-sm')}</span><span class="bar-label">答案</span></button><button onclick="Store.toggleFavorite('${q.id}');renderPage()"><span class="bar-icon" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'}">${svgIcon('i-star','icon-sm')}</span><span class="bar-label">${if2?'已收藏':'收藏'}</span></button><button onclick="if(${idx}<allQ.length-1)navigate('detail',{id:'${allQ[idx+1]?.id}'})"><span class="bar-icon">${svgIcon('i-arrow-right','icon-sm')}</span><span class="bar-label">下一题</span></button>`;
 }else if(currentPage==='questions'){
 bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('practice',{mode:'random'})"><span class="bar-icon">${svgIcon('i-shuffle','icon-sm')}</span><span class="bar-label">随机</span></button><button onclick="navigate('collect')"><span class="bar-icon">${svgIcon('i-download','icon-sm')}</span><span class="bar-label">收录</span></button><button onclick="navigate('stats')"><span class="bar-icon">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label">统计</span></button>`;
+}else if(currentPage==='favorites'){
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('favorites')"><span class="bar-icon" style="color:var(--accent-gold)">${svgIcon('i-star','icon-sm')}</span><span class="bar-label" style="color:var(--accent-gold)">收藏</span></button><button onclick="navigate('practice',{mode:'random'})"><span class="bar-icon">${svgIcon('i-shuffle','icon-sm')}</span><span class="bar-label">刷题</span></button><button onclick="navigate('stats')"><span class="bar-icon">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label">统计</span></button>`;
+}else if(currentPage==='stats'){
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('practice',{mode:'daily'})"><span class="bar-icon">${svgIcon('i-calendar','icon-sm')}</span><span class="bar-label">每日</span></button><button onclick="navigate('learnpath')"><span class="bar-icon">${svgIcon('i-map','icon-sm')}</span><span class="bar-label">路径</span></button><button onclick="navigate('stats')"><span class="bar-icon" style="color:var(--accent-cyan)">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label" style="color:var(--accent-cyan)">统计</span></button>`;
+}else if(currentPage==='collect'){
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('collect')"><span class="bar-icon" style="color:var(--accent-orange)">${svgIcon('i-download','icon-sm')}</span><span class="bar-label" style="color:var(--accent-orange)">收录</span></button><button onclick="navigate('favorites')"><span class="bar-icon">${svgIcon('i-star','icon-sm')}</span><span class="bar-label">收藏</span></button><button onclick="navigate('stats')"><span class="bar-icon">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label">统计</span></button>`;
+}else if(currentPage==='practice'){
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('practice',{mode:'daily'})"><span class="bar-icon">${svgIcon('i-calendar','icon-sm')}</span><span class="bar-label">每日</span></button><button onclick="navigate('practice',{mode:'challenge'})"><span class="bar-icon">${svgIcon('i-zap','icon-sm')}</span><span class="bar-label">挑战</span></button><button onclick="navigate('stats')"><span class="bar-icon">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label">统计</span></button>`;
+}else if(currentPage==='learnpath'){
+bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('learnpath')"><span class="bar-icon" style="color:var(--accent-purple)">${svgIcon('i-map','icon-sm')}</span><span class="bar-label" style="color:var(--accent-purple)">路径</span></button><button onclick="navigate('practice',{mode:'category',category:'algorithm'})"><span class="bar-icon">${svgIcon('i-target','icon-sm')}</span><span class="bar-label">练习</span></button><button onclick="navigate('stats')"><span class="bar-icon">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label">统计</span></button>`;
 }else{
 bar.innerHTML=`<button onclick="navigate('dashboard')"><span class="bar-icon">${svgIcon('i-home','icon-sm')}</span><span class="bar-label">首页</span></button><button onclick="navigate('questions')"><span class="bar-icon">${svgIcon('i-book','icon-sm')}</span><span class="bar-label">题库</span></button><button onclick="navigate('practice',{mode:'daily'})"><span class="bar-icon">${svgIcon('i-calendar','icon-sm')}</span><span class="bar-label">每日</span></button><button onclick="navigate('collect')"><span class="bar-icon">${svgIcon('i-download','icon-sm')}</span><span class="bar-label">收录</span></button><button onclick="navigate('stats')"><span class="bar-icon">${svgIcon('i-chart','icon-sm')}</span><span class="bar-label">统计</span></button>`;
 }
@@ -1484,6 +1563,15 @@ if(lastReminder!==now){
 Store.set('lastBackupReminder',now);
 setTimeout(()=>toast(svgIcon('i-lightbulb','icon-sm')+' 提示：定期导出数据可防止丢失，点击统计页面的"导出数据"按钮','info'),3000);
 }
+}
+window.addEventListener('error',function(e){
+console.error('Global error:',e.message);
+});
+window.addEventListener('unhandledrejection',function(e){
+console.error('Unhandled promise:',e.reason);
+});
+if('connection' in navigator&&navigator.connection.saveData){
+document.documentElement.style.setProperty('--transition','0.01s');
 }
 }
 
