@@ -847,7 +847,7 @@ const pathCatSet=new Set(path.categories);const pathDiffSet=new Set(path.difficu
 let pathTotal=0,pathMastered=0;allQ.forEach(q=>{if(pathCatSet.has(q.category)&&pathDiffSet.has(q.difficulty)){pathTotal++;if(masteredSet.has(q.id))pathMastered++}});
 return{total:pathTotal,mastered:pathMastered,pct:pathTotal?Math.round(pathMastered/pathTotal*100):0};
 });
-return`<div style="margin-bottom:20px"><h2>${svgIcon('i-map','icon-lg')} 学习路径</h2><p style="color:var(--text-secondary);margin-top:8px">系统化学习，循序渐进掌握每个知识点</p></div>
+return`<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${svgIcon('i-map','icon-lg')} 学习路径</h2></div><p style="color:var(--text-secondary);margin-top:-12px;margin-bottom:20px">系统化学习，循序渐进掌握每个知识点</p>
 <div style="display:flex;flex-direction:column;gap:16px">
 ${paths.map((path,pi)=>{
 const ps=pathStats[pi];
@@ -950,7 +950,7 @@ function setupNoteAutoSave(){const n=document.getElementById('questionNote');if(
 function renderCollect(){
 const tabs=['手动收录','网页收录','批量导入','题源管理','收录记录'];
 const fns=[renderCollectManual,renderCollectWeb,renderCollectBatch,renderCollectSources,renderCollectRecords];
-return`<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap"><button class="btn btn-orange" onclick="collectTab=0;renderPage()">+ 收录新题目</button><button class="btn btn-outline" onclick="collectTab=1;renderPage()">${svgIcon('i-globe','icon-sm')} 从网页收录</button><button class="btn btn-outline" onclick="collectTab=2;renderPage()">${svgIcon('i-download','icon-sm')} 批量导入</button></div><div class="tabs">${tabs.map((t,i)=>`<button class="tab-btn ${collectTab===i?'active-orange':''}" onclick="collectTab=${i};renderPage()">${t}</button>`).join('')}</div><div class="tab-content active">${fns[collectTab]()}</div>`;
+return`<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${svgIcon('i-download','icon-lg')} 收录中心</h2></div><div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap"><button class="btn btn-orange" onclick="collectTab=0;renderPage()">+ 收录新题目</button><button class="btn btn-outline" onclick="collectTab=1;renderPage()">${svgIcon('i-globe','icon-sm')} 从网页收录</button><button class="btn btn-outline" onclick="collectTab=2;renderPage()">${svgIcon('i-download','icon-sm')} 批量导入</button></div><div class="tabs">${tabs.map((t,i)=>`<button class="tab-btn ${collectTab===i?'active-orange':''}" onclick="collectTab=${i};renderPage()">${t}</button>`).join('')}</div><div class="tab-content active">${fns[collectTab]()}</div>`;
 }
 
 function renderCollectManual(){
@@ -1285,7 +1285,7 @@ toast(`共识别到 ${allResults.length} 道题目，请查看预览`,'success')
 function renderFavorites(){
 const allQ=getAllQuestions(),favorites=Store.getFavorites(),favoritesSet=new Set(favorites);
 const favQ=allQ.filter(q=>favoritesSet.has(q.id));
-return`<h2 style="margin-bottom:16px">${svgIcon('i-star','icon-lg')} 收藏夹</h2>${favQ.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-star','icon-2xl')+'</div><p>还没有收藏任何题目</p><button class="btn btn-primary" style="margin-top:12px" onclick="navigate(\'questions\')">前往题库</button></div>':favQ.map((q,i)=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="取消收藏" style="color:var(--accent-gold)">${svgIcon('i-star','icon-sm')}</button></div></div>`).join('')}`;
+return`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${svgIcon('i-star','icon-lg')} 收藏夹</h2></div>${favQ.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-star','icon-2xl')+'</div><p>还没有收藏任何题目</p><button class="btn btn-primary" style="margin-top:12px" onclick="navigate(\'questions\')">前往题库</button></div>':favQ.map((q,i)=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="取消收藏" style="color:var(--accent-gold)">${svgIcon('i-star','icon-sm')}</button></div></div>`).join('')}`;
 }
 
 function renderStats(){
@@ -1302,7 +1302,7 @@ const achievements=Store.getAchievements();
 const checkinsSet=new Set(checkins);
 const diffStats={easy:{total:0,mastered:0},medium:{total:0,mastered:0},hard:{total:0,mastered:0}};
 allQ.forEach(q=>{if(diffStats[q.difficulty]){diffStats[q.difficulty].total++;if(masteredSet.has(q.id))diffStats[q.difficulty].mastered++}});
-return`<div class="stat-grid"><div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card" style="border-left:3px solid var(--difficulty-easy)"><div class="stat-number" style="color:var(--difficulty-easy)">${masteredArr.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card" style="border-left:3px solid var(--accent-gold)"><div class="stat-number" style="color:var(--accent-gold)">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div></div>
+return`<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${svgIcon('i-chart','icon-lg')} 我的统计</h2></div><div class="stat-grid"><div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card" style="border-left:3px solid var(--difficulty-easy)"><div class="stat-number" style="color:var(--difficulty-easy)">${masteredArr.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card" style="border-left:3px solid var(--accent-gold)"><div class="stat-number" style="color:var(--accent-gold)">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div></div>
 
 <div style="display:flex;gap:16px;flex-wrap:wrap">
 <div class="card" style="flex:2;min-width:320px">
@@ -1495,9 +1495,17 @@ document.body.appendChild(overlay);
 }
 
 document.addEventListener('keydown',function(e){
-if(currentPage!=='detail')return;
 if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
 if(e.ctrlKey||e.metaKey||e.altKey)return;
+if(e.key==='?'){
+e.preventDefault();showKeyboardHelp();return;
+}
+if(e.key==='Escape'){
+const overlay=document.getElementById('kbHelpOverlay')||document.getElementById('guideOverlay')||document.getElementById('shareModal');
+if(overlay){overlay.remove();return}
+if(currentPage==='detail'){navigate('questions');return}
+}
+if(currentPage!=='detail')return;
 const allQ=getAllQuestions();
 const q=allQ.find(q=>q.id===currentParams.id);
 if(!q)return;
@@ -1514,8 +1522,6 @@ e.preventDefault();toggleAnswer();
 Store.toggleFavorite(q.id);renderPage();
 }else if(e.key==='m'){
 Store.toggleMastered(q.id);renderPage();
-}else if(e.key==='Escape'){
-navigate('questions');
 }
 });
 
