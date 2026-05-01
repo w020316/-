@@ -155,7 +155,7 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 .source-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:var(--radius);margin-bottom:8px}
 .source-item .source-url{flex:1;font-size:13px;color:var(--text-secondary);word-break:break-all}
 .toast-container{position:fixed;top:70px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:8px}
-@keyframes sk-bounce{0%,100%{transform:scale(0)}50%{transform:scale(1)}}.page-loader{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200}.page-loader.show{display:flex;gap:6px}.page-loader span{width:12px;height:12px;border-radius:50%;background:var(--accent-cyan);animation:sk-bounce 1.2s infinite ease-in-out}.page-loader span:nth-child(2){animation-delay:.2s}.page-loader span:nth-child(3){animation-delay:.4s}.loader-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,14,26,.6);z-index:199}.loader-overlay.show{display:block}@keyframes pageFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade-in-page{animation:pageFadeIn .35s ease}@keyframes checkinPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}.empty-state .empty-icon{font-size:48px;margin-bottom:16px;opacity:.6}.empty-state .empty-title{font-size:16px;font-weight:600;color:var(--text-secondary);margin-bottom:8px}.empty-state .empty-desc{font-size:13px;margin-bottom:20px;line-height:1.6}@keyframes confetti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(-80px) rotate(720deg)}}.checkin-anim{animation:checkinPop .5s ease}.confetti{position:fixed;pointer-events:none;font-size:20px;animation:confetti 1s ease forwards;z-index:9999}.toast{padding:12px 20px;border-radius:var(--radius);color:#fff;font-size:14px;animation:slideIn .3s ease,fadeOut .3s ease 2.7s;box-shadow:var(--shadow)}
+@keyframes sk-bounce{0%,100%{transform:scale(0)}50%{transform:scale(1)}}.page-loader{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200}.page-loader.show{display:flex;gap:6px}.page-loader span{width:12px;height:12px;border-radius:50%;background:var(--accent-cyan);animation:sk-bounce 1.2s infinite ease-in-out}.page-loader span:nth-child(2){animation-delay:.2s}.page-loader span:nth-child(3){animation-delay:.4s}.loader-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,14,26,.6);z-index:199}.loader-overlay.show{display:block}@keyframes pageFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade-in-page{animation:pageFadeIn .35s ease}@keyframes checkinPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}.detail-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}.detail-content{line-height:1.8;color:var(--text-secondary);margin-bottom:20px}.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}.empty-state .empty-icon{font-size:48px;margin-bottom:16px;opacity:.6}.empty-state .empty-title{font-size:16px;font-weight:600;color:var(--text-secondary);margin-bottom:8px}.empty-state .empty-desc{font-size:13px;margin-bottom:20px;line-height:1.6}@keyframes confetti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(-80px) rotate(720deg)}}.checkin-anim{animation:checkinPop .5s ease}.confetti{position:fixed;pointer-events:none;font-size:20px;animation:confetti 1s ease forwards;z-index:9999}.toast{padding:12px 20px;border-radius:var(--radius);color:#fff;font-size:14px;animation:slideIn .3s ease,fadeOut .3s ease 2.7s;box-shadow:var(--shadow)}
 .toast-success{background:var(--difficulty-easy)}
 .toast-error{background:var(--difficulty-hard)}
 .toast-info{background:var(--accent-cyan);color:#0f172a}
@@ -174,7 +174,7 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 .detail-header h2{font-size:22px;flex:1}
 .detail-content{font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;white-space:pre-wrap}
 .detail-actions{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.detail-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}.detail-content{line-height:1.8;color:var(--text-secondary);margin-bottom:20px}.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
 .empty-state .empty-icon{font-size:48px;margin-bottom:12px}
 .empty-state p{font-size:15px}
 .mobile-menu-btn{display:none;background:none;border:none;color:var(--text-primary);font-size:24px;cursor:pointer}
@@ -487,6 +487,9 @@ toggleFavorite(id){const f=this.getFavorites();const i=f.indexOf(id);if(i>=0)f.s
 addCollected(qs){const c=this.getCollected();qs.forEach(q=>{q.id=q.id||('col-'+Date.now()+'-'+Math.random().toString(36).substr(2,5));q.collectedAt=new Date().toISOString();q.source=q.source||'手动添加';c.push(q)});this.setCollected(c);return qs},
 getTheme(){return this.get('theme','dark')},setTheme(v){this.set('theme',v)},
 getFirstVisit(){return this.get('firstVisit',true)},setFirstVisit(v){this.set('firstVisit',v)},
+getNotes(){return this.get('notes',{})},setNotes(v){this.set('notes',v)},
+getNote(qid){const n=this.getNotes();return n[qid]||''},setNote(qid,text){const n=this.getNotes();n[qid]=text;this.setNotes(n)},
+getStudyPlan(){return this.get('studyPlan',null)},setStudyPlan(v){this.set('studyPlan',v)},
 checkAchievements(){
 const achievements=this.getAchievements();
 const mastered=this.getMastered();
@@ -555,8 +558,8 @@ updatePageTitle(p,params);
 requestAnimationFrame(()=>{renderPage();setTimeout(()=>{if(loader)loader.classList.remove('show');if(overlay)overlay.classList.remove('show')},200)});
 }
 function updatePageTitle(p,params){
-const titles={dashboard:'面试通 - 首页 | 2600+面试题',questions:'面试通 - 题库 | 2600+精选面试题',detail:'面试通 - 题目详情',collect:'面试通 - 收录中心',favorites:'面试通 - 收藏夹',stats:'面试通 - 学习统计',practice:'面试通 - 刷题练习'};
-const descs={dashboard:'面试通 - 计算机面试刷题平台，2600+精选面试题，涵盖算法、操作系统、网络、数据库等8大分类',questions:'浏览全部2600+面试题，支持按分类、难度、状态筛选和搜索',detail:'查看面试题目详情、解析和代码示例',collect:'通过URL或JSON批量收录面试题',favorites:'查看已收藏的面试题',stats:'查看学习统计、打卡日历和成就徽章',practice:'每日一题、专项练习、随机刷题、限时挑战等多种练习模式'};
+const titles={dashboard:'面试通 - 首页 | 2600+面试题',questions:'面试通 - 题库 | 2600+精选面试题',detail:'面试通 - 题目详情',collect:'面试通 - 收录中心',favorites:'面试通 - 收藏夹',stats:'面试通 - 学习统计',practice:'面试通 - 刷题练习',learnpath:'面试通 - 学习路径'};
+const descs={dashboard:'面试通 - 计算机面试刷题平台，2600+精选面试题，涵盖算法、操作系统、网络、数据库等8大分类',questions:'浏览全部2600+面试题，支持按分类、难度、状态筛选和搜索',detail:'查看面试题目详情、解析和代码示例',collect:'通过URL或JSON批量收录面试题',favorites:'查看已收藏的面试题',stats:'查看学习统计、打卡日历和成就徽章',practice:'每日一题、专项练习、随机刷题、限时挑战等多种练习模式',learnpath:'系统化学习路径，按知识点和难度循序渐进'};
 document.title=(titles[p]||'面试通');
 let descEl=document.querySelector('meta[name="description"]');
 if(!descEl){descEl=document.createElement('meta');descEl.name='description';document.head.appendChild(descEl)}
@@ -577,13 +580,13 @@ const mastered=Store.getMastered();
 const todayCount=Store.getTodayCount();
 const streak=Store.getStreak();
 hs.innerHTML=`<div class="stat-item">今日 <span class="stat-value">${todayCount}</span> 题</div><div class="stat-item">连续 <span class="stat-value">${streak}</span> 天</div><div class="stat-item">已掌握 <span class="stat-value">${mastered.length}/${allQ.length}</span></div>`;
-const navItems=[{id:'dashboard',label:'首页',icon:'📊'},{id:'questions',label:'题库',icon:'📚'},{id:'collect',label:'收录中心',icon:'📥'},{id:'favorites',label:'收藏夹',icon:'⭐'},{id:'stats',label:'统计',icon:'📈'}];
+const navItems=[{id:'dashboard',label:'首页',icon:'📊'},{id:'questions',label:'题库',icon:'📚'},{id:'learnpath',label:'学习路径',icon:'🗺️'},{id:'collect',label:'收录中心',icon:'📥'},{id:'favorites',label:'收藏夹',icon:'⭐'},{id:'stats',label:'统计',icon:'📈'}];
 nav.innerHTML=navItems.map(n=>`<a class="${currentPage===n.id?(n.id==='collect'?'collect-active':'active'):''}" onclick="navigate('${n.id}')">${n.icon} ${n.label}</a>`).join('');
 renderSidebar();
-const pages={dashboard:renderDashboard,questions:renderQuestions,detail:renderDetail,collect:renderCollect,favorites:renderFavorites,stats:renderStats,practice:renderPractice};
+const pages={dashboard:renderDashboard,questions:renderQuestions,detail:renderDetail,collect:renderCollect,favorites:renderFavorites,stats:renderStats,practice:renderPractice,learnpath:renderLearnPath};
 content.innerHTML=`<div class="fade-in-page">${(pages[currentPage]||renderDashboard)()}</div>`;
 content.scrollTop=0;
-if(currentPage==='detail')setupCodeEditor();if(currentPage==='practice'&&currentParams.mode==='challenge')setTimeout(startChallengeTimer,100);
+if(currentPage==='detail'){setupCodeEditor();setupNoteAutoSave()}if(currentPage==='practice'&&currentParams.mode==='challenge')setTimeout(startChallengeTimer,100);
 setupKeyboardHints();
 closeSidebar();
 }
@@ -724,16 +727,73 @@ const startIdx=(page-1)*pageSize;
 return`<div class="search-bar"><input class="search-input" placeholder="搜索题目..." value="${questionFilters.search}" oninput="questionFilters.search=this.value;questionFilters.page=1;renderPage()"><select class="search-input" onchange="questionFilters.difficulty=this.value;questionFilters.page=1;renderPage()"><option value="">全部难度</option><option value="easy" ${questionFilters.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${questionFilters.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${questionFilters.difficulty==='hard'?'selected':''}>困难</option></select><select class="search-input" onchange="questionFilters.status=this.value;questionFilters.page=1;renderPage()"><option value="">全部状态</option><option value="mastered" ${questionFilters.status==='mastered'?'selected':''}>已掌握</option><option value="unmastered" ${questionFilters.status==='unmastered'?'selected':''}>未掌握</option><option value="favorited" ${questionFilters.status==='favorited'?'selected':''}>已收藏</option></select><select class="search-input" onchange="questionFilters.source=this.value;questionFilters.page=1;renderPage()"><option value="">全部来源</option><option value="builtin" ${questionFilters.source==='builtin'?'selected':''}>内置题</option><option value="collected" ${questionFilters.source==='collected'?'selected':''}>收录题</option></select><div class="view-toggle"><button class="${!isGrid?'active':''}" onclick="questionFilters.view='list';renderPage()">列表</button><button class="${isGrid?'active':''}" onclick="questionFilters.view='grid';renderPage()">卡片</button></div></div><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">共 ${filtered.length} 道题目${totalPages>1?`，第 ${page}/${totalPages} 页`:''}</div>${filtered.length===0?'<div class="empty-state"><div class="empty-icon">🔍</div><p>没有找到匹配的题目</p></div>':`<div class="${isGrid?'question-grid':''}">${paged.map((q,i)=>{const im=mastered.includes(q.id),if2=favorites.includes(q.id);return`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${startIdx+i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><span class="source-badge ${q.sourceType}">${q.sourceType==='builtin'?'内置':'收录'}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="收藏" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'}">${if2?'⭐':'☆'}</button><button onclick="Store.toggleMastered('${q.id}');renderPage()" title="掌握" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'}">${im?'✅':'⬜'}</button></div></div>`}).join('')}</div>${totalPages>1?`<div class="pagination"><button ${page<=1?'disabled':''} onclick="questionFilters.page=${page-1};renderPage()">← 上一页</button><span class="page-info">${page} / ${totalPages}</span><button ${page>=totalPages?'disabled':''} onclick="questionFilters.page=${page+1};renderPage()">下一页 →</button></div>`:''}`}`;
 }
 
+function renderLearnPath(){
+const allQ=getAllQuestions(),mastered=Store.getMastered();
+const paths=[
+{id:'basics',name:'🎯 基础入门',desc:'从零开始，掌握计算机核心概念',icon:'🌱',color:'var(--difficulty-easy)',categories:['datastructure','algorithm'],difficulties:['easy'],target:30},
+{id:'os-net',name:'💻 OS与网络',desc:'操作系统和计算机网络核心知识',icon:'🔧',color:'var(--accent-cyan)',categories:['os','network'],difficulties:['easy','medium'],target:40},
+{id:'db-lang',name:'🗄️ 数据库与语言',desc:'数据库原理和编程语言特性',icon:'⚙️',color:'var(--accent-gold)',categories:['database','language'],difficulties:['easy','medium'],target:40},
+{id:'advanced',name:'🏗️ 系统设计进阶',desc:'分布式、微服务、高并发场景',icon:'🚀',color:'var(--accent-orange)',categories:['system-design','scenario'],difficulties:['medium','hard'],target:30},
+{id:'master',name:'👑 全科精通',desc:'挑战困难题，全面掌握',icon:'👑',color:'var(--difficulty-hard)',categories:['datastructure','algorithm','os','network','database','language','system-design','scenario'],difficulties:['hard'],target:20}
+];
+return`<div style="margin-bottom:20px"><h2>🗺️ 学习路径</h2><p style="color:var(--text-secondary);margin-top:8px">系统化学习，循序渐进掌握每个知识点</p></div>
+<div style="display:flex;flex-direction:column;gap:16px">
+${paths.map((path,pi)=>{
+const pathQ=allQ.filter(q=>path.categories.includes(q.category)&&path.difficulties.includes(q.difficulty));
+const pathMastered=pathQ.filter(q=>mastered.includes(q.id));
+const pct=pathQ.length?Math.round(pathMastered.length/pathQ.length*100):0;
+const isLocked=pi>0&&!paths.slice(0,pi).every(p=>{const pq=allQ.filter(q=>p.categories.includes(q.category)&&p.difficulties.includes(q.difficulty));return pq.filter(q=>mastered.includes(q.id)).length>=Math.min(p.target,pq.length)*0.3});
+return`<div class="card slide-up" style="animation-delay:${pi*.1}s;${isLocked?'opacity:.6':''}">
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+<div style="font-size:32px;min-width:48px;text-align:center">${path.icon}</div>
+<div style="flex:1;min-width:200px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+<h3 style="margin:0;color:${path.color}">${path.name}</h3>
+${isLocked?'<span style="font-size:12px;color:var(--text-muted)">🔒 需完成前置路径30%</span>':'<span style="font-size:12px;color:var(--difficulty-easy)">✅ 已解锁</span>'}
+</div>
+<p style="font-size:13px;color:var(--text-secondary);margin:0">${path.desc}</p>
+<div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+<div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${path.color};border-radius:3px;transition:width .5s"></div></div>
+<span style="font-size:13px;font-weight:600;color:${path.color}">${pct}%</span>
+<span style="font-size:12px;color:var(--text-muted)">${pathMastered.length}/${pathQ.length}题</span>
+</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+${!isLocked?`<button class="btn btn-primary btn-sm" onclick="navigate('practice',{mode:'category',category:'${path.categories[0]}'})">开始学习</button>
+<button class="btn btn-outline btn-sm" onclick="navigate('questions',{category:'${path.categories[0]}'})">查看题目</button>`
+:`<button class="btn btn-outline btn-sm" disabled>🔒 未解锁</button>`}
+</div>
+</div>
+</div>`}).join('')}
+</div>
+<div class="card" style="margin-top:24px">
+<h3 style="margin-bottom:16px">📋 今日学习计划</h3>
+${(()=>{
+const unmastered=allQ.filter(q=>!mastered.includes(q.id));
+const easyUn=unmastered.filter(q=>q.difficulty==='easy');
+const medUn=unmastered.filter(q=>q.difficulty==='medium');
+const plan=[];
+if(easyUn.length)plan.push({text:`完成 3 道简单题`,icon:'🟢',count:3,qs:easyUn.slice(0,3)});
+if(medUn.length)plan.push({text:`挑战 2 道中等题`,icon:'🟡',count:2,qs:medUn.slice(0,2)});
+plan.push({text:`复习 1 道已掌握的题`,icon:'🔄',count:1,qs:mastered.slice(-1).map(id=>allQ.find(q=>q.id===id)).filter(Boolean)});
+if(!plan.length||!unmastered.length)return`<div style="text-align:center;padding:20px;color:var(--text-muted)">🎉 所有题目已掌握！</div>`;
+return`<div style="display:flex;flex-direction:column;gap:12px">${plan.map(p=>`<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-primary);border-radius:var(--radius-sm);border:1px solid var(--border-color)"><span style="font-size:20px">${p.icon}</span><span style="flex:1;font-size:14px">${p.text}</span>${p.qs.length?`<button class="btn btn-primary btn-sm" onclick="navigate('detail',{id:'${p.qs[0].id}'})">开始 →</button>`:''}</div>`).join('')}</div>`
+})()}
+</div>`;
+}
+
 function renderDetail(){
 const allQ=getAllQuestions(),q=allQ.find(q=>q.id===currentParams.id);
 if(!q)return'<div class="empty-state"><div class="empty-icon">❓</div><p>题目不存在</p></div>';
 const mastered=Store.getMastered(),favorites=Store.getFavorites(),im=mastered.includes(q.id),if2=favorites.includes(q.id);
 const idx=allQ.findIndex(item=>item.id===q.id),prevQ=idx>0?allQ[idx-1]:null,nextQ=idx<allQ.length-1?allQ[idx+1]:null;
-return`<div class="detail-header"><button class="btn btn-outline btn-sm" onclick="navigate('questions')">← 返回题库</button><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?'✅ 已掌握':'⬜ 标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?'⭐ 已收藏':'☆ 收藏'}</button><button class="btn btn-outline" onclick="toggleAnswer()">📖 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">参考答案</h4><pre>${q.answer||'暂无答案'}</pre></div>${q.isAlgo?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">💻 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
+const relatedQ=allQ.filter(rq=>rq.id!==q.id&&rq.category===q.category).slice(0,5);const note=Store.getNote(q.id);
+return`<div class="detail-header"><button class="btn btn-outline btn-sm" onclick="navigate('questions')">← 返回题库</button><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?'✅ 已掌握':'⬜ 标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?'⭐ 已收藏':'☆ 收藏'}</button><button class="btn btn-outline" onclick="toggleAnswer()">📖 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">参考答案</h4><pre>${q.answer||'暂无答案'}</pre></div>${q.isAlgo?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">💻 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div class="card" style="margin-top:20px"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">📝 我的笔记 <span style="font-size:11px;color:var(--text-muted);font-weight:400">自动保存</span></h4><textarea id="questionNote" style="width:100%;min-height:100px;padding:12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:14px;line-height:1.6;resize:vertical;outline:none;font-family:inherit" placeholder="记录你的解题思路、易错点、知识扩展...">${note}</textarea></div>${relatedQ.length?`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:12px">🔗 相关题目</h4><div style="display:flex;flex-direction:column;gap:4px">${relatedQ.map(rq=>`<div class="question-card" onclick="navigate('detail',{id:'${rq.id}'})" style="padding:10px 14px;margin-bottom:0"><div style="display:flex;align-items:center;gap:8px"><span class="difficulty-tag difficulty-${rq.difficulty}" style="font-size:10px">${DIFF_LABELS[rq.difficulty]}</span><span style="font-size:14px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${rq.title}</span>${mastered.includes(rq.id)?'<span style="color:var(--difficulty-easy)">✅</span>':''}</div></div>`).join('')}</div></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
 }
 
 function toggleAnswer(){const e=document.getElementById('answerSection');if(e)e.classList.toggle('open')}
 function setupCodeEditor(){const e=document.getElementById('codeEditor');if(!e)return;e.addEventListener('keydown',function(ev){if(ev.key==='Tab'){ev.preventDefault();const s=this.selectionStart,en=this.selectionEnd;this.value=this.value.substring(0,s)+'  '+this.value.substring(en);this.selectionStart=this.selectionEnd=s+2}})}
+function setupNoteAutoSave(){const n=document.getElementById('questionNote');if(!n)return;let saveTimer;n.addEventListener('input',function(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{const qid=currentParams.id;if(qid)Store.setNote(qid,n.value)},500)})}
 
 function renderCollect(){
 const tabs=['手动收录','网页收录','批量导入','题源管理','收录记录'];
@@ -1191,6 +1251,7 @@ setupMobileBar();
 }
 
 function setupMobileBar(){
+if(window.innerWidth>768)return;
 const bar=document.getElementById('mobileBar');
 if(!bar)return;
 if(currentPage==='detail'){
