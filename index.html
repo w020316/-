@@ -545,12 +545,28 @@ const now=new Date();
 const dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/(1000*60*60*24));
 const seed=now.getFullYear()*1000+dayOfYear;
 const dailyQ=allQ.length?allQ[seed%allQ.length]:null;
-const dateStr=`${now.getMonth()+1}月${now.getDate()}日 ${'日一二三四五六'[now.getDay()]}`;
+const dateStr=`${now.getMonth()+1}月${now.getDate()}日 星期${'日一二三四五六'[now.getDay()]}`;
 const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
 const recentMastered=mastered.slice(-5).reverse().map(id=>allQ.find(q=>q.id===id)).filter(Boolean);
 const nextUnmastered=allQ.find(q=>!mastered.includes(q.id));
 const diffIcon={easy:'🟢',medium:'🟡',hard:'🔴'};
-const dailyTags=dailyQ&&dailyQ.tags&&dailyQ.tags.length?dailyQ.tags.slice(0,3):[CATEGORY_MAP[dailyQ?.category]||dailyQ?.category||''];
+const CN_EN_MAP={'数据库':'database','操作系统':'os','计算机网络':'network','编程语言':'language','算法':'algorithm','数据结构':'datastructure','系统设计':'scenario','数据库原理':'database','查询优化':'database','索引':'database','事务':'database','并发':'os','锁':'database','Redis':'database','MySQL':'database','SQL':'database','Java':'language','Python':'language','Go':'language','JVM':'language','GC':'language','多线程':'language','集合框架':'language','GIL':'language','HTTP':'network','TCP':'network','UDP':'network','DNS':'network','HTTPS':'network','Socket':'network','进程':'os','线程':'os','内存管理':'os','调度':'os','排序':'algorithm','动态规划':'algorithm','贪心':'algorithm','二叉树':'datastructure','链表':'datastructure','哈希':'datastructure','堆':'datastructure','图':'datastructure','微服务':'scenario','分布式':'scenario','缓存':'scenario','消息队列':'scenario','负载均衡':'scenario'};
+function dedupTags(tags){
+if(!tags||!tags.length)return[];
+const seen=new Set();const result=[];
+for(const t of tags){const lower=t.toLowerCase();if(seen.has(lower))continue;
+let isDup=false;for(const s of seen){if(CN_EN_MAP[s]===lower||CN_EN_MAP[lower]===s||Object.entries(CN_EN_MAP).some(([cn,en])=>(cn===s&&en===lower)||(en===s&&cn===lower))){isDup=true;break}}
+if(!isDup){seen.add(lower);result.push(t)}}
+return result.slice(0,3)}
+function genTags(q){
+if(q.tags&&q.tags.length)return dedupTags(q.tags);
+const catName=CATEGORY_MAP[q.category]||q.category;
+const title=q.title||'';
+const tagSet=new Set([catName]);
+const kwMap={'索引':['B+树','索引优化'],'事务':['ACID','隔离级别'],'MVCC':['版本控制','ReadView'],'锁':['行锁','间隙锁'],'Redis':['缓存','持久化'],'SQL':['查询优化','执行计划'],'HTTP':['请求响应','状态码'],'TCP':['三次握手','可靠传输'],'UDP':['无连接','数据报'],'DNS':['域名解析','缓存'],'进程':['调度','PCB'],'线程':['并发','同步'],'内存':['虚拟内存','分页'],'GC':['垃圾回收','标记清除'],'JVM':['类加载','内存模型'],'HashMap':['哈希表','红黑树'],'多线程':['锁','AQS'],'GIL':['全局锁','多进程'],'排序':['时间复杂度','稳定性'],'动态规划':['状态转移','最优子结构'],'二叉树':['遍历','深度'],'链表':['指针','反转'],'微服务':['服务治理','API网关'],'分布式':['一致性','CAP'],'消息队列':['异步','解耦'],'缓存':['穿透','击穿']};
+for(const[kw,tags]of Object.entries(kwMap)){if(title.includes(kw)){tags.forEach(t=>tagSet.add(t));break}}
+return dedupTags([...tagSet])}
+const dailyTags=genTags(dailyQ);
 if(Store.getFirstVisit()){setTimeout(()=>showFirstVisitGuide(),500)}
 return`
 <div class="dashboard-hero fade-in">
