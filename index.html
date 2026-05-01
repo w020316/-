@@ -835,7 +835,6 @@ return`<div class="search-bar"><input class="search-input" placeholder="搜索�
 
 function renderLearnPath(){
 const allQ=getAllQuestions(),mastered=Store.getMastered(),masteredSet=new Set(mastered);
-const catSet=new Set();const diffSet=new Set();
 const paths=[
 {id:'basics',name:'基础入门',desc:'从零开始，掌握计算机核心概念',icon:'i-sprout',color:'var(--difficulty-easy)',categories:['datastructure','algorithm'],difficulties:['easy'],target:30},
 {id:'os-net',name:'OS与网络',desc:'操作系统和计算机网络核心知识',icon:'i-cpu',color:'var(--accent-cyan)',categories:['os','network'],difficulties:['easy','medium'],target:40},
@@ -843,13 +842,16 @@ const paths=[
 {id:'advanced',name:'系统设计进阶',desc:'分布式、微服务、高并发场景',icon:'i-rocket',color:'var(--accent-orange)',categories:['system-design','scenario'],difficulties:['medium','hard'],target:30},
 {id:'master',name:'全科精通',desc:'挑战困难题，全面掌握',icon:'i-crown',color:'var(--difficulty-hard)',categories:['datastructure','algorithm','os','network','database','language','system-design','scenario'],difficulties:['hard'],target:20}
 ];
+const pathStats=paths.map(path=>{
+const pathCatSet=new Set(path.categories);const pathDiffSet=new Set(path.difficulties);
+let pathTotal=0,pathMastered=0;allQ.forEach(q=>{if(pathCatSet.has(q.category)&&pathDiffSet.has(q.difficulty)){pathTotal++;if(masteredSet.has(q.id))pathMastered++}});
+return{total:pathTotal,mastered:pathMastered,pct:pathTotal?Math.round(pathMastered/pathTotal*100):0};
+});
 return`<div style="margin-bottom:20px"><h2>${svgIcon('i-map','icon-lg')} 学习路径</h2><p style="color:var(--text-secondary);margin-top:8px">系统化学习，循序渐进掌握每个知识点</p></div>
 <div style="display:flex;flex-direction:column;gap:16px">
 ${paths.map((path,pi)=>{
-const pathCatSet=new Set(path.categories);const pathDiffSet=new Set(path.difficulties);
-let pathTotal=0,pathMastered=0;allQ.forEach(q=>{if(pathCatSet.has(q.category)&&pathDiffSet.has(q.difficulty)){pathTotal++;if(masteredSet.has(q.id))pathMastered++}});
-const pct=pathTotal?Math.round(pathMastered/pathTotal*100):0;
-let isLocked=false;if(pi>0){let allUnlocked=true;for(let j=0;j<pi;j++){const p=paths[j];const pCatSet=new Set(p.categories);const pDiffSet=new Set(p.difficulties);let pTotal=0,pM=0;allQ.forEach(q=>{if(pCatSet.has(q.category)&&pDiffSet.has(q.difficulty)){pTotal++;if(masteredSet.has(q.id))pM++}});if(pM<Math.min(p.target,pTotal)*0.3){allUnlocked=false;break}}isLocked=!allUnlocked}
+const ps=pathStats[pi];
+let isLocked=false;if(pi>0){let allUnlocked=true;for(let j=0;j<pi;j++){if(pathStats[j].mastered<Math.min(paths[j].target,pathStats[j].total)*0.3){allUnlocked=false;break}}isLocked=!allUnlocked}
 return`<div class="card slide-up" style="animation-delay:${pi*.1}s;${isLocked?'opacity:.6':''}">
 <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
 <div style="min-width:48px;text-align:center;color:${path.color}">${svgIcon(path.icon,'icon-2xl')}</div>
@@ -860,9 +862,9 @@ ${isLocked?'<span style="font-size:12px;color:var(--text-muted)">'+svgIcon('i-lo
 </div>
 <p style="font-size:13px;color:var(--text-secondary);margin:0">${path.desc}</p>
 <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
-<div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${path.color};border-radius:3px;transition:width .5s"></div></div>
-<span style="font-size:13px;font-weight:600;color:${path.color}">${pct}%</span>
-<span style="font-size:12px;color:var(--text-muted)">${pathMastered}/${pathTotal}题</span>
+<div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden"><div style="height:100%;width:${ps.pct}%;background:${path.color};border-radius:3px;transition:width .5s"></div></div>
+<span style="font-size:13px;font-weight:600;color:${path.color}">${ps.pct}%</span>
+<span style="font-size:12px;color:var(--text-muted)">${ps.mastered}/${ps.total}题</span>
 </div>
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1193,7 +1195,7 @@ function submitManualCollect(){
 const title=document.getElementById('cTitle')?.value?.trim();
 if(!title){toast('请输入题干','error');return}
 const q={title,category:document.getElementById('cCategory')?.value||'algorithm',difficulty:document.getElementById('cDifficulty')?.value||'medium',content:document.getElementById('cContent')?.value||'',answer:document.getElementById('cAnswer')?.value||'',source:document.getElementById('cSource')?.value||'手动添加'};
-Store.addCollected([q]);toast('收录成功！','success');renderPage();
+Store.addCollected([q]);toast(svgIcon('i-check','icon-sm')+' 收录成功！','success');renderPage();
 }
 
 function parseWebText(){
@@ -1382,10 +1384,16 @@ window._challengeStart=Date.now();
 window._challengeTimer=null;
 }
 const modeLabels={daily:'每日一题',category:'专项练习',random:'随机刷题',challenge:'限时挑战'};
-return`${mode==='challenge'?`<div id="challengeTimer" style="position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,var(--accent-orange),var(--accent-gold));color:#000;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px"><span>${svgIcon('i-zap','icon-sm')} 限时挑战</span><span id="challengeCountdown" style="font-size:20px;font-variant-numeric:tabular-nums">05:00</span><span>答对越多越好！</span></div><div style="margin-top:48px"></div>`:''}<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-trophy','icon-2xl')+'</div><p>恭喜！该分类已全部掌握</p></div>':questions.map((q,i)=>{const im=masteredSet.has(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3>${q.content?`<div class="detail-content" style="margin-bottom:12px;max-height:100px;overflow:hidden;position:relative" id="practiceContent${i}"><div style="mask-image:linear-gradient(to bottom,black 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%)">${q.content.substring(0,300)}</div></div><button class="btn btn-outline btn-sm" style="margin-bottom:12px;font-size:12px;padding:4px 12px" onclick="navigate('detail',{id:'${q.id}'})">查看完整题目 →</button>`:''}<div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}`;
+const practicePage=currentParams.ppage||1;
+const practicePageSize=mode==='challenge'?5:mode==='daily'?1:10;
+const totalPages=Math.ceil(questions.length/practicePageSize)||1;
+const paged=questions.slice((practicePage-1)*practicePageSize,practicePage*practicePageSize);
+const startIdx=(practicePage-1)*practicePageSize;
+return`${mode==='challenge'?`<div id="challengeTimer" style="position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,var(--accent-orange),var(--accent-gold));color:#000;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px"><span>${svgIcon('i-zap','icon-sm')} 限时挑战</span><span id="challengeCountdown" style="font-size:20px;font-variant-numeric:tabular-nums">05:00</span><span>答对越多越好！</span></div><div style="margin-top:48px"></div>`:''}<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;currentParams.ppage=1;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-trophy','icon-2xl')+'</div><p>恭喜！该分类已全部掌握</p></div>':paged.map((q,i)=>{const im=masteredSet.has(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${startIdx+i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3>${q.content?`<div class="detail-content" style="margin-bottom:12px;max-height:100px;overflow:hidden;position:relative" id="practiceContent${i}"><div style="mask-image:linear-gradient(to bottom,black 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%)">${q.content.substring(0,300)}</div></div><button class="btn btn-outline btn-sm" style="margin-bottom:12px;font-size:12px;padding:4px 12px" onclick="navigate('detail',{id:'${q.id}'})">查看完整题目 →</button>`:''}<div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}${totalPages>1?`<div class="pagination"><button ${practicePage<=1?'disabled':''} onclick="currentParams.ppage=${practicePage-1};renderPage()">← 上一页</button><span class="page-info">${practicePage} / ${totalPages} (共${questions.length}题)</span><button ${practicePage>=totalPages?'disabled':''} onclick="currentParams.ppage=${practicePage+1};renderPage()">下一页 →</button></div>`:''}`;
 }
 
 function startChallengeTimer(){
+if(window._challengeTimer){clearInterval(window._challengeTimer);window._challengeTimer=null}
 if(!window._challengeStart)return;
 const el=document.getElementById('challengeCountdown');
 if(!el)return;
@@ -1396,7 +1404,7 @@ const remain=Math.max(0,totalMs-elapsed);
 const m=Math.floor(remain/60000);
 const s=Math.floor((remain%60000)/1000);
 el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-if(remain<=0){clearInterval(window._challengeTimer);toast('⏰ 时间到！挑战结束','warning');window._challengeStart=null}
+if(remain<=0){clearInterval(window._challengeTimer);window._challengeTimer=null;toast(svgIcon('i-zap','icon-sm')+' 时间到！挑战结束','warning');window._challengeStart=null}
 },1000);
 }
 function emptyState(icon,title,desc,actionLabel,actionClick){
