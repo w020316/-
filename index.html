@@ -566,8 +566,9 @@ const c=Store.getCollected();
 const key=c.length+'_'+(c.length?c[c.length-1].id:'');
 if(_allQCache&&_allQCacheKey===key)return _allQCache;
 const b=BUILTIN_QUESTIONS.map(q=>({...q,sourceType:'builtin'}));
+const seen=new Set();const deduped=b.filter(q=>{if(seen.has(q.title))return false;seen.add(q.title);return true});
 const col=c.map(q=>({...q,sourceType:'collected'}));
-_allQCache=[...b,...col];
+_allQCache=[...deduped,...col];
 _allQCacheKey=key;
 return _allQCache;
 }
@@ -662,7 +663,7 @@ const nextUnmastered=allQ.find(q=>!masteredSet.has(q.id));
 const diffIcon={easy:svgIcon('i-check','icon-sm'),medium:svgIcon('i-zap','icon-sm'),hard:svgIcon('i-fire','icon-sm')};
 const dailyCatName=CATEGORY_MAP[dailyQ?.category]||dailyQ?.category||'';
 const dailyTags=genTags(dailyQ).filter(t=>t!==dailyCatName);
-if(Store.getFirstVisit()){setTimeout(()=>showFirstVisitGuide(),500)}
+if(Store.getFirstVisit()&&!document.getElementById('guideOverlay')){setTimeout(()=>showFirstVisitGuide(),500)}
 return`<div class="dashboard-hero fade-in" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center">
 <div>
 <h2 style="font-size:24px;font-weight:700;margin-bottom:8px">${mastered.length===0?'欢迎来到面试通！':'欢迎回来，继续刷题！'}</h2>
