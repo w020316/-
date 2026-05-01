@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeInterview - 计算机面试刷题平台</title>
-<meta name="description" content="面向计算机求职面试的刷题平台，涵盖算法、操作系统、计算机网络、数据库、系统设计等高频面试题">
-<meta name="keywords" content="面试题,刷题,算法,LeetCode,计算机面试,数据结构,操作系统,网络,数据库">
-<meta property="og:title" content="CodeInterview - 计算机面试刷题平台">
-<meta property="og:description" content="808+精选面试题，支持收录、刷题、统计">
+<title>面试通 - 计算机面试刷题平台 | 2600+面试题</title>
+<meta name="description" content="面试通 - 面向计算机求职面试的刷题平台，2600+精选面试题，涵盖算法、操作系统、计算机网络、数据库、系统设计、编程语言等8大分类，支持每日一题、专项练习、随机刷题、进度追踪、成就系统">
+<meta name="keywords" content="面试题,刷题,算法,LeetCode,计算机面试,数据结构,操作系统,网络,数据库,八股文,面试通,面试准备,编程面试,系统设计">
+<meta property="og:title" content="面试通 - 计算机面试刷题平台 | 2600+面试题">
+<meta property="og:description" content="2600+精选面试题，涵盖算法、OS、网络、数据库等8大分类，支持每日一题、专项练习、进度追踪">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://w020316.github.io/-/">
+<meta property="og:site_name" content="面试通">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试通 - 计算机面试刷题平台">
+<meta name="twitter:description" content="2600+精选面试题，涵盖算法、OS、网络、数据库等8大分类">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -241,7 +246,7 @@ nav a{padding:8px 10px;font-size:13px}
 <header>
 <div style="display:flex;align-items:center;gap:16px">
 <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-<div class="logo" onclick="navigate('dashboard')">⌨️ Code<span>Interview</span></div>
+<div class="logo" onclick="navigate('dashboard')">📝 面试<span>通</span></div>
 </div>
 <div class="header-stats" id="headerStats"></div>
 <div class="header-right">
@@ -252,7 +257,32 @@ nav a{padding:8px 10px;font-size:13px}
 <div class="main-layout">
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <aside class="sidebar" id="sidebar"></aside>
-<main class="content" id="content"></main>
+<main class="content" id="content">
+<noscript>
+<div style="max-width:800px;margin:40px auto;padding:40px;font-family:sans-serif">
+<h1>📝 面试通 - 计算机面试刷题平台</h1>
+<p>2600+精选计算机面试题，涵盖算法、操作系统、计算机网络、数据库、系统设计、编程语言等8大分类。</p>
+<h2>核心功能</h2>
+<ul>
+<li>📚 2600+精选面试题 - 覆盖8大技术分类</li>
+<li>🎯 多种练习模式 - 每日一题/专项练习/随机刷题</li>
+<li>✅ 进度追踪 - 标记掌握、收藏、连续打卡</li>
+<li>📊 数据统计 - 可视化进度、成就系统</li>
+<li>🌐 收录新题 - 从网页或手动添加</li>
+</ul>
+<h2>题目分类</h2>
+<ul>
+<li>算法与数据结构 - 排序、动态规划、二叉树、链表等</li>
+<li>操作系统 - 进程线程、内存管理、IO、锁等</li>
+<li>计算机网络 - HTTP/TCP/UDP/DNS等</li>
+<li>数据库 - MySQL、Redis、事务、索引等</li>
+<li>系统设计 - 微服务、分布式、消息队列等</li>
+<li>编程语言 - Java、Python、Go等</li>
+</ul>
+<p>请启用 JavaScript 以使用完整功能。</p>
+</div>
+</noscript>
+</main>
 </div>
 </div>
 <div class="toast-container" id="toastContainer"></div>
@@ -572,7 +602,7 @@ if(Store.getFirstVisit()){setTimeout(()=>showFirstVisitGuide(),500)}
 return`
 <div class="dashboard-hero fade-in">
 <div>
-<h2 style="margin-bottom:8px">👋 ${mastered.length===0?'欢迎来到 CodeInterview！':'欢迎回来，继续刷题！'}</h2>
+<h2 style="margin-bottom:8px">👋 ${mastered.length===0?'欢迎来到面试通！':'欢迎回来，继续刷题！'}</h2>
 <p style="color:var(--text-secondary);font-size:15px">${mastered.length===0?'🚀 从第一题开始你的刷题之旅吧！':`你已掌握 ${mastered.length}/${allQ.length} 题，继续加油 💪`}</p>
 ${mastered.length===0&&nextUnmastered?`<button class="btn btn-primary" style="margin-top:14px" onclick="navigate('detail',{id:'${nextUnmastered.id}'})">开始刷题 →</button>`:mastered.length>0?`<button class="btn btn-primary" style="margin-top:14px" onclick="navigate('practice',{mode:'random'})">继续刷题 →</button>`:''}
 </div>
@@ -621,7 +651,7 @@ function showFirstVisitGuide(){
 const overlay=document.createElement('div');
 overlay.className='guide-overlay';
 overlay.id='guideOverlay';
-overlay.innerHTML=`<div class="guide-content"><h2>⌨️ 欢迎使用 CodeInterview</h2><p>面向计算机求职面试的刷题平台<br>涵盖算法、操作系统、网络、数据库等高频面试题</p><div class="guide-features"><div class="guide-feature"><span class="feature-icon">📚</span><span><strong>808+ 精选面试题</strong><br>覆盖8大技术分类，含LeetCode高频题</span></div><div class="guide-feature"><span class="feature-icon">✅</span><span><strong>标记掌握 & 收藏</strong><br>追踪学习进度</span></div><div class="guide-feature"><span class="feature-icon">🎯</span><span><strong>多种练习模式</strong><br>每日一题 / 专项 / 随机</span></div><div class="guide-feature"><span class="feature-icon">🌐</span><span><strong>收录新题目</strong><br>从网页或手动添加</span></div><div class="guide-feature"><span class="feature-icon">📊</span><span><strong>数据统计</strong><br>可视化进度追踪</span></div><div class="guide-feature"><span class="feature-icon">🏆</span><span><strong>成就系统</strong><br>解锁里程碑徽章</span></div></div><button class="btn btn-primary" style="width:100%;padding:14px;font-size:16px" onclick="closeGuide()">开始刷题之旅 →</button></div>`;
+overlay.innerHTML=`<div class="guide-content"><h2>⌨️ 欢迎使用面试通</h2><p>面向计算机求职面试的刷题平台<br>涵盖算法、操作系统、网络、数据库等高频面试题</p><div class="guide-features"><div class="guide-feature"><span class="feature-icon">📚</span><span><strong>2600+ 精选面试题</strong><br>覆盖8大技术分类，含LeetCode高频题</span></div><div class="guide-feature"><span class="feature-icon">✅</span><span><strong>标记掌握 & 收藏</strong><br>追踪学习进度</span></div><div class="guide-feature"><span class="feature-icon">🎯</span><span><strong>多种练习模式</strong><br>每日一题 / 专项 / 随机</span></div><div class="guide-feature"><span class="feature-icon">🌐</span><span><strong>收录新题目</strong><br>从网页或手动添加</span></div><div class="guide-feature"><span class="feature-icon">📊</span><span><strong>数据统计</strong><br>可视化进度追踪</span></div><div class="guide-feature"><span class="feature-icon">🏆</span><span><strong>成就系统</strong><br>解锁里程碑徽章</span></div></div><button class="btn btn-primary" style="width:100%;padding:14px;font-size:16px" onclick="closeGuide()">开始刷题之旅 →</button></div>`;
 document.body.appendChild(overlay);
 }
 
@@ -636,7 +666,7 @@ const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
 const modal=document.createElement('div');
 modal.className='guide-overlay';
 modal.id='shareModal';
-modal.innerHTML=`<div class="share-poster"><div class="share-poster-title">CodeInterview</div><div class="share-poster-subtitle">计算机面试刷题平台</div><div class="share-stats-row"><div class="share-stat"><div class="share-stat-value">${mastered.length}</div><div class="share-stat-label">已掌握</div></div><div class="share-stat"><div class="share-stat-value">${totalPct}%</div><div class="share-stat-label">掌握率</div></div><div class="share-stat"><div class="share-stat-value">${streak}</div><div class="share-stat-label">连续打卡</div></div></div><div style="position:relative;padding:16px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:20px"><p style="font-size:13px;color:var(--text-secondary);position:relative">"${mastered.length===0?'我正在使用 CodeInterview 刷题，一起加入吧！':`我已完成 ${mastered.length} 道面试题，掌握率 ${totalPct}%，连续打卡 ${streak} 天！`}"</p></div><button class="btn btn-primary" style="position:relative;width:100%" onclick="downloadSharePoster()">📷 保存海报</button><button class="btn btn-outline" style="position:relative;margin-top:8px;width:100%" onclick="document.getElementById('shareModal').remove()">关闭</button></div>`;
+modal.innerHTML=`<div class="share-poster"><div class="share-poster-title">面试通</div><div class="share-poster-subtitle">计算机面试刷题平台</div><div class="share-stats-row"><div class="share-stat"><div class="share-stat-value">${mastered.length}</div><div class="share-stat-label">已掌握</div></div><div class="share-stat"><div class="share-stat-value">${totalPct}%</div><div class="share-stat-label">掌握率</div></div><div class="share-stat"><div class="share-stat-value">${streak}</div><div class="share-stat-label">连续打卡</div></div></div><div style="position:relative;padding:16px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:20px"><p style="font-size:13px;color:var(--text-secondary);position:relative">"${mastered.length===0?'我正在使用面试通刷题，一起加入吧！':`我已完成 ${mastered.length} 道面试题，掌握率 ${totalPct}%，连续打卡 ${streak} 天！`}"</p></div><button class="btn btn-primary" style="position:relative;width:100%" onclick="downloadSharePoster()">📷 保存海报</button><button class="btn btn-outline" style="position:relative;margin-top:8px;width:100%" onclick="document.getElementById('shareModal').remove()">关闭</button></div>`;
 document.body.appendChild(modal);
 }
 
