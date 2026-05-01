@@ -334,6 +334,18 @@ function t(key){return LANG[currentLang]?.[key]||LANG['zh']?.[key]||key}
 function setLang(lang){currentLang=lang;Store.set('lang',lang);renderPage()}
 const CATEGORY_MAP={};CATEGORIES.forEach(c=>CATEGORY_MAP[c.id]=c.name);
 const DIFF_LABELS={easy:'简单',medium:'中等',hard:'困难'};
+const ACHIEVEMENT_DEFS=[
+{id:'first-question',name:'初出茅庐',icon:'i-sprout',desc:'完成第一道题目'},
+{id:'ten-questions',name:'小试牛刀',icon:'i-star',desc:'掌握10道题目'},
+{id:'fifty-questions',name:'渐入佳境',icon:'i-target',desc:'掌握50道题目'},
+{id:'hundred-questions',name:'题海无涯',icon:'i-trophy',desc:'掌握100道题目'},
+{id:'streak-3',name:'三日坚持',icon:'i-fire',desc:'连续打卡3天'},
+{id:'streak-7',name:'周周坚持',icon:'i-zap',desc:'连续打卡7天'},
+{id:'streak-30',name:'月度达人',icon:'i-crown',desc:'连续打卡30天'},
+{id:'collector',name:'收藏家',icon:'i-bookmark',desc:'收藏10道题目'},
+{id:'contributor',name:'贡献者',icon:'i-handshake',desc:'收录5道题目'},
+{id:'all-categories',name:'全能选手',icon:'i-medal',desc:'每个分类至少掌握1题'}
+];
 function svgIcon(id,cls='icon'){return`<svg class="${cls}"><use href="#${id}"/></svg>`}
 
 const BUILTIN_QUESTIONS=[
@@ -502,7 +514,7 @@ getStreak(){const c=this.getCheckins();if(!c.length)return 0;let s=0;const t=new
 checkin(){const c=this.getCheckins();const t=new Date().toDateString();if(!c.includes(t)){c.push(t);this.setCheckins(c);this.checkAchievements()}},
 toggleMastered(id){const m=this.getMastered();const i=m.indexOf(id);if(i>=0){m.splice(i,1)}else{m.push(id);this.set('m_meta_'+id,{date:new Date().toISOString()});this.checkin();const today=new Date().toDateString();const h=this.getMasteredHistory();h[today]=(h[today]||0)+1;this.set('masteredHistory',h)}this.setMastered(m);this.checkAchievements()},
 toggleFavorite(id){const f=this.getFavorites();const i=f.indexOf(id);if(i>=0)f.splice(i,1);else f.push(id);this.setFavorites(f)},
-addCollected(qs){const c=this.getCollected();qs.forEach(q=>{q.id=q.id||('col-'+Date.now()+'-'+Math.random().toString(36).substr(2,5));q.collectedAt=new Date().toISOString();q.source=q.source||'手动添加';c.push(q)});this.setCollected(c);return qs},
+addCollected(qs){const c=this.getCollected();qs.forEach(q=>{q.id=q.id||('col-'+Date.now()+'-'+Math.random().toString(36).substr(2,5));q.collectedAt=new Date().toISOString();q.source=q.source||'手动添加';c.push(q)});this.setCollected(c);invalidateQuestionsCache();return qs},
 getTheme(){return this.get('theme','dark')},setTheme(v){this.set('theme',v)},
 getMasteredHistory(){return this.get('masteredHistory',{})},
 getFirstVisit(){return this.get('firstVisit',true)},setFirstVisit(v){this.set('firstVisit',v)},
@@ -512,24 +524,26 @@ getStudyPlan(){return this.get('studyPlan',null)},setStudyPlan(v){this.set('stud
 checkAchievements(){
 const achievements=this.getAchievements();
 const mastered=this.getMastered();
+const masteredSet=new Set(mastered);
 const checkins=this.getCheckins();
 const streak=this.getStreak();
 const allQ=getAllQuestions();
+const masteredCats=new Set();allQ.forEach(q=>{if(masteredSet.has(q.id))masteredCats.add(q.category)});
 const newAchievements=[];
-const achievementDefs=[
-{id:'first-question',name:'初出茅庐',icon:'i-sprout',desc:'完成第一道题目',check:()=>mastered.length>=1},
-{id:'ten-questions',name:'小试牛刀',icon:'i-star',desc:'掌握10道题目',check:()=>mastered.length>=10},
-{id:'fifty-questions',name:'渐入佳境',icon:'i-target',desc:'掌握50道题目',check:()=>mastered.length>=50},
-{id:'hundred-questions',name:'题海无涯',icon:'i-trophy',desc:'掌握100道题目',check:()=>mastered.length>=100},
-{id:'streak-3',name:'三日坚持',icon:'i-fire',desc:'连续打卡3天',check:()=>streak>=3},
-{id:'streak-7',name:'周周坚持',icon:'i-zap',desc:'连续打卡7天',check:()=>streak>=7},
-{id:'streak-30',name:'月度达人',icon:'i-crown',desc:'连续打卡30天',check:()=>streak>=30},
-{id:'collector',name:'收藏家',icon:'i-bookmark',desc:'收藏10道题目',check:()=>this.getFavorites().length>=10},
-{id:'contributor',name:'贡献者',icon:'i-handshake',desc:'收录5道题目',check:()=>this.getCollected().length>=5},
-{id:'all-categories',name:'全能选手',icon:'i-medal',desc:'每个分类至少掌握1题',check:()=>CATEGORIES.every(c=>mastered.some(mid=>allQ.find(q=>q.id===mid)?.category===c.id))}
-];
-achievementDefs.forEach(def=>{
-if(!achievements.find(a=>a.id===def.id)&&def.check()){
+const checks={
+'first-question':()=>mastered.length>=1,
+'ten-questions':()=>mastered.length>=10,
+'fifty-questions':()=>mastered.length>=50,
+'hundred-questions':()=>mastered.length>=100,
+'streak-3':()=>streak>=3,
+'streak-7':()=>streak>=7,
+'streak-30':()=>streak>=30,
+'collector':()=>this.getFavorites().length>=10,
+'contributor':()=>this.getCollected().length>=5,
+'all-categories':()=>CATEGORIES.every(c=>masteredCats.has(c.id))
+};
+ACHIEVEMENT_DEFS.forEach(def=>{
+if(!achievements.find(a=>a.id===def.id)&&checks[def.id]&&checks[def.id]()){
 const achievement={...def,unlockedAt:new Date().toISOString()};
 achievements.push(achievement);
 newAchievements.push(achievement);
@@ -542,11 +556,18 @@ setTimeout(()=>{newAchievements.forEach(a=>toast(`${svgIcon('i-trophy','icon-sm'
 }
 };
 
+let _allQCache=null;let _allQCacheKey='';
 function getAllQuestions(){
+const c=Store.getCollected();
+const key=c.length+'_'+(c.length?c[c.length-1].id:'');
+if(_allQCache&&_allQCacheKey===key)return _allQCache;
 const b=BUILTIN_QUESTIONS.map(q=>({...q,sourceType:'builtin'}));
-const c=Store.getCollected().map(q=>({...q,sourceType:'collected'}));
-return[...b,...c];
+const col=c.map(q=>({...q,sourceType:'collected'}));
+_allQCache=[...b,...col];
+_allQCacheKey=key;
+return _allQCache;
 }
+function invalidateQuestionsCache(){_allQCache=null;_allQCacheKey=''}
 
 const ParseEngine={
 parse(t){if(!t||!t.trim())return[];let r;r=this.parseQA(t);if(r.length)return r;r=this.parseNumbered(t);if(r.length)return r;r=this.parseMarkdown(t);if(r.length)return r;r=this.parseParagraphs(t);return r},
@@ -625,7 +646,7 @@ sidebar.style.display='flex';
 }
 
 function renderDashboard(){
-const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites(),collected=Store.getCollected(),streak=Store.getStreak(),todayCount=Store.getTodayCount();
+const allQ=getAllQuestions(),mastered=Store.getMastered(),masteredSet=new Set(mastered),favorites=Store.getFavorites(),collected=Store.getCollected(),streak=Store.getStreak(),todayCount=Store.getTodayCount();
 const now=new Date();
 const dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/(1000*60*60*24));
 const seed=now.getFullYear()*1000+dayOfYear;
@@ -633,7 +654,7 @@ const dailyQ=allQ.length?allQ[seed%allQ.length]:null;
 const dateStr=`${now.getMonth()+1}月${now.getDate()}日 星期${'日一二三四五六'[now.getDay()]}`;
 const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
 const recentMastered=mastered.slice(-5).reverse().map(id=>allQ.find(q=>q.id===id)).filter(Boolean);
-const nextUnmastered=allQ.find(q=>!mastered.includes(q.id));
+const nextUnmastered=allQ.find(q=>!masteredSet.has(q.id));
 const diffIcon={easy:svgIcon('i-check','icon-sm'),medium:svgIcon('i-zap','icon-sm'),hard:svgIcon('i-fire','icon-sm')};
 const CN_EN_MAP={'数据库':'database','操作系统':'os','计算机网络':'network','编程语言':'language','算法':'algorithm','数据结构':'datastructure','系统设计':'scenario','数据库原理':'database','查询优化':'database','索引':'database','事务':'database','并发':'os','锁':'database','Redis':'database','MySQL':'database','SQL':'database','Java':'language','Python':'language','Go':'language','JVM':'language','GC':'language','多线程':'language','集合框架':'language','GIL':'language','HTTP':'network','TCP':'network','UDP':'network','DNS':'network','HTTPS':'network','Socket':'network','进程':'os','线程':'os','内存管理':'os','调度':'os','排序':'algorithm','动态规划':'algorithm','贪心':'algorithm','二叉树':'datastructure','链表':'datastructure','哈希':'datastructure','堆':'datastructure','图':'datastructure','微服务':'scenario','分布式':'scenario','缓存':'scenario','消息队列':'scenario','负载均衡':'scenario'};
 function dedupTags(tags){
@@ -678,7 +699,7 @@ ${totalPct>0?`<div style="font-size:24px;font-weight:700;color:var(--accent-cyan
 <div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}<span style="font-size:14px;font-weight:400"> 天</span></div><div class="stat-label"><svg class="icon-sm" style="color:var(--accent-orange)"><use href="#i-fire"/></svg> 连续打卡</div></div>
 <div class="stat-card" style="border-left:3px solid var(--difficulty-easy)"><div class="stat-number" style="color:var(--difficulty-easy)">${mastered.length}<span style="font-size:14px;font-weight:400"> / ${allQ.length}</span></div><div class="stat-label"><svg class="icon-sm" style="color:var(--difficulty-easy)"><use href="#i-check"/></svg> 已掌握</div></div>
 <div class="stat-card" style="border-left:3px solid var(--accent-gold)"><div class="stat-number" style="color:var(--accent-gold)">${favorites.length}<span style="font-size:14px;font-weight:400"> 题</span></div><div class="stat-label"><svg class="icon-sm" style="color:var(--accent-gold)"><use href="#i-star"/></svg> 收藏</div></div>
-<div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.filter(q=>!mastered.includes(q.id)).length}<span style="font-size:14px;font-weight:400"> 题</span></div><div class="stat-label"><svg class="icon-sm" style="color:var(--accent-cyan)"><use href="#i-target"/></svg> 待攻克</div></div>
+<div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.length-mastered.length}<span style="font-size:14px;font-weight:400"> 题</span></div><div class="stat-label"><svg class="icon-sm" style="color:var(--accent-cyan)"><use href="#i-target"/></svg> 待攻克</div></div>
 </div>
 
 ${dailyQ?`<div class="card slide-up" style="animation-delay:.2s;border-left:3px solid var(--accent-gold)">
@@ -802,15 +823,15 @@ toast('海报已保存！','success');
 }
 
 function renderQuestions(){
-const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites();
+const allQ=getAllQuestions(),mastered=Store.getMastered(),masteredSet=new Set(mastered),favorites=Store.getFavorites(),favoritesSet=new Set(favorites);
 if(currentParams.category)questionFilters.category=currentParams.category;else questionFilters.category='';
 let filtered=[...allQ];
 if(questionFilters.category)filtered=filtered.filter(q=>q.category===questionFilters.category);
 if(questionFilters.difficulty)filtered=filtered.filter(q=>q.difficulty===questionFilters.difficulty);
 if(questionFilters.search){const s=questionFilters.search.toLowerCase();filtered=filtered.filter(q=>q.title.toLowerCase().includes(s)||(q.content&&q.content.toLowerCase().includes(s)))}
-if(questionFilters.status==='mastered')filtered=filtered.filter(q=>mastered.includes(q.id));
-else if(questionFilters.status==='unmastered')filtered=filtered.filter(q=>!mastered.includes(q.id));
-else if(questionFilters.status==='favorited')filtered=filtered.filter(q=>favorites.includes(q.id));
+if(questionFilters.status==='mastered')filtered=filtered.filter(q=>masteredSet.has(q.id));
+else if(questionFilters.status==='unmastered')filtered=filtered.filter(q=>!masteredSet.has(q.id));
+else if(questionFilters.status==='favorited')filtered=filtered.filter(q=>favoritesSet.has(q.id));
 if(questionFilters.source==='builtin')filtered=filtered.filter(q=>q.sourceType==='builtin');
 else if(questionFilters.source==='collected')filtered=filtered.filter(q=>q.sourceType==='collected');
 const isGrid=questionFilters.view==='grid';
@@ -819,11 +840,12 @@ const pageSize=questionFilters.pageSize||20;
 const totalPages=Math.ceil(filtered.length/pageSize);
 const paged=filtered.slice((page-1)*pageSize,page*pageSize);
 const startIdx=(page-1)*pageSize;
-return`<div class="search-bar"><input class="search-input" placeholder="搜索题目..." aria-label="搜索题目" role="searchbox" value="${questionFilters.search}" oninput="questionFilters.search=this.value;questionFilters.page=1;renderPage()"><select class="search-input" onchange="questionFilters.difficulty=this.value;questionFilters.page=1;renderPage()"><option value="">全部难度</option><option value="easy" ${questionFilters.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${questionFilters.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${questionFilters.difficulty==='hard'?'selected':''}>困难</option></select><select class="search-input" onchange="questionFilters.status=this.value;questionFilters.page=1;renderPage()"><option value="">全部状态</option><option value="mastered" ${questionFilters.status==='mastered'?'selected':''}>已掌握</option><option value="unmastered" ${questionFilters.status==='unmastered'?'selected':''}>未掌握</option><option value="favorited" ${questionFilters.status==='favorited'?'selected':''}>已收藏</option></select><select class="search-input" onchange="questionFilters.source=this.value;questionFilters.page=1;renderPage()"><option value="">全部来源</option><option value="builtin" ${questionFilters.source==='builtin'?'selected':''}>内置题</option><option value="collected" ${questionFilters.source==='collected'?'selected':''}>收录题</option></select><div class="view-toggle"><button class="${!isGrid?'active':''}" onclick="questionFilters.view='list';renderPage()">列表</button><button class="${isGrid?'active':''}" onclick="questionFilters.view='grid';renderPage()">卡片</button></div></div><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">共 ${filtered.length} 道题目${totalPages>1?`，第 ${page}/${totalPages} 页`:''}</div>${filtered.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-search','icon-2xl')+'</div><p>没有找到匹配的题目</p><button class="btn btn-primary" style="margin-top:12px" onclick="questionFilters.search=\'\';questionFilters.difficulty=\'\';questionFilters.status=\'\';questionFilters.page=1;renderPage()">清除筛选</button></div>':`<div class="${isGrid?'question-grid':''}">${paged.map((q,i)=>{const im=mastered.includes(q.id),if2=favorites.includes(q.id);return`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${startIdx+i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><span class="source-badge ${q.sourceType}">${q.sourceType==='builtin'?'内置':'收录'}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="收藏" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'};cursor:pointer;opacity:${if2?'1':'.4'};transition:opacity .2s">${svgIcon('i-star','icon-sm')}</button><button onclick="Store.toggleMastered('${q.id}');renderPage()" title="掌握" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'};cursor:pointer;opacity:${im?'1':'.4'};transition:opacity .2s">${svgIcon('i-check','icon-sm')}</button></div></div>`}).join('')}</div>${totalPages>1?`<div class="pagination"><button ${page<=1?'disabled':''} onclick="questionFilters.page=${page-1};renderPage()">← 上一页</button><span class="page-info">${page} / ${totalPages}</span><button ${page>=totalPages?'disabled':''} onclick="questionFilters.page=${page+1};renderPage()">下一页 →</button></div>`:''}`}`;
+return`<div class="search-bar"><input class="search-input" placeholder="搜索题目..." aria-label="搜索题目" role="searchbox" value="${questionFilters.search}" oninput="questionFilters.search=this.value;questionFilters.page=1;renderPage()"><select class="search-input" onchange="questionFilters.difficulty=this.value;questionFilters.page=1;renderPage()"><option value="">全部难度</option><option value="easy" ${questionFilters.difficulty==='easy'?'selected':''}>简单</option><option value="medium" ${questionFilters.difficulty==='medium'?'selected':''}>中等</option><option value="hard" ${questionFilters.difficulty==='hard'?'selected':''}>困难</option></select><select class="search-input" onchange="questionFilters.status=this.value;questionFilters.page=1;renderPage()"><option value="">全部状态</option><option value="mastered" ${questionFilters.status==='mastered'?'selected':''}>已掌握</option><option value="unmastered" ${questionFilters.status==='unmastered'?'selected':''}>未掌握</option><option value="favorited" ${questionFilters.status==='favorited'?'selected':''}>已收藏</option></select><select class="search-input" onchange="questionFilters.source=this.value;questionFilters.page=1;renderPage()"><option value="">全部来源</option><option value="builtin" ${questionFilters.source==='builtin'?'selected':''}>内置题</option><option value="collected" ${questionFilters.source==='collected'?'selected':''}>收录题</option></select><div class="view-toggle"><button class="${!isGrid?'active':''}" onclick="questionFilters.view='list';renderPage()">列表</button><button class="${isGrid?'active':''}" onclick="questionFilters.view='grid';renderPage()">卡片</button></div></div><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">共 ${filtered.length} 道题目${totalPages>1?`，第 ${page}/${totalPages} 页`:''}</div>${filtered.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-search','icon-2xl')+'</div><p>没有找到匹配的题目</p><button class="btn btn-primary" style="margin-top:12px" onclick="questionFilters.search=\'\';questionFilters.difficulty=\'\';questionFilters.status=\'\';questionFilters.page=1;renderPage()">清除筛选</button></div>':`<div class="${isGrid?'question-grid':''}">${paged.map((q,i)=>{const im=masteredSet.has(q.id),if2=favoritesSet.has(q.id);return`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${startIdx+i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span><span class="source-badge ${q.sourceType}">${q.sourceType==='builtin'?'内置':'收录'}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="收藏" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'};cursor:pointer;opacity:${if2?'1':'.4'};transition:opacity .2s">${svgIcon('i-star','icon-sm')}</button><button onclick="Store.toggleMastered('${q.id}');renderPage()" title="掌握" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'};cursor:pointer;opacity:${im?'1':'.4'};transition:opacity .2s">${svgIcon('i-check','icon-sm')}</button></div></div>`}).join('')}</div>${totalPages>1?`<div class="pagination"><button ${page<=1?'disabled':''} onclick="questionFilters.page=${page-1};renderPage()">← 上一页</button><span class="page-info">${page} / ${totalPages}</span><button ${page>=totalPages?'disabled':''} onclick="questionFilters.page=${page+1};renderPage()">下一页 →</button></div>`:''}`}`;
 }
 
 function renderLearnPath(){
-const allQ=getAllQuestions(),mastered=Store.getMastered();
+const allQ=getAllQuestions(),mastered=Store.getMastered(),masteredSet=new Set(mastered);
+const catSet=new Set();const diffSet=new Set();
 const paths=[
 {id:'basics',name:'基础入门',desc:'从零开始，掌握计算机核心概念',icon:'i-sprout',color:'var(--difficulty-easy)',categories:['datastructure','algorithm'],difficulties:['easy'],target:30},
 {id:'os-net',name:'OS与网络',desc:'操作系统和计算机网络核心知识',icon:'i-cpu',color:'var(--accent-cyan)',categories:['os','network'],difficulties:['easy','medium'],target:40},
@@ -834,10 +856,10 @@ const paths=[
 return`<div style="margin-bottom:20px"><h2>${svgIcon('i-map','icon-lg')} 学习路径</h2><p style="color:var(--text-secondary);margin-top:8px">系统化学习，循序渐进掌握每个知识点</p></div>
 <div style="display:flex;flex-direction:column;gap:16px">
 ${paths.map((path,pi)=>{
-const pathQ=allQ.filter(q=>path.categories.includes(q.category)&&path.difficulties.includes(q.difficulty));
-const pathMastered=pathQ.filter(q=>mastered.includes(q.id));
-const pct=pathQ.length?Math.round(pathMastered.length/pathQ.length*100):0;
-const isLocked=pi>0&&!paths.slice(0,pi).every(p=>{const pq=allQ.filter(q=>p.categories.includes(q.category)&&p.difficulties.includes(q.difficulty));return pq.filter(q=>mastered.includes(q.id)).length>=Math.min(p.target,pq.length)*0.3});
+const pathCatSet=new Set(path.categories);const pathDiffSet=new Set(path.difficulties);
+let pathTotal=0,pathMastered=0;allQ.forEach(q=>{if(pathCatSet.has(q.category)&&pathDiffSet.has(q.difficulty)){pathTotal++;if(masteredSet.has(q.id))pathMastered++}});
+const pct=pathTotal?Math.round(pathMastered/pathTotal*100):0;
+let isLocked=false;if(pi>0){let allUnlocked=true;for(let j=0;j<pi;j++){const p=paths[j];const pCatSet=new Set(p.categories);const pDiffSet=new Set(p.difficulties);let pTotal=0,pM=0;allQ.forEach(q=>{if(pCatSet.has(q.category)&&pDiffSet.has(q.difficulty)){pTotal++;if(masteredSet.has(q.id))pM++}});if(pM<Math.min(p.target,pTotal)*0.3){allUnlocked=false;break}}isLocked=!allUnlocked}
 return`<div class="card slide-up" style="animation-delay:${pi*.1}s;${isLocked?'opacity:.6':''}">
 <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
 <div style="min-width:48px;text-align:center;color:${path.color}">${svgIcon(path.icon,'icon-2xl')}</div>
@@ -850,7 +872,7 @@ ${isLocked?'<span style="font-size:12px;color:var(--text-muted)">'+svgIcon('i-lo
 <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
 <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${path.color};border-radius:3px;transition:width .5s"></div></div>
 <span style="font-size:13px;font-weight:600;color:${path.color}">${pct}%</span>
-<span style="font-size:12px;color:var(--text-muted)">${pathMastered.length}/${pathQ.length}题</span>
+<span style="font-size:12px;color:var(--text-muted)">${pathMastered}/${pathTotal}题</span>
 </div>
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -864,7 +886,7 @@ ${!isLocked?`<button class="btn btn-primary btn-sm" onclick="navigate('practice'
 <div class="card" style="margin-top:24px">
 <h3 style="margin-bottom:16px">${svgIcon('i-calendar','icon-sm')} 今日学习计划</h3>
 ${(()=>{
-const unmastered=allQ.filter(q=>!mastered.includes(q.id));
+const unmastered=allQ.filter(q=>!masteredSet.has(q.id));
 const easyUn=unmastered.filter(q=>q.difficulty==='easy');
 const medUn=unmastered.filter(q=>q.difficulty==='medium');
 const plan=[];
@@ -880,10 +902,10 @@ return`<div style="display:flex;flex-direction:column;gap:12px">${plan.map(p=>`<
 function renderDetail(){
 const allQ=getAllQuestions(),q=allQ.find(q=>q.id===currentParams.id);
 if(!q)return'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-search','icon-2xl')+'</div><p>题目不存在</p></div>';
-const mastered=Store.getMastered(),favorites=Store.getFavorites(),im=mastered.includes(q.id),if2=favorites.includes(q.id);
+const mastered=Store.getMastered(),masteredSet=new Set(mastered),favorites=Store.getFavorites(),im=masteredSet.has(q.id),if2=favorites.includes(q.id);
 const idx=allQ.findIndex(item=>item.id===q.id),prevQ=idx>0?allQ[idx-1]:null,nextQ=idx<allQ.length-1?allQ[idx+1]:null;
 const relatedQ=allQ.filter(rq=>rq.id!==q.id&&rq.category===q.category).slice(0,5);const note=Store.getNote(q.id);
-return`<div class="detail-header"><button class="btn btn-outline btn-sm" onclick="navigate('questions')">← 返回题库</button><span style="color:var(--text-muted);font-size:13px">/ <a href="javascript:void(0)" onclick="navigate('questions',{category:'${q.category}'})" style="color:var(--accent-cyan);text-decoration:none">${CATEGORY_MAP[q.category]||q.category}</a></span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?svgIcon('i-star','icon-sm')+' 已收藏':'收藏'}</button><button class="btn btn-outline" id="answerBtn" onclick="toggleAnswer()">${svgIcon('i-eye','icon-sm')} 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">参考答案</h4><div class="answer-hint" style="display:none;padding:16px;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);margin-bottom:12px"><div style="font-weight:600;color:var(--accent-gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">${svgIcon('i-lightbulb','icon-sm')} 解题提示</div><div style="font-size:14px;line-height:1.7;color:var(--text-secondary)">${q.answer?generateHint(q.answer,q.category):'暂无提示'}</div><div style="margin-top:12px;font-size:12px;color:var(--text-muted)">再点击"查看完整答案"获取详细解答</div></div><div class="answer-full" style="display:none"><pre>${q.answer||'暂无答案'}</pre></div></div>${q.isAlgo?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">${svgIcon('i-code','icon-sm')} 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div class="card" style="margin-top:20px"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">${svgIcon('i-edit','icon-sm')} 我的笔记 <span style="font-size:11px;color:var(--text-muted);font-weight:400">自动保存</span></h4><textarea id="questionNote" style="width:100%;min-height:100px;padding:12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:14px;line-height:1.6;resize:vertical;outline:none;font-family:inherit" placeholder="记录你的解题思路、易错点、知识扩展...">${note}</textarea></div>${relatedQ.length?`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:12px">${svgIcon('i-link','icon-sm')} 相关题目</h4><div style="display:flex;flex-direction:column;gap:4px">${relatedQ.map(rq=>`<div class="question-card" onclick="navigate('detail',{id:'${rq.id}'})" style="padding:10px 14px;margin-bottom:0"><div style="display:flex;align-items:center;gap:8px"><span class="difficulty-tag difficulty-${rq.difficulty}" style="font-size:10px">${DIFF_LABELS[rq.difficulty]}</span><span style="font-size:14px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${rq.title}</span>${mastered.includes(rq.id)?'<span style="color:var(--difficulty-easy)">'+svgIcon('i-check','icon-sm')+'</span>':''}</div></div>`).join('')}</div></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
+return`<div class="detail-header"><button class="btn btn-outline btn-sm" onclick="navigate('questions')">← 返回题库</button><span style="color:var(--text-muted);font-size:13px">/ <a href="javascript:void(0)" onclick="navigate('questions',{category:'${q.category}'})" style="color:var(--accent-cyan);text-decoration:none">${CATEGORY_MAP[q.category]||q.category}</a></span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?svgIcon('i-star','icon-sm')+' 已收藏':'收藏'}</button><button class="btn btn-outline" id="answerBtn" onclick="toggleAnswer()">${svgIcon('i-eye','icon-sm')} 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">参考答案</h4><div class="answer-hint" style="display:none;padding:16px;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);margin-bottom:12px"><div style="font-weight:600;color:var(--accent-gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">${svgIcon('i-lightbulb','icon-sm')} 解题提示</div><div style="font-size:14px;line-height:1.7;color:var(--text-secondary)">${q.answer?generateHint(q.answer,q.category):'暂无提示'}</div><div style="margin-top:12px;font-size:12px;color:var(--text-muted)">再点击"查看完整答案"获取详细解答</div></div><div class="answer-full" style="display:none"><pre>${q.answer||'暂无答案'}</pre></div></div>${q.isAlgo?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">${svgIcon('i-code','icon-sm')} 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div class="card" style="margin-top:20px"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">${svgIcon('i-edit','icon-sm')} 我的笔记 <span style="font-size:11px;color:var(--text-muted);font-weight:400">自动保存</span></h4><textarea id="questionNote" style="width:100%;min-height:100px;padding:12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:14px;line-height:1.6;resize:vertical;outline:none;font-family:inherit" placeholder="记录你的解题思路、易错点、知识扩展...">${note}</textarea></div>${relatedQ.length?`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:12px">${svgIcon('i-link','icon-sm')} 相关题目</h4><div style="display:flex;flex-direction:column;gap:4px">${relatedQ.map(rq=>`<div class="question-card" onclick="navigate('detail',{id:'${rq.id}'})" style="padding:10px 14px;margin-bottom:0"><div style="display:flex;align-items:center;gap:8px"><span class="difficulty-tag difficulty-${rq.difficulty}" style="font-size:10px">${DIFF_LABELS[rq.difficulty]}</span><span style="font-size:14px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${rq.title}</span>${masteredSet.has(rq.id)?'<span style="color:var(--difficulty-easy)">'+svgIcon('i-check','icon-sm')+'</span>':''}</div></div>`).join('')}</div></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
 }
 
 function generateHint(answer,category){
@@ -1269,24 +1291,26 @@ toast(`共识别到 ${allResults.length} 道题目，请查看预览`,'success')
 }
 
 function renderFavorites(){
-const allQ=getAllQuestions(),favorites=Store.getFavorites();
-const favQ=allQ.filter(q=>favorites.includes(q.id));
+const allQ=getAllQuestions(),favorites=Store.getFavorites(),favoritesSet=new Set(favorites);
+const favQ=allQ.filter(q=>favoritesSet.has(q.id));
 return`<h2 style="margin-bottom:16px">${svgIcon('i-star','icon-lg')} 收藏夹</h2>${favQ.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-star','icon-2xl')+'</div><p>还没有收藏任何题目</p><button class="btn btn-primary" style="margin-top:12px" onclick="navigate(\'questions\')">前往题库</button></div>':favQ.map((q,i)=>`<div class="question-card" onclick="navigate('detail',{id:'${q.id}'})"><div class="q-number">${i+1}</div><div class="q-info"><div class="q-title">${q.title}</div><div class="q-meta"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div></div><div class="q-actions" onclick="event.stopPropagation()"><button onclick="Store.toggleFavorite('${q.id}');renderPage()" title="取消收藏" style="color:var(--accent-gold)">${svgIcon('i-star','icon-sm')}</button></div></div>`).join('')}`;
 }
 
 function renderStats(){
-const allQ=getAllQuestions(),mastered=Store.getMastered(),favorites=Store.getFavorites(),collected=Store.getCollected();
-const totalPct=allQ.length?Math.round(mastered.length/allQ.length*100):0;
-const catStats=CATEGORIES.map(c=>{const cq=allQ.filter(q=>q.category===c.id),cm=cq.filter(q=>mastered.includes(q.id)).length;return{...c,total:cq.length,mastered:cm,pct:cq.length?Math.round(cm/cq.length*100):0}});
+const allQ=getAllQuestions(),masteredArr=Store.getMastered(),favorites=Store.getFavorites(),collected=Store.getCollected();
+const masteredSet=new Set(masteredArr);
+const totalPct=allQ.length?Math.round(masteredArr.length/allQ.length*100):0;
+const catStats=CATEGORIES.map(c=>{let total=0,mastered=0;allQ.forEach(q=>{if(q.category===c.id){total++;if(masteredSet.has(q.id))mastered++}});return{...c,total,mastered,pct:total?Math.round(mastered/total*100):0}});
 const maxTotal=Math.max(...catStats.map(c=>c.total),1);
 const checkins=Store.getCheckins();
 const streak=Store.getStreak();
 const today=new Date();
 const calDays=[];for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);calDays.push(d)}
 const achievements=Store.getAchievements();
+const checkinsSet=new Set(checkins);
 const diffStats={easy:{total:0,mastered:0},medium:{total:0,mastered:0},hard:{total:0,mastered:0}};
-allQ.forEach(q=>{if(diffStats[q.difficulty]){diffStats[q.difficulty].total++;if(mastered.includes(q.id))diffStats[q.difficulty].mastered++}});
-return`<div class="stat-grid"><div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card" style="border-left:3px solid var(--difficulty-easy)"><div class="stat-number" style="color:var(--difficulty-easy)">${mastered.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card" style="border-left:3px solid var(--accent-gold)"><div class="stat-number" style="color:var(--accent-gold)">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div></div>
+allQ.forEach(q=>{if(diffStats[q.difficulty]){diffStats[q.difficulty].total++;if(masteredSet.has(q.id))diffStats[q.difficulty].mastered++}});
+return`<div class="stat-grid"><div class="stat-card" style="border-left:3px solid var(--accent-cyan)"><div class="stat-number" style="color:var(--accent-cyan)">${allQ.length}</div><div class="stat-label">总题数</div></div><div class="stat-card" style="border-left:3px solid var(--difficulty-easy)"><div class="stat-number" style="color:var(--difficulty-easy)">${masteredArr.length}</div><div class="stat-label">已掌握</div></div><div class="stat-card" style="border-left:3px solid var(--accent-gold)"><div class="stat-number" style="color:var(--accent-gold)">${totalPct}%</div><div class="stat-label">掌握率</div></div><div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}</div><div class="stat-label">连续打卡</div></div></div>
 
 <div style="display:flex;gap:16px;flex-wrap:wrap">
 <div class="card" style="flex:2;min-width:320px">
@@ -1335,9 +1359,9 @@ return mastered7d.map((d,i)=>{const h=Math.max(d.count/max*100,4);const dayLabel
 </div>
 </div>
 
-<div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-calendar','icon-sm')} 学习热力图（最近16周）</h3><div style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:12px">${(()=>{const cells=[];const now=new Date();for(let i=111;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const ds=d.toDateString();const isChecked=checkins.includes(ds);const level=isChecked?4:0;const colors=['var(--bg-tertiary)','var(--difficulty-easy)','var(--accent-cyan)','var(--accent-gold)','var(--accent-orange)'];cells.push(`<div style="width:12px;height:12px;border-radius:2px;background:${colors[level]};${ds===now.toDateString()?'outline:2px solid var(--accent-cyan);outline-offset:1px':''}" title="${d.getMonth()+1}月${d.getDate()}日${isChecked?' 已打卡':''}"></div>`)}return cells.join('')})()}</div><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)"><span>少</span><div style="width:12px;height:12px;border-radius:2px;background:var(--bg-tertiary)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--difficulty-easy)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--accent-cyan)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--accent-gold)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--accent-orange)"></div><span>多</span></div></div>
+<div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-calendar','icon-sm')} 学习热力图（最近16周）</h3><div style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:12px">${(()=>{const cells=[];const now=new Date();for(let i=111;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const ds=d.toDateString();const isChecked=checkinsSet.has(ds);const level=isChecked?4:0;const colors=['var(--bg-tertiary)','var(--difficulty-easy)','var(--accent-cyan)','var(--accent-gold)','var(--accent-orange)'];cells.push(`<div style="width:12px;height:12px;border-radius:2px;background:${colors[level]};${ds===now.toDateString()?'outline:2px solid var(--accent-cyan);outline-offset:1px':''}" title="${d.getMonth()+1}月${d.getDate()}日${isChecked?' 已打卡':''}"></div>`)}return cells.join('')})()}</div><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)"><span>少</span><div style="width:12px;height:12px;border-radius:2px;background:var(--bg-tertiary)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--difficulty-easy)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--accent-cyan)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--accent-gold)"></div><div style="width:12px;height:12px;border-radius:2px;background:var(--accent-orange)"></div><span>多</span></div></div>
 
-<div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-award','icon-sm')} 成就徽章 <span style="color:var(--text-muted);font-size:13px;font-weight:400">（${achievements.length}/${achievementDefs.length}）</span></h3><div class="achievement-grid">${achievementDefs.map(def=>{const unlocked=achievements.find(a=>a.id===def.id);return`<div class="achievement-card ${unlocked?'unlocked':'locked'}"><span class="achievement-icon">${unlocked?svgIcon(def.icon,'icon-xl'):svgIcon('i-lock','icon-xl')}</span><div class="achievement-name">${def.name}</div><div class="achievement-desc">${def.desc}</div>${unlocked?`<div class="achievement-date">${new Date(unlocked.unlockedAt).toLocaleDateString()}</div>`:''}</div>`}).join('')}</div></div>
+<div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-award','icon-sm')} 成就徽章 <span style="color:var(--text-muted);font-size:13px;font-weight:400">（${achievements.length}/${ACHIEVEMENT_DEFS.length}）</span></h3><div class="achievement-grid">${ACHIEVEMENT_DEFS.map(def=>{const unlocked=achievements.find(a=>a.id===def.id);return`<div class="achievement-card ${unlocked?'unlocked':'locked'}"><span class="achievement-icon">${unlocked?svgIcon(def.icon,'icon-xl'):svgIcon('i-lock','icon-xl')}</span><div class="achievement-name">${def.name}</div><div class="achievement-desc">${def.desc}</div>${unlocked?`<div class="achievement-date">${new Date(unlocked.unlockedAt).toLocaleDateString()}</div>`:''}</div>`}).join('')}</div></div>
 
 <div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-download','icon-sm')} 数据管理</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-outline" onclick="exportData()"><svg class="icon-sm"><use href="#i-download"/></svg> 导出数据</button><button class="btn btn-outline" onclick="document.getElementById('importFile').click()">导入数据</button><input type="file" id="importFile" accept=".json" onchange="importData(event)" style="display:none" aria-label="选择导入文件"><button class="btn btn-outline" style="color:var(--difficulty-hard)" onclick="if(confirm('确定清除所有数据？此操作不可恢复！'))clearAllData()">清除数据</button></div></div>
 <div class="card" style="text-align:center;color:var(--text-muted);font-size:12px;padding:16px">
@@ -1348,17 +1372,17 @@ return mastered7d.map((d,i)=>{const h=Math.max(d.count/max*100,4);const dayLabel
 
 function renderPractice(){
 const mode=currentParams.mode||'daily';
-const allQ=getAllQuestions(),mastered=Store.getMastered();
+const allQ=getAllQuestions(),mastered=Store.getMastered(),masteredSet=new Set(mastered);
 let questions=[];
 if(mode==='daily'){
 const today=new Date().toDateString(),seed=today.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
 questions=[allQ[seed%allQ.length]];
 }else if(mode==='category'){
 const cat=currentParams.category||'algorithm';
-questions=allQ.filter(q=>q.category===cat&&!mastered.includes(q.id));
+questions=allQ.filter(q=>q.category===cat&&!masteredSet.has(q.id));
 if(!questions.length)questions=allQ.filter(q=>q.category===cat);
 }else if(mode==='random'){
-const unmastered=allQ.filter(q=>!mastered.includes(q.id));
+const unmastered=allQ.filter(q=>!masteredSet.has(q.id));
 if(unmastered.length){const shuffled=[...unmastered].sort(()=>Math.random()-.5);questions=shuffled.slice(0,10)}
 else{questions=[...allQ].sort(()=>Math.random()-.5).slice(0,10)}
 }else if(mode==='challenge'){
@@ -1368,7 +1392,7 @@ window._challengeStart=Date.now();
 window._challengeTimer=null;
 }
 const modeLabels={daily:'每日一题',category:'专项练习',random:'随机刷题',challenge:'限时挑战'};
-return`${mode==='challenge'?`<div id="challengeTimer" style="position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,var(--accent-orange),var(--accent-gold));color:#000;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px"><span>${svgIcon('i-zap','icon-sm')} 限时挑战</span><span id="challengeCountdown" style="font-size:20px;font-variant-numeric:tabular-nums">05:00</span><span>答对越多越好！</span></div><div style="margin-top:48px"></div>`:''}<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-trophy','icon-2xl')+'</div><p>恭喜！该分类已全部掌握</p></div>':questions.map((q,i)=>{const im=mastered.includes(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3>${q.content?`<div class="detail-content" style="margin-bottom:12px;max-height:100px;overflow:hidden;position:relative" id="practiceContent${i}"><div style="mask-image:linear-gradient(to bottom,black 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%)">${q.content.substring(0,300)}</div></div><button class="btn btn-outline btn-sm" style="margin-bottom:12px;font-size:12px;padding:4px 12px" onclick="navigate('detail',{id:'${q.id}'})">查看完整题目 →</button>`:''}<div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}`;
+return`${mode==='challenge'?`<div id="challengeTimer" style="position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,var(--accent-orange),var(--accent-gold));color:#000;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px"><span>${svgIcon('i-zap','icon-sm')} 限时挑战</span><span id="challengeCountdown" style="font-size:20px;font-variant-numeric:tabular-nums">05:00</span><span>答对越多越好！</span></div><div style="margin-top:48px"></div>`:''}<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-trophy','icon-2xl')+'</div><p>恭喜！该分类已全部掌握</p></div>':questions.map((q,i)=>{const im=masteredSet.has(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3>${q.content?`<div class="detail-content" style="margin-bottom:12px;max-height:100px;overflow:hidden;position:relative" id="practiceContent${i}"><div style="mask-image:linear-gradient(to bottom,black 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%)">${q.content.substring(0,300)}</div></div><button class="btn btn-outline btn-sm" style="margin-bottom:12px;font-size:12px;padding:4px 12px" onclick="navigate('detail',{id:'${q.id}'})">查看完整题目 →</button>`:''}<div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}`;
 }
 
 function startChallengeTimer(){
@@ -1442,8 +1466,8 @@ if(currentPage==='detail'){
 const allQ=getAllQuestions();
 const q=allQ.find(q=>q.id===currentParams.id);
 if(!q){bar.innerHTML='';return}
-const mastered=Store.getMastered(),favorites=Store.getFavorites();
-const im=mastered.includes(q.id),if2=favorites.includes(q.id);
+const mastered=Store.getMastered(),masteredSet=new Set(mastered),favorites=Store.getFavorites();
+const im=masteredSet.has(q.id),if2=favorites.includes(q.id);
 const idx=allQ.findIndex(item=>item.id===q.id);
 bar.innerHTML=`<button onclick="if(${idx}>0)navigate('detail',{id:'${allQ[idx-1]?.id}'})"><span class="bar-icon">${svgIcon('i-arrow-left','icon-sm')}</span><span class="bar-label">上一题</span></button><button onclick="Store.toggleMastered('${q.id}');renderPage()"><span class="bar-icon" style="color:${im?'var(--difficulty-easy)':'var(--text-muted)'}">${svgIcon('i-check','icon-sm')}</span><span class="bar-label">${im?'已掌握':'掌握'}</span></button><button onclick="toggleAnswer()"><span class="bar-icon">${svgIcon('i-eye','icon-sm')}</span><span class="bar-label">答案</span></button><button onclick="Store.toggleFavorite('${q.id}');renderPage()"><span class="bar-icon" style="color:${if2?'var(--accent-gold)':'var(--text-muted)'}">${svgIcon('i-star','icon-sm')}</span><span class="bar-label">${if2?'已收藏':'收藏'}</span></button><button onclick="if(${idx}<allQ.length-1)navigate('detail',{id:'${allQ[idx+1]?.id}'})"><span class="bar-icon">${svgIcon('i-arrow-right','icon-sm')}</span><span class="bar-label">下一题</span></button>`;
 }else if(currentPage==='questions'){
