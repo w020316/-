@@ -253,9 +253,8 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 .mobile-menu-btn{display:block}
 .content{padding:12px;padding-bottom:80px}
 .header-stats{display:none}
-nav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-nav::-webkit-scrollbar{display:none}
-nav a{padding:8px 10px;font-size:12px;gap:2px}
+nav{display:none!important}
+.header-right{gap:0}
 .stat-grid{grid-template-columns:repeat(2,1fr)}
 .question-grid{grid-template-columns:1fr}
 .dashboard-hero{padding:16px}
@@ -386,6 +385,28 @@ const Q_TYPE_MAP={};Object.values(Q_TYPES).forEach(t=>Q_TYPE_MAP[t.id]=t.name);
 const LANG={};let currentLang='zh';
 function t(key){return LANG[currentLang]?.[key]||LANG['zh']?.[key]||key}
 function setLang(lang){currentLang=lang;Store.set('lang',lang);renderPage()}
+let _dataLoaded=false;
+async function loadQuestionData(){
+if(_dataLoaded)return true;
+try{
+const r=await fetch('data/questions.json');
+if(!r.ok)throw new Error('HTTP '+r.status);
+const data=await r.json();
+const computerCats=new Set(['algorithm','os','network','database','system-design','frontend','language','scenario']);
+MULTI_DISCIPLINE_QUESTIONS.length=0;
+BUILTIN_QUESTIONS.length=0;
+data.forEach(q=>{
+if(computerCats.has(q.category))BUILTIN_QUESTIONS.push({...q,sourceType:'builtin',type:q.type||'code'});
+else MULTI_DISCIPLINE_QUESTIONS.push({...q,sourceType:'builtin',type:q.type||'short'});
+});
+_dataLoaded=true;
+_allQCache=null;
+return true;
+}catch(e){
+console.warn('JSON加载失败，使用内联数据',e);
+return false;
+}
+}
 const MULTI_DISCIPLINE_QUESTIONS=[
 {id:'fin-ba-001',title:'会计等式的基本形式是什么？资产=负债+所有者权益体现了什么关系？',category:'finance',difficulty:'easy',tags:["财务报表"],description:'金融财会-基础会计第1题',answer:'**会计基本等式：资产 = 负债 + 所有者权益**\n\n体现的关系：\n1. **资源来源关系**：企业资产来源于债权人（负债）和所有者（权益）\n2. **恒等关系**：任何经济业务发生都不会破坏该等式平衡\n3. **产权关系**：明确资产归属权\n4. **复式记账基础**：每笔交易至少影响两个科目，借贷必相等\n\n扩展形式：资产 = 负债 + 所有者权益 + （收入 - 费用）'},
 {id:'fin-ba-002',title:'什么是权责发生制？与收付实现制有何区别？举例说明。',category:'finance',difficulty:'medium',tags:["会计准则"],description:'金融财会-基础会计第2题',answer:'**权责发生制（Accrual Basis）**\n定义：以权利和责任的发生来确认收入和费用，不论款项是否收付。\n\n**收付实现制（Cash Basis）**\n定义：以实际收到或支付现金作为确认标准。\n\n**关键区别**：\n| 对比维度 | 权责发生制 | 收付实现制 |\n|---------|-----------|----------|\n| 确认基础 | 权责发生 | 现金收付 |\n| 配比原则 | 强调 | 不强调 |\n| 利润真实性 | 更准确 | 可能失真 |\n| 适用范围 | 企业 | 政府财政 |\n\n**举例**：12月销售商品100万，次年1月收款\n- 权责发生制：12月确认收入100万\n- 收付实现制：次年1月确认收入100万'},
@@ -14144,7 +14165,8 @@ btn.appendChild(ripple);setTimeout(()=>ripple.remove(),600);
 const theme=Store.getTheme();
 document.documentElement.setAttribute('data-theme',theme);
 const themeIcon=document.getElementById('themeIcon');if(themeIcon)themeIcon.innerHTML=theme==='dark'?'<use href="#i-moon"/>':'<use href="#i-sun"/>';
-parseHash();renderPage();
+parseHash();
+loadQuestionData().then(()=>{renderPage();setupMobileBar()}).catch(()=>{renderPage()});
 const contentEl=document.getElementById('content');
 function updateBackToTop(){
 const btt=document.getElementById('backToTop');
