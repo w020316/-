@@ -9,3 +9,20 @@ pm2/
 pm3/
 pm_review/
 screenshots/
+
+# 环境文件夹（在D盘）
+shuati-env/
+
+# 环境配置文件（包含本地路径）
+.env
+setup_env.bat
+
+# Python环境
+venv/
+.venv/
+env/
+.env.local
+
+# IDE配置
+.vscode/settings.json
+.idea/
