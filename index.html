@@ -14,6 +14,37 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试通 - 多学科面试刷题平台">
 <meta name="twitter:description" content="2000+精选面试题，涵盖算法、金融、法律、医学、教育、公务员、HR、营销等15大分类">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"面试通",
+  "alternateName":"面试通刷题平台",
+  "url":"https://w020316.github.io/-/",
+  "description":"面向多学科求职面试的综合刷题平台，2000+精选面试题，涵盖22大分类，支持6种题型",
+  "applicationCategory":"EducationalApplication",
+  "operatingSystem":"Any",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},
+  "browserRequirements":"Requires JavaScript",
+  "featureList":["2000+面试题","22大专业分类","6种题型","每日一题","专项练习","随机刷题","限时挑战","进度追踪","成就系统","错题本","收藏夹"],
+  "author":{"@type":"Organization","name":"面试通团队"},
+  "inLanguage":"zh-CN",
+  "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"500","bestRating":"5","worstRating":"1"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"首页","item":"https://w020316.github.io/-/"},
+    {"@type":"ListItem","position":2,"name":"题库","item":"https://w020316.github.io/-/#/questions"},
+    {"@type":"ListItem","position":3,"name":"每日一题","item":"https://w020316.github.io/-/#/practice"},
+    {"@type":"ListItem","position":4,"name":"统计","item":"https://w020316.github.io/-/#/stats"}
+  ]
+}
+</script>
+<link rel="canonical" href="https://w020316.github.io/-/">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#00e5ff">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,9 +52,25 @@
 <meta name="apple-mobile-web-app-title" content="面试通">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" media="print" onload="this.media='all'">
+<script>
+let _katexLoaded=false;
+function loadKatex(){
+if(_katexLoaded||typeof katex!=='undefined')return;
+_katexLoaded=true;
+const css=document.querySelector('link[href*="katex.min.css"]');
+if(css)css.media='all';
+const s1=document.createElement('script');
+s1.src='https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js';
+s1.onload=function(){
+const s2=document.createElement('script');
+s2.src='https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js';
+s2.onload=function(){if(typeof renderMathInElement==='function')renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})};
+document.head.appendChild(s2);
+};
+document.head.appendChild(s1);
+}
+</script>
 <style>
 :root{--bg-primary:#0a0e1a;--bg-secondary:#111827;--bg-tertiary:#1f2937;--bg-elevated:#1a2332;--text-primary:#e8edf5;--text-secondary:#8b9cc0;--text-muted:#7a8ba8;--accent-cyan:#00e5ff;--accent-gold:#ffb300;--accent-orange:#ff6d00;--accent-purple:#b388ff;--difficulty-easy:#00e676;--difficulty-medium:#ffab00;--difficulty-hard:#ff1744;--border-color:#1e2d42;--glass:rgba(17,24,39,.7);--shadow:0 8px 32px rgba(0,0,0,.4);--glow-cyan:0 0 20px rgba(0,229,255,.15);--glow-gold:0 0 20px rgba(255,179,0,.15);--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1)}
 [data-theme="light"]{--bg-primary:#f0f4f8;--bg-secondary:#fff;--bg-tertiary:#e2e8f0;--bg-elevated:#f7fafc;--text-primary:#0f172a;--text-secondary:#475569;--text-muted:#5a6778;--border-color:#d1d9e6;--glass:rgba(255,255,255,.85);--shadow:0 8px 32px rgba(0,0,0,.08);--glow-cyan:0 0 20px rgba(0,229,255,.08);--glow-gold:0 0 20px rgba(255,179,0,.08)}
@@ -112,8 +159,8 @@ select.search-input{min-width:120px;cursor:pointer;appearance:auto}
 .view-toggle{display:flex;gap:4px;background:var(--bg-tertiary);border-radius:var(--radius);padding:2px}
 .view-toggle button{padding:6px 12px;border:none;background:transparent;color:var(--text-muted);border-radius:6px;cursor:pointer;font-size:13px;transition:var(--transition)}
 .view-toggle button.active{background:var(--bg-secondary);color:var(--text-primary)}
-.answer-section{max-height:0;overflow:hidden;transition:max-height .5s ease,padding .3s ease;background:var(--bg-primary);border-radius:var(--radius);margin-top:12px}
-.answer-section.open{max-height:5000px;padding:16px;border:1px solid var(--border-color)}
+.answer-section{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .3s ease,padding .3s ease,transform .3s ease;background:var(--bg-primary);border-radius:var(--radius);margin-top:12px;opacity:0;transform:translateY(-8px)}
+.answer-section.open{max-height:none;padding:16px;border:1px solid var(--border-color);opacity:1;transform:translateY(0)}
 .answer-section pre{white-space:pre-wrap;word-wrap:break-word;font-size:14px;line-height:1.7;color:var(--text-secondary)}
 .code-editor{width:100%;min-height:200px;padding:16px;background:#0d1117;color:#c9d1d9;border:1px solid var(--border-color);border-radius:var(--radius);font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:14px;line-height:1.6;resize:vertical;outline:none;tab-size:2}
 .code-editor:focus{border-color:var(--accent-cyan)}
@@ -276,7 +323,15 @@ nav{display:none!important}
 .question-card{padding:12px!important;gap:10px}
 .question-card .q-title{font-size:14px}
 .question-card .q-meta{gap:4px;font-size:11px}
-.option-label{padding:10px 12px!important;font-size:14px!important;min-height:44px}
+.option-label{padding:10px 12px!important;font-size:14px!important;min-height:44px;position:relative;overflow:hidden}
+.option-label::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(34,211,238,.08),transparent);transition:left .5s ease}
+.option-label:hover::before{left:100%}
+.option-label:hover{border-color:var(--accent-cyan)!important;transform:translateX(4px);box-shadow:0 2px 12px rgba(34,211,238,.15)}
+.option-label:active{transform:scale(.98);border-color:var(--accent-gold)!important;background:rgba(255,179,0,.05)!important}
+.option-label.selected-correct{border-color:var(--difficulty-easy)!important;background:rgba(0,230,118,.08)!important;animation:correctPulse .6s ease}
+.option-label.selected-wrong{border-color:var(--difficulty-hard)!important;background:rgba(239,68,68,.08)!important;animation:wrongShake .5s ease}
+@keyframes correctPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02);box-shadow:0 0 20px rgba(0,230,118,.3)}}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
 .category-tag,.difficulty-tag{font-size:10px!important;padding:2px 6px!important}
 .pagination{gap:4px}
 .pagination button{padding:8px 10px;font-size:12px;min-height:44px}
@@ -286,7 +341,7 @@ nav{display:none!important}
 </style>
 </head>
 <body>
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol><symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol><symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></symbol><symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol><symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol><symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></symbol><symbol id="i-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 2.5-.5 5-2 7 1 0 2.5.5 3 2.5.5-2 2-3 3-4-1 3-1 5.5-3 7.5a6 6 0 11-4-11c0 2 1 3 2 4-1-2-1-4 1-6z"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol><symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-shuffle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></symbol><symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol><symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></symbol><symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol><symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol><symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></symbol><symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></symbol><symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol><symbol id="i-boxes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.97 12.92A2 2 0 012 11V5a2 2 0 012-2h4l2 2h6a2 2 0 012 2v2"/><path d="M4.27 13.15A2 2 0 006 14h12a2 2 0 002-2v-4a2 2 0 00-2-2h-6l-2-2H6"/><path d="M7 20h10"/><path d="M12 14v6"/></symbol><symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></symbol><symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol><symbol id="i-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18"/><line x1="6" y1="12" x2="2"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 00-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 01.876 0L15.39 8.87a1 1 0 00.916.551H20.5a.5.5 0 01.4.8l-3.9 4.9a1 1 0 00-.15.955l1.4 4.5a.5.5 0 01-.6.6l-4.5-1.4a1 1 0 00-.955.15l-4.9 3.9a.5.5 0 01-.8-.4v-5.194a1 1 0 00-.551-.916L1.87 12.762a.5.5 0 010-.876l6.194-3.378a1 1 0 00.551-.916V2.5a.5.5 0 01.8-.4l4.9 3.9a1 1 0 00.955.15l4.5-1.4"/></symbol><symbol id="i-handshake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17h4"/><path d="M13 7h4"/><path d="M5 17l2.5-2.5"/><path d="M17 7l-2.5 2.5"/><path d="M7 7l-4 4a1.4 1.4 0 001 2.4l2-.2"/><path d="M17 17l4-4a1.4 1.4 0 00-1-2.4l-2 .2"/></symbol><symbol id="i-medal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.21 15L2.66 7.14a2 2 0 01.13-2.2L4.4 2.8A2 2 0 016 2h12a2 2 0 011.6.8l1.6 2.14a2 2 0 01.14 2.2L16.79 15"/><circle cx="12" cy="17" r="5"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></symbol><symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></symbol><symbol id="i-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></symbol><symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol><symbol id="i-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 019 14"/></symbol><symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol><symbol id="i-trending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol><symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></symbol><symbol id="i-graduation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></symbol><symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol><symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol><symbol id="i-megaphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></symbol></svg>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol><symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol><symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></symbol><symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol><symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol><symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></symbol><symbol id="i-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 2.5-.5 5-2 7 1 0 2.5.5 3 2.5.5-2 2-3 3-4-1 3-1 5.5-3 7.5a6 6 0 11-4-11c0 2 1 3 2 4-1-2-1-4 1-6z"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol><symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-shuffle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></symbol><symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol><symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></symbol><symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol><symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol><symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></symbol><symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></symbol><symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol><symbol id="i-boxes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.97 12.92A2 2 0 012 11V5a2 2 0 012-2h4l2 2h6a2 2 0 012 2v2"/><path d="M4.27 13.15A2 2 0 006 14h12a2 2 0 002-2v-4a2 2 0 00-2-2h-6l-2-2H6"/><path d="M7 20h10"/><path d="M12 14v6"/></symbol><symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></symbol><symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol><symbol id="i-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18"/><line x1="6" y1="12" x2="2"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 00-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 01.876 0L15.39 8.87a1 1 0 00.916.551H20.5a.5.5 0 01.4.8l-3.9 4.9a1 1 0 00-.15.955l1.4 4.5a.5.5 0 01-.6.6l-4.5-1.4a1 1 0 00-.955.15l-4.9 3.9a.5.5 0 01-.8-.4v-5.194a1 1 0 00-.551-.916L1.87 12.762a.5.5 0 010-.876l6.194-3.378a1 1 0 00.551-.916V2.5a.5.5 0 01.8-.4l4.9 3.9a1 1 0 00.955.15l4.5-1.4"/></symbol><symbol id="i-handshake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17h4"/><path d="M13 7h4"/><path d="M5 17l2.5-2.5"/><path d="M17 7l-2.5 2.5"/><path d="M7 7l-4 4a1.4 1.4 0 001 2.4l2-.2"/><path d="M17 17l4-4a1.4 1.4 0 00-1-2.4l-2 .2"/></symbol><symbol id="i-medal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.21 15L2.66 7.14a2 2 0 01.13-2.2L4.4 2.8A2 2 0 016 2h12a2 2 0 011.6.8l1.6 2.14a2 2 0 01.14 2.2L16.79 15"/><circle cx="12" cy="17" r="5"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></symbol><symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></symbol><symbol id="i-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></symbol><symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol><symbol id="i-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 019 14"/></symbol><symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol><symbol id="i-trending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol><symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></symbol><symbol id="i-graduation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></symbol><symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol><symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol><symbol id="i-megaphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></symbol><symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></symbol></svg>
 <div id="app">
 <header role="banner">
 <div style="display:flex;align-items:center;gap:16px">
@@ -315,9 +370,21 @@ nav{display:none!important}
 <li>进度追踪 - 标记掌握、收藏、连续打卡</li>
 <li>数据统计 - 可视化进度、成就系统</li>
 <li>收录新题 - 从网页或手动添加</li>
+<li>错题本 - 自动收录错题，针对性复习</li>
+<li>笔记功能 - 为每道题添加私人笔记</li>
 </ul>
+<h2>热门分类</h2>
+<ul>
+<li>算法与数据结构 - 包含数组、链表、树、图、动态规划等</li>
+<li>计算机基础 - 操作系统、计算机网络、数据库</li>
+<li>金融财会 - 会计准则、财务管理、投资分析</li>
+<li>法律法务 - 民法、刑法、商法、劳动法</li>
+<li>医疗卫生 - 临床医学、护理学、药学</li>
+<li>公务员行测 - 言语理解、数量关系、判断推理</li>
+<li>人力资源 - 劳动法、招聘管理、薪酬福利</li>
+<li>市场营销 - 营销策略、品牌管理、数字营销</li>
 </ul>
-<p>请启用 JavaScript 以使用完整功能。</p>
+<p>请启用 JavaScript 以使用完整功能。本站为单页应用(SPA)，需要JavaScript支持才能正常运行。</p>
 </div>
 </noscript>
 </main>
@@ -934,20 +1001,20 @@ const MULTI_DISCIPLINE_QUESTIONS=[
 const CATEGORY_MAP={};CATEGORIES.forEach(c=>CATEGORY_MAP[c.id]=c.name);
 const DIFF_LABELS={easy:'简单',medium:'中等',hard:'困难'};
 const ACHIEVEMENT_DEFS=[
-{id:'first-question',name:'初出茅庐',icon:'i-sprout',desc:'完成第一道题目'},
-{id:'ten-questions',name:'小试牛刀',icon:'i-star',desc:'掌握10道题目'},
-{id:'fifty-questions',name:'渐入佳境',icon:'i-target',desc:'掌握50道题目'},
-{id:'hundred-questions',name:'题海无涯',icon:'i-trophy',desc:'掌握100道题目'},
-{id:'streak-3',name:'三日坚持',icon:'i-fire',desc:'连续打卡3天'},
-{id:'streak-7',name:'周周坚持',icon:'i-zap',desc:'连续打卡7天'},
-{id:'streak-30',name:'月度达人',icon:'i-crown',desc:'连续打卡30天'},
-{id:'collector',name:'收藏家',icon:'i-bookmark',desc:'收藏10道题目'},
-{id:'contributor',name:'贡献者',icon:'i-handshake',desc:'收录5道题目'},
-{id:'all-categories',name:'全能选手',icon:'i-medal',desc:'每个分类至少掌握1题'},
-{id:'wrong-book-5',name:'知错能改',icon:'i-refresh',desc:'错题本积累5道题'},
-{id:'wrong-book-20',name:'百折不挠',icon:'i-shield',desc:'错题本积累20道题'},
-{id:'correct-50',name:'精准射手',icon:'i-target',desc:'答对50道题'},
-{id:'correct-200',name:'百发百中',icon:'i-bullseye',desc:'答对200道题'}
+{id:'first-question',name:'初出茅庐',icon:'i-sprout',desc:'完成第一道题目',title:'萌新'},
+{id:'ten-questions',name:'小试牛刀',icon:'i-star',desc:'掌握10道题目',title:'学徒'},
+{id:'fifty-questions',name:'渐入佳境',icon:'i-target',desc:'掌握50道题目',title:'熟手'},
+{id:'hundred-questions',name:'题海无涯',icon:'i-trophy',desc:'掌握100道题目',title:'大师'},
+{id:'streak-3',name:'三日坚持',icon:'i-fire',desc:'连续打卡3天',title:'坚持者'},
+{id:'streak-7',name:'周周坚持',icon:'i-zap',desc:'连续打卡7天',title:'铁人'},
+{id:'streak-30',name:'月度达人',icon:'i-crown',desc:'连续打卡30天',title:'传奇'},
+{id:'collector',name:'收藏家',icon:'i-bookmark',desc:'收藏10道题目',title:'珍品猎人'},
+{id:'contributor',name:'贡献者',icon:'i-handshake',desc:'收录5道题目',title:'题库建设者'},
+{id:'all-categories',name:'全能选手',icon:'i-medal',desc:'每个分类至少掌握1题',title:'六边形战士'},
+{id:'wrong-book-5',name:'知错能改',icon:'i-refresh',desc:'错题本积累5道题',title:'反思者'},
+{id:'wrong-book-20',name:'百折不挠',icon:'i-shield',desc:'错题本积累20道题',title:'钢铁意志'},
+{id:'correct-50',name:'精准射手',icon:'i-target',desc:'答对50道题',title:'神枪手'},
+{id:'correct-200',name:'百发百中',icon:'i-award',desc:'答对200道题',title:'SQL收割机'}
 ];
 const CN_EN_MAP={'数据库':'database','操作系统':'os','计算机网络':'network','编程语言':'language','算法':'algorithm','数据结构':'algorithm','系统设计':'scenario','数据库原理':'database','查询优化':'database','索引':'database','事务':'database','并发':'os','锁':'database','Redis':'database','MySQL':'database','SQL':'database','Java':'language','Python':'language','Go':'language','JVM':'language','GC':'language','多线程':'language','集合框架':'language','GIL':'language','HTTP':'network','TCP':'network','UDP':'network','DNS':'network','HTTPS':'network','Socket':'network','进程':'os','线程':'os','内存管理':'os','调度':'os','排序':'algorithm','动态规划':'algorithm','贪心':'algorithm','二叉树':'algorithm','链表':'algorithm','哈希':'algorithm','堆':'algorithm','图':'algorithm','微服务':'scenario','分布式':'scenario','缓存':'scenario','消息队列':'scenario','负载均衡':'scenario','金融':'finance','会计':'finance','银行':'banking','证券':'finance','法律':'law','合同':'law','劳动法':'law','刑法':'law','医学':'medical','临床':'medical','药学':'medical','教育':'education','教学':'education','公务员':'civil-service','行测':'logical-reasoning','人力资源':'hr','招聘':'hr','薪酬':'hr','营销':'marketing','品牌':'marketing','数字营销':'marketing','自我介绍':'general-interview','职业规划':'general-interview','面试':'general-interview','逻辑':'logical-reasoning','推理':'logical-reasoning','产品':'product','运营':'operations','注册会计':'accounting','CPA':'accounting'};
 const KW_MAP={'索引':['B+树','索引优化'],'事务':['ACID','隔离级别'],'MVCC':['版本控制','ReadView'],'锁':['行锁','间隙锁'],'Redis':['缓存','持久化'],'SQL':['查询优化','执行计划'],'HTTP':['请求响应','状态码'],'TCP':['三次握手','可靠传输'],'UDP':['无连接','数据报'],'DNS':['域名解析','缓存'],'进程':['调度','PCB'],'线程':['并发','同步'],'内存':['虚拟内存','分页'],'GC':['垃圾回收','标记清除'],'JVM':['类加载','内存模型'],'HashMap':['哈希表','红黑树'],'多线程':['锁','AQS'],'GIL':['全局锁','多进程'],'排序':['时间复杂度','稳定性'],'动态规划':['状态转移','最优子结构'],'二叉树':['遍历','深度'],'链表':['指针','反转'],'微服务':['服务治理','API网关'],'分布式':['一致性','CAP'],'消息队列':['异步','解耦'],'缓存':['穿透','击穿'],'统计信息':['查询优化','执行计划'],'Statistics':['查询优化','执行计划']};
@@ -12835,6 +12902,7 @@ markWrongReviewed(qid){const w=this.getWrongBook();const item=w.find(x=>x.qid===
 getCorrectCount(){return this.get('correctCount',0)},addCorrect(){this.set('correctCount',this.getCorrectCount()+1);this.checkAchievements()},
 getTotalAttempts(){return this.get('totalAttempts',0)},addAttempt(){this.set('totalAttempts',this.getTotalAttempts()+1)},
 getStudyTime(){return this.get('studyTime',0)},addStudyTime(ms){this.set('studyTime',this.getStudyTime()+ms)},
+getSoundEnabled(){return this.get('soundEnabled',true)},setSoundEnabled(v){this.set('soundEnabled',v)},
 checkAchievements(){
 const achievements=this.getAchievements();
 const mastered=this.getMastered();
@@ -13097,26 +13165,49 @@ const nextUnmastered=allQ.find(q=>!masteredSet.has(q.id));
 const diffIcon={easy:svgIcon('i-check','icon-sm'),medium:svgIcon('i-zap','icon-sm'),hard:svgIcon('i-fire','icon-sm')};
 const dailyCatName=CATEGORY_MAP[dailyQ?.category]||dailyQ?.category||'';
 const dailyTags=genTags(dailyQ).filter(t=>t!==dailyCatName);
+const wrongBook=Store.getWrongBook();
+const weakCats={};wrongBook.forEach(w=>{const q=allQ.find(x=>x.id===w.qid);if(q)weakCats[q.category]=(weakCats[q.category]||0)+1});
+const topWeakCat=Object.entries(weakCats).sort((a,b)=>b[1]-a[1])[0];
+const unmasteredByCat={};allQ.forEach(q=>{if(!masteredSet.has(q.id))unmasteredByCat[q.category]=(unmasteredByCat[q.category]||0)+1});
+const topUnmasteredCat=Object.entries(unmasteredByCat).sort((a,b)=>b[1]-a[1])[0];
 if(Store.getFirstVisit()&&!document.getElementById('guideOverlay')){setTimeout(()=>showFirstVisitGuide(),500)}
+const heroGreeting=mastered.length===0?'开始你的刷题之旅':streak>=7?`连续${streak}天打卡，太棒了！`:totalPct>=50?`已完成${totalPct}%，继续加油！`:'每天进步一点点';
 return`<div class="dashboard-hero fade-in" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center">
 <div>
-<h2 style="font-size:24px;font-weight:700;margin-bottom:8px">${mastered.length===0?'欢迎来到面试通！':'欢迎回来，继续刷题！'}</h2>
-<p style="color:var(--text-secondary);font-size:15px">${mastered.length===0?'从第一题开始你的刷题之旅吧！':`已掌握 ${mastered.length}/${allQ.length} 题，完成率 ${totalPct}%`}</p>
-${mastered.length===0?`<button class="btn btn-primary" style="margin-top:14px" onclick="navigate('practice',{mode:'random'})"><svg class="icon-sm"><use href="#i-shuffle"/></svg> 开始刷题</button>`:`<button class="btn btn-primary" style="margin-top:14px" onclick="navigate('practice',{mode:'random'})"><svg class="icon-sm"><use href="#i-shuffle"/></svg> 继续刷题</button>`}
+<h2 style="font-size:28px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${mastered.length===0?'欢迎来到面试通！':'欢迎回来！'}</h2>
+<p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px">${heroGreeting}</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn btn-primary" style="font-size:15px;padding:12px 24px;box-shadow:0 4px 16px rgba(34,211,238,.3);animation:pulse-glow 2s ease-in-out infinite" onclick="navigate('practice',{mode:'random'})">${svgIcon('i-zap','icon-sm')} ${mastered.length===0?'立即挑战':'继续刷题'}</button>
+<button class="btn btn-outline" style="font-size:14px" onclick="navigate('questions')">${svgIcon('i-book','icon-sm')} 探索题库</button>
+</div>
 </div>
 <div style="text-align:center">
-<div style="position:relative;width:110px;height:110px">
+<div style="position:relative;width:120px;height:120px">
 <svg viewBox="0 0 120 120" style="transform:rotate(-90deg)">
 <circle cx="60" cy="60" r="52" fill="none" stroke="var(--bg-tertiary)" stroke-width="8"/>
-<circle cx="60" cy="60" r="52" fill="none" stroke="url(#ringGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${2*Math.PI*52}" stroke-dashoffset="${2*Math.PI*52*(1-totalPct/100)}"/>
+<circle cx="60" cy="60" r="52" fill="none" stroke="url(#ringGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${2*Math.PI*52}" stroke-dashoffset="${2*Math.PI*52*(1-totalPct/100)}" style="transition:stroke-dashoffset 1s ease"/>
 <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--accent-cyan)"/><stop offset="100%" stop-color="var(--accent-gold)"/></linearGradient></defs>
 </svg>
 <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-${totalPct>0?`<div style="font-size:24px;font-weight:700;color:var(--accent-cyan)">${totalPct}%</div><div style="font-size:11px;color:var(--text-muted)">掌握率</div>`:`<div style="font-size:14px;font-weight:700;color:var(--accent-cyan)">${allQ.length}</div><div style="font-size:10px;color:var(--text-muted)">题目总数</div>`}
+<div style="font-size:28px;font-weight:800;color:var(--accent-cyan)">${totalPct}%</div>
+<div style="font-size:11px;color:var(--text-muted)">掌握率</div>
+<div style="font-size:10px;color:var(--text-muted)">${mastered.length}/${allQ.length}题</div>
 </div>
 </div>
 </div>
 </div>
+
+${topWeakCat||topUnmasteredCat?`<div class="card slide-up" style="animation-delay:.05s;border-left:3px solid var(--accent-red);background:linear-gradient(135deg,rgba(239,68,68,.05),transparent)">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+${svgIcon('i-lightbulb','icon-lg')}
+<div><h3 style="margin:0;font-size:15px;color:var(--accent-gold)">智能推荐</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">基于你的学习数据</p></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+${topWeakCat?`<button class="btn btn-outline btn-sm" style="border-color:var(--accent-red);color:var(--accent-red)" onclick="navigate('practice',{mode:'category',category:'${topWeakCat[0]}'})">${svgIcon('i-refresh','icon-sm')} 复习${CATEGORY_MAP[topWeakCat[0]]||topWeakCat[0]}（错${topWeakCat[1]}题）</button>`:''}
+${topUnmasteredCat?`<button class="btn btn-outline btn-sm" onclick="navigate('practice',{mode:'category',category:'${topUnmasteredCat[0]}'})">${svgIcon('i-target','icon-sm')} 攻克${CATEGORY_MAP[topUnmasteredCat[0]]||topUnmasteredCat[0]}（${topUnmasteredCat[1]}题未掌握）</button>`:''}
+${wrongBook.length>0?`<button class="btn btn-outline btn-sm" style="border-color:var(--accent-orange);color:var(--accent-orange)" onclick="navigate('wrongbook')">${svgIcon('i-refresh','icon-sm')} 错题复习（${wrongBook.length}题）</button>`:''}
+</div>
+</div>`:''}
 
 <div class="stat-grid slide-up" style="animation-delay:.1s">
 <div class="stat-card" style="border-left:3px solid var(--accent-orange)"><div class="stat-number" style="color:var(--accent-orange)">${streak}<span style="font-size:14px;font-weight:400"> 天</span></div><div class="stat-label"><svg class="icon-sm" style="color:var(--accent-orange)"><use href="#i-fire"/></svg> 连续打卡</div></div>
@@ -13151,10 +13242,10 @@ ${recentMastered.length?`<div style="display:flex;flex-direction:column;gap:2px"
 </div>
 
 <div class="quick-actions slide-up" style="animation-delay:.4s">
-<div class="quick-action" onclick="navigate('practice',{mode:'random'})" role="button" tabindex="0"><div class="action-icon">${svgIcon('i-shuffle','icon-xl')}</div><div class="action-title">开始刷题</div><div class="action-desc">随机练习未掌握题</div></div>
-<div class="quick-action" onclick="navigate('practice',{mode:'challenge'})" role="button" tabindex="0"><div class="action-icon">${svgIcon('i-zap','icon-xl')}</div><div class="action-title">限时挑战</div><div class="action-desc">5分钟答5题</div></div>
-<div class="quick-action" onclick="navigate('questions')" role="button" tabindex="0"><div class="action-icon">${svgIcon('i-book','icon-xl')}</div><div class="action-title">题目列表</div><div class="action-desc">浏览所有题目</div></div>
-<div class="quick-action" onclick="navigate('stats')" role="button" tabindex="0"><div class="action-icon">${svgIcon('i-chart','icon-xl')}</div><div class="action-title">我的统计</div><div class="action-desc">查看学习数据</div></div>
+<div class="quick-action" onclick="navigate('practice',{mode:'random'})" role="button" tabindex="0" aria-label="随机刷题"><div class="action-icon">${svgIcon('i-shuffle','icon-xl')}</div><div class="action-title">随机刷题</div><div class="action-desc">练习未掌握题</div></div>
+<div class="quick-action" onclick="navigate('practice',{mode:'challenge'})" role="button" tabindex="0" aria-label="限时挑战"><div class="action-icon">${svgIcon('i-zap','icon-xl')}</div><div class="action-title">限时挑战</div><div class="action-desc">5分钟答5题</div></div>
+<div class="quick-action" onclick="navigate('questions')" role="button" tabindex="0" aria-label="题库浏览"><div class="action-icon">${svgIcon('i-book','icon-xl')}</div><div class="action-title">题目列表</div><div class="action-desc">浏览所有题目</div></div>
+<div class="quick-action" onclick="navigate('wrongbook')" role="button" tabindex="0" aria-label="错题本"><div class="action-icon" style="color:var(--accent-red)">${svgIcon('i-refresh','icon-xl')}</div><div class="action-title">错题本</div><div class="action-desc">${wrongBook.length}题待复习</div></div>
 </div>
 `;
 }
@@ -13357,7 +13448,7 @@ optionsHtml=`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:
 }else if(qType==='case_analysis'){
 optionsHtml=`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">${svgIcon('i-crosshair','icon-sm')} 案例分析</h4><textarea id="caseAnswer" style="width:100%;min-height:180px;padding:12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:14px;line-height:1.6;resize:vertical;outline:none;font-family:inherit" placeholder="请从多角度分析此案例，包括问题识别、原因分析、解决方案..."></textarea><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary btn-sm" onclick="answerQuestion('${q.id}',true)">${svgIcon('i-check','icon-sm')} 完成作答</button><button class="btn btn-outline btn-sm" onclick="answerQuestion('${q.id}',false)">${svgIcon('i-x','icon-sm')} 需要复习</button></div></div>`;
 }
-return`<div class="detail-header"><button class="btn btn-outline btn-sm" onclick="navigate('questions')">← 返回题库</button><span style="color:var(--text-muted);font-size:13px">/ <a href="javascript:void(0)" onclick="navigate('questions',{category:'${q.category}'})" style="color:var(--accent-cyan);text-decoration:none">${CATEGORY_MAP[q.category]||q.category}</a></span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${typeLabel}${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}${optionsHtml}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?svgIcon('i-star','icon-sm')+' 已收藏':'收藏'}</button><button class="btn btn-outline" id="answerBtn" onclick="toggleAnswer()">${svgIcon('i-eye','icon-sm')} 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">${answerTitle}</h4><div class="answer-hint" style="display:none;padding:16px;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);margin-bottom:12px"><div style="font-weight:600;color:var(--accent-gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">${svgIcon('i-lightbulb','icon-sm')} 解题提示</div><div style="font-size:14px;line-height:1.7;color:var(--text-secondary)">${q.answer?generateHint(q.answer,q.category):'暂无提示'}</div><div style="margin-top:12px;font-size:12px;color:var(--text-muted)">再点击"查看完整答案"获取详细解答</div></div><div class="answer-full" style="display:none">${q.answer?renderMd(q.answer):'暂无答案'}</div></div>${q.isAlgo||qType==='code'?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">${svgIcon('i-code','icon-sm')} 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div class="card" style="margin-top:20px"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">${svgIcon('i-edit','icon-sm')} 我的笔记 <span style="font-size:11px;color:var(--text-muted);font-weight:400">自动保存</span></h4><textarea id="questionNote" style="width:100%;min-height:100px;padding:12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:14px;line-height:1.6;resize:vertical;outline:none;font-family:inherit" placeholder="记录你的解题思路、易错点、知识扩展...">${note}</textarea></div>${relatedQ.length?`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:12px">${svgIcon('i-link','icon-sm')} 相关题目</h4><div style="display:flex;flex-direction:column;gap:4px">${relatedQ.map(rq=>`<div class="question-card" onclick="navigate('detail',{id:'${rq.id}'})" style="padding:10px 14px;margin-bottom:0"><div style="display:flex;align-items:center;gap:8px"><span class="difficulty-tag difficulty-${rq.difficulty}" style="font-size:10px">${DIFF_LABELS[rq.difficulty]}</span><span style="font-size:14px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${rq.title}</span>${masteredSet.has(rq.id)?'<span style="color:var(--difficulty-easy)">'+svgIcon('i-check','icon-sm')+'</span>':''}</div></div>`).join('')}</div></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
+return`<nav class="breadcrumb" aria-label="面包屑导航" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:13px"><a href="javascript:void(0)" onclick="navigate('dashboard')" style="color:var(--accent-cyan);text-decoration:none;display:inline-flex;align-items:center;gap:4px">${svgIcon('i-home','icon-sm')} 首页</a><span style="color:var(--text-muted)">/</span><a href="javascript:void(0)" onclick="navigate('questions')" style="color:var(--accent-cyan);text-decoration:none">题库</a><span style="color:var(--text-muted)">/</span><a href="javascript:void(0)" onclick="navigate('questions',{category:'${q.category}'})" style="color:var(--accent-cyan);text-decoration:none">${CATEGORY_MAP[q.category]||q.category}</a><span style="color:var(--text-muted)">/</span><span style="color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px" title="${q.title}">${q.title}</span></nav><div class="detail-header"><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span>${typeLabel}${q.sourceType==='collected'?'<span class="source-badge collected">收录</span>':''}${q.source?`<span style="font-size:11px;color:var(--text-muted)">来源: ${q.source}</span>`:''}</div><h2 style="margin-bottom:16px">${q.title}</h2><div class="detail-content">${q.content||''}</div>${q.isAlgo&&q.examples?`<div class="example-block"><div class="example-label">示例</div><pre style="color:#c9d1d9;margin:0;white-space:pre-wrap">${q.examples}</pre></div>`:''}${optionsHtml}<div class="detail-actions"><button class="btn ${im?'btn-success':'btn-outline'}" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn ${if2?'btn-gold':'btn-outline'}" onclick="Store.toggleFavorite('${q.id}');renderPage()">${if2?svgIcon('i-star','icon-sm')+' 已收藏':'收藏'}</button><button class="btn btn-outline" id="answerBtn" onclick="toggleAnswer()">${svgIcon('i-eye','icon-sm')} 查看答案</button></div><div class="answer-section" id="answerSection"><h4 style="margin-bottom:12px;color:var(--accent-cyan)">${answerTitle}</h4><div class="answer-hint" style="display:none;padding:16px;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);margin-bottom:12px"><div style="font-weight:600;color:var(--accent-gold);margin-bottom:8px;display:flex;align-items:center;gap:6px">${svgIcon('i-lightbulb','icon-sm')} 解题提示</div><div style="font-size:14px;line-height:1.7;color:var(--text-secondary)">${q.answer?generateHint(q.answer,q.category):'暂无提示'}</div><div style="margin-top:12px;font-size:12px;color:var(--text-muted)">再点击"查看完整答案"获取详细解答</div></div><div class="answer-full" style="display:none">${q.answer?renderMd(q.answer):'暂无答案'}</div></div>${q.isAlgo||qType==='code'?`<div style="margin-top:20px"><h4 style="margin-bottom:8px">${svgIcon('i-code','icon-sm')} 代码编辑区</h4><textarea class="code-editor" id="codeEditor" placeholder="// 在此编写你的代码...&#10;// 支持 Tab 缩进"></textarea></div>`:''}<div class="card" style="margin-top:20px"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">${svgIcon('i-edit','icon-sm')} 我的笔记 <span style="font-size:11px;color:var(--text-muted);font-weight:400">自动保存</span></h4><textarea id="questionNote" style="width:100%;min-height:100px;padding:12px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:14px;line-height:1.6;resize:vertical;outline:none;font-family:inherit" placeholder="记录你的解题思路、易错点、知识扩展...">${note}</textarea></div>${relatedQ.length?`<div class="card" style="margin-top:16px"><h4 style="margin-bottom:12px">${svgIcon('i-link','icon-sm')} 相关题目</h4><div style="display:flex;flex-direction:column;gap:4px">${relatedQ.map(rq=>`<div class="question-card" onclick="navigate('detail',{id:'${rq.id}'})" style="padding:10px 14px;margin-bottom:0"><div style="display:flex;align-items:center;gap:8px"><span class="difficulty-tag difficulty-${rq.difficulty}" style="font-size:10px">${DIFF_LABELS[rq.difficulty]}</span><span style="font-size:14px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${rq.title}</span>${masteredSet.has(rq.id)?'<span style="color:var(--difficulty-easy)">'+svgIcon('i-check','icon-sm')+'</span>':''}</div></div>`).join('')}</div></div>`:''}<div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn btn-outline" ${!prevQ?'disabled':''} onclick="navigate('detail',{id:'${prevQ?prevQ.id:''}'})">← 上一题</button><span style="color:var(--text-muted);font-size:13px;align-self:center">${idx+1} / ${allQ.length}</span><button class="btn btn-outline" ${!nextQ?'disabled':''} onclick="navigate('detail',{id:'${nextQ?nextQ.id:''}'})">下一题 →</button></div>`;
 }
 
 function generateHint(answer,category){
@@ -13391,43 +13482,117 @@ if(keyPoints.length)hint+=`\n关键步骤：${keyPoints[0].substring(0,60)}`;
 return hint;
 }
 
-function renderMd(text){if(!text)return'';let latexBlocks=[];let h=text;h=h.replace(/\$\$([\s\S]*?)\$\$/g,function(m,latex){latexBlocks.push({display:true,content:latex});return'%%LATEX_'+(latexBlocks.length-1)+'%%'});h=h.replace(/\$([^\$\n]+?)\$/g,function(m,latex){latexBlocks.push({display:false,content:latex});return'%%LATEX_'+(latexBlocks.length-1)+'%%'});h=h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');h=h.replace(/```([\s\S]*?)```/g,function(m,code){return'<pre style="background:var(--bg-secondary);padding:12px;border-radius:6px;overflow-x:auto;font-size:13px;line-height:1.5;margin:8px 0">'+code+'</pre>'});h=h.replace(/`([^`]+)`/g,'<code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:13px">$1</code>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/^### (.+)$/gm,'<h5 style="font-size:14px;font-weight:600;margin:12px 0 6px;color:var(--accent-cyan)">$1</h5>');h=h.replace(/^## (.+)$/gm,'<h4 style="font-size:15px;font-weight:600;margin:14px 0 8px;color:var(--accent-cyan)">$1</h4>');h=h.replace(/^# (.+)$/gm,'<h3 style="font-size:16px;font-weight:700;margin:16px 0 8px;color:var(--accent-cyan)">$1</h3>');h=h.replace(/^\|(.+)\|$/gm,function(m,row){const cells=row.split('|').map(c=>c.trim());return'<tr>'+cells.map(c=>'<td style="border:1px solid var(--border-color);padding:6px 10px;font-size:13px">'+c+'</td>').join('')+'</tr>'});h=h.replace(/(<tr>.*<\/tr>\n?)+/g,function(m){return'<table style="border-collapse:collapse;width:100%;margin:8px 0;font-size:13px">'+m+'</table>'});h=h.replace(/^- (.+)$/gm,'<li style="margin:3px 0 3px 16px;list-style:disc;font-size:14px;line-height:1.6">$1</li>');h=h.replace(/^\d+\. (.+)$/gm,'<li style="margin:3px 0 3px 16px;list-style:decimal;font-size:14px;line-height:1.6">$1</li>');h=h.replace(/\n{2,}/g,'</p><p style="margin:8px 0;line-height:1.7;font-size:14px">');h=h.replace(/\n/g,'<br>');h=h.replace(/%%LATEX_(\d+)%%/g,function(m,idx){const block=latexBlocks[parseInt(idx)];if(!block)return'';try{if(typeof katex!=='undefined'){return katex.renderToString(block.content,{displayMode:block.display,throwOnError:false})}else{return block.display?'<span style="font-style:italic;color:var(--accent-cyan)">$$'+block.content+'$$</span>':'<span style="font-style:italic;color:var(--accent-cyan)">$'+block.content+'$</span>'}}catch(e){return block.display?'$$'+block.content+'$$':'$'+block.content+'$'}});return'<div style="line-height:1.7;font-size:14px;color:var(--text-primary)"><p style="margin:8px 0;line-height:1.7">'+h+'</p></div>'}
+function renderMd(text){if(!text)return'';let latexBlocks=[];let h=text;h=h.replace(/\$\$([\s\S]*?)\$\$/g,function(m,latex){latexBlocks.push({display:true,content:latex});return'%%LATEX_'+(latexBlocks.length-1)+'%%'});h=h.replace(/\$([^\$\n]+?)\$/g,function(m,latex){latexBlocks.push({display:false,content:latex});return'%%LATEX_'+(latexBlocks.length-1)+'%%'});h=h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');h=h.replace(/```([\s\S]*?)```/g,function(m,code){return'<pre style="background:var(--bg-secondary);padding:12px;border-radius:6px;overflow-x:auto;font-size:13px;line-height:1.5;margin:8px 0">'+code+'</pre>'});h=h.replace(/`([^`]+)`/g,'<code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:13px">$1</code>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/^### (.+)$/gm,'<h5 style="font-size:14px;font-weight:600;margin:12px 0 6px;color:var(--accent-cyan)">$1</h5>');h=h.replace(/^## (.+)$/gm,'<h4 style="font-size:15px;font-weight:600;margin:14px 0 8px;color:var(--accent-cyan)">$1</h4>');h=h.replace(/^# (.+)$/gm,'<h3 style="font-size:16px;font-weight:700;margin:16px 0 8px;color:var(--accent-cyan)">$1</h3>');h=h.replace(/^\|(.+)\|$/gm,function(m,row){const cells=row.split('|').map(c=>c.trim());return'<tr>'+cells.map(c=>'<td style="border:1px solid var(--border-color);padding:6px 10px;font-size:13px">'+c+'</td>').join('')+'</tr>'});h=h.replace(/(<tr>.*<\/tr>\n?)+/g,function(m){return'<table style="border-collapse:collapse;width:100%;margin:8px 0;font-size:13px">'+m+'</table>'});h=h.replace(/^- (.+)$/gm,'<li style="margin:3px 0 3px 16px;list-style:disc;font-size:14px;line-height:1.6">$1</li>');h=h.replace(/^\d+\. (.+)$/gm,'<li style="margin:3px 0 3px 16px;list-style:decimal;font-size:14px;line-height:1.6">$1</li>');h=h.replace(/\n{2,}/g,'</p><p style="margin:8px 0;line-height:1.7;font-size:14px">');h=h.replace(/\n/g,'<br>');if(latexBlocks.length>0)loadKatex();h=h.replace(/%%LATEX_(\d+)%%/g,function(m,idx){const block=latexBlocks[parseInt(idx)];if(!block)return'';try{if(typeof katex!=='undefined'){return katex.renderToString(block.content,{displayMode:block.display,throwOnError:false})}else{return block.display?'<span style="font-style:italic;color:var(--accent-cyan)">$$'+block.content+'$$</span>':'<span style="font-style:italic;color:var(--accent-cyan)">$'+block.content+'$</span>'}}catch(e){return block.display?'$$'+block.content+'$$':'$'+block.content+'$'}});return'<div style="line-height:1.7;font-size:14px;color:var(--text-primary)"><p style="margin:8px 0;line-height:1.7">'+h+'</p></div>'}
+function sanitizeHTML(str){
+if(!str)return'';
+const div=document.createElement('div');
+div.textContent=str;
+return div.innerHTML.replace(/</g,'&lt;').replace(/>/g,'&gt;')
+}
+function sanitizeInput(str){
+if(!str)return'';
+return str.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,'').replace(/on\w+\s*=/gi,'').replace(/javascript:/gi,'')
+}
+const AudioContext=window.AudioContext||window.webkitAudioContext;
+let audioCtx=null;
+function getAudioContext(){if(!audioCtx)audioCtx=new AudioContext();return audioCtx}
+function playSound(type){
+try{
+if(Store.getSoundEnabled()===false)return;
+const ctx=getAudioContext();
+const osc=ctx.createOscillator();
+const gain=ctx.createGain();
+osc.connect(gain);
+gain.connect(ctx.destination);
+const now=ctx.currentTime;
+if(type==='correct'){
+osc.type='sine';osc.frequency.setValueAtTime(880,now);osc.frequency.exponentialRampToValueAtTime(1760,now+0.1);gain.gain.setValueAtTime(0.15,now);gain.gain.exponentialRampToValueAtTime(0.001,now+0.3);osc.start(now);osc.stop(now+0.3)
+}else if(type==='wrong'){
+osc.type='square';osc.frequency.setValueAtTime(200,now);osc.frequency.exponentialRampToValueAtTime(150,now+0.15);gain.gain.setValueAtTime(0.1,now);gain.gain.exponentialRampToValueAtTime(0.001,now+0.25);osc.start(now);osc.stop(now+0.25)
+}else if(type==='click'){
+osc.type='sine';osc.frequency.setValueAtTime(1000,now);gain.gain.setValueAtTime(0.05,now);gain.gain.exponentialRampToValueAtTime(0.001,now+0.05);osc.start(now);osc.stop(now+0.05)
+}else if(type==='expand'){
+osc.type='sine';osc.frequency.setValueAtTime(600,now);osc.frequency.exponentialRampToValueAtTime(900,now+0.08);gain.gain.setValueAtTime(0.08,now);gain.gain.exponentialRampToValueAtTime(0.001,now+0.15);osc.start(now);osc.stop(now+0.15)
+}
+}catch(e){}
+}
+function vibrate(pattern){if(navigator.vibrate&&Store.getSoundEnabled()!==false)navigator.vibrate(pattern)}
 function answerQuestion(qid,correct){
 Store.addAttempt();
-if(correct){Store.addCorrect();showToast('答对了！继续加油 🎉','success');Store.toggleMastered(qid)}else{Store.addWrong(qid);showToast('答错了，已加入错题本 📝','error');const s=document.getElementById('answerSection');if(s&&!s.classList.contains('open'))toggleAnswer()}
+if(correct){playSound('correct');vibrate([50,30,50]);Store.addCorrect();showToast('答对了！继续加油 🎉','success');Store.toggleMastered(qid)}else{playSound('wrong');vibrate([100,50,100,50,200]);Store.addWrong(qid);showToast('答错了，已加入错题本 📝','error');const s=document.getElementById('answerSection');if(s&&!s.classList.contains('open'))toggleAnswer()}
 renderPage();
 }
 function checkSingleAnswer(qid,userAnswer,correctAnswer){
+playSound('click');vibrate(20);
+const labels=[...document.querySelectorAll('.option-label')];
+labels.forEach(l=>{l.classList.remove('selected-correct','selected-wrong')});
 Store.addAttempt();
 const isCorrect=!correctAnswer||userAnswer===correctAnswer;
-if(isCorrect){Store.addCorrect();showToast('答对了！继续加油 🎉','success');Store.toggleMastered(qid)}else{Store.addWrong(qid,userAnswer);showToast(`答错了！正确答案是 ${correctAnswer} 📝`,'error');const s=document.getElementById('answerSection');if(s&&!s.classList.contains('open'))toggleAnswer()}
+setTimeout(()=>{
+const selectedLabel=document.querySelector(`input[value="${userAnswer}"]`)?.closest('.option-label');
+if(isCorrect){
+playSound('correct');vibrate([50,30,50]);
+if(selectedLabel)selectedLabel.classList.add('selected-correct');
+Store.addCorrect();showToast('答对了！继续加油 🎉','success');Store.toggleMastered(qid)
+}else{
+playSound('wrong');vibrate([100,50,100,50,200]);
+if(selectedLabel)selectedLabel.classList.add('selected-wrong');
+const correctLabel=document.querySelector(`input[value="${correctAnswer}"]`)?.closest('.option-label');
+if(correctLabel)correctLabel.classList.add('selected-correct');
+Store.addWrong(qid,userAnswer);showToast(`答错了！正确答案是 ${correctAnswer} 📝`,'error');const s=document.getElementById('answerSection');if(s&&!s.classList.contains('open'))toggleAnswer()
+}
 renderPage();
+},150);
 }
 function checkMultiAnswer(qid,correctAnswer){
+playSound('click');vibrate(20);
 Store.addAttempt();
 const checked=[...document.querySelectorAll('input[name="qoption-multi"]:checked')].map(i=>i.value).sort().join('');
 const correct=correctAnswer.split('').sort().join('');
 const isCorrect=!correctAnswer||checked===correct;
-if(isCorrect){Store.addCorrect();showToast('答对了！继续加油 🎉','success');Store.toggleMastered(qid)}else{Store.addWrong(qid,checked);showToast(`答错了！正确答案是 ${correctAnswer} 📝`,'error');const s=document.getElementById('answerSection');if(s&&!s.classList.contains('open'))toggleAnswer()}
+setTimeout(()=>{
+if(isCorrect){
+playSound('correct');vibrate([50,30,50]);Store.addCorrect();showToast('答对了！继续加油 🎉','success');Store.toggleMastered(qid)
+}else{
+playSound('wrong');vibrate([100,50,100,50,200]);Store.addWrong(qid,checked);showToast(`答错了！正确答案是 ${correctAnswer} 📝`,'error');const s=document.getElementById('answerSection');if(s&&!s.classList.contains('open'))toggleAnswer()
+}
 renderPage();
+},150);
 }
 function toggleAnswer(){
 const section=document.getElementById('answerSection');
 if(!section)return;
+playSound('expand');vibrate(15);
 const hint=section.querySelector('.answer-hint');
 const full=section.querySelector('.answer-full');
 const btn=document.getElementById('answerBtn');
 if(!section.classList.contains('open')){
+section.style.maxHeight='0';
+section.offsetHeight;
 section.classList.add('open');
+requestAnimationFrame(()=>{
+const height=section.scrollHeight;
+section.style.maxHeight=height+'px';
+setTimeout(()=>{section.style.maxHeight='none'},350);
+});
 if(hint)hint.style.display='block';
 if(full)full.style.display='none';
 if(btn)btn.innerHTML=svgIcon('i-eye','icon-sm')+' 查看完整答案';
 }else if(section.classList.contains('open')&&full&&full.style.display==='none'){
+section.style.maxHeight=section.scrollHeight+'px';
 if(hint)hint.style.display='none';
 if(full)full.style.display='block';
+requestAnimationFrame(()=>{
+const newHeight=section.scrollHeight;
+section.style.maxHeight=newHeight+'px';
+setTimeout(()=>{section.style.maxHeight='none'},350);
+});
 if(btn)btn.innerHTML=svgIcon('i-eye-off','icon-sm')+' 收起答案';
 }else{
+section.style.maxHeight=section.scrollHeight+'px';
+section.offsetHeight;
 section.classList.remove('open');
+section.style.maxHeight='0';
 if(btn)btn.innerHTML=svgIcon('i-eye','icon-sm')+' 查看答案';
 }
 }
@@ -13684,20 +13849,20 @@ return`<div class="stat-grid"><div class="stat-card"><div class="stat-number">${
 }
 
 function submitManualCollect(){
-const title=document.getElementById('cTitle')?.value?.trim();
+const title=sanitizeInput(document.getElementById('cTitle')?.value?.trim());
 if(!title){toast('请输入题干','error');return}
 const qType=document.getElementById('cType')?.value||'short';
-const q={title,category:document.getElementById('cCategory')?.value||'algorithm',difficulty:document.getElementById('cDifficulty')?.value||'medium',type:qType,content:document.getElementById('cContent')?.value||'',answer:document.getElementById('cAnswer')?.value||'',source:document.getElementById('cSource')?.value||'手动添加'};
+const q={title,category:document.getElementById('cCategory')?.value||'algorithm',difficulty:document.getElementById('cDifficulty')?.value||'medium',type:qType,content:sanitizeInput(document.getElementById('cContent')?.value||''),answer:sanitizeInput(document.getElementById('cAnswer')?.value||''),source:sanitizeInput(document.getElementById('cSource')?.value||'手动添加')};
 const tagsVal=document.getElementById('cTags')?.value?.trim();
-if(tagsVal)q.tags=tagsVal.split(/[,，]/).map(t=>t.trim()).filter(Boolean);
+if(tagsVal)q.tags=tagsVal.split(/[,，]/).map(t=>sanitizeInput(t.trim())).filter(Boolean);
 if(['single','multi'].includes(qType)){
 const optText=document.getElementById('cOptions')?.value?.trim();
-if(optText)q.options=optText.split('\n').map(o=>o.trim()).filter(Boolean);
+if(optText)q.options=optText.split('\n').map(o=>sanitizeInput(o.trim())).filter(Boolean);
 const correct=document.getElementById('cCorrectAnswer')?.value?.trim();
-if(correct)q.correctAnswer=correct;
+if(correct)q.correctAnswer=sanitizeInput(correct);
 }else if(qType==='judgment'){
 const correct=document.getElementById('cCorrectAnswer')?.value?.trim();
-if(correct)q.correctAnswer=correct||'对';
+if(correct)q.correctAnswer=sanitizeInput(correct||'对');
 }
 Store.addCollected([q]);toast(svgIcon('i-check','icon-sm')+' 收录成功！','success');renderPage();
 }
@@ -13912,9 +14077,10 @@ return mastered7d.map((d,i)=>{const h=Math.max(d.count/max*100,4);const dayLabel
 <div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-award','icon-sm')} 成就徽章 <span style="color:var(--text-muted);font-size:13px;font-weight:400">（${achievements.length}/${ACHIEVEMENT_DEFS.length}）</span></h3><div class="achievement-grid">${ACHIEVEMENT_DEFS.map(def=>{const unlocked=achievements.find(a=>a.id===def.id);return`<div class="achievement-card ${unlocked?'unlocked':'locked'}"><span class="achievement-icon">${unlocked?svgIcon(def.icon,'icon-xl'):svgIcon('i-lock','icon-xl')}</span><div class="achievement-name">${def.name}</div><div class="achievement-desc">${def.desc}</div>${unlocked?`<div class="achievement-date">${new Date(unlocked.unlockedAt).toLocaleDateString()}</div>`:''}</div>`}).join('')}</div></div>
 
 <div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-download','icon-sm')} 数据管理</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-outline" onclick="exportData()"><svg class="icon-sm"><use href="#i-download"/></svg> 导出数据</button><button class="btn btn-outline" onclick="document.getElementById('importFile').click()">导入数据</button><input type="file" id="importFile" accept=".json" onchange="importData(event)" style="display:none" aria-label="选择导入文件"><button class="btn btn-outline" style="color:var(--difficulty-hard)" onclick="if(confirm('确定清除所有数据？此操作不可恢复！'))clearAllData()">清除数据</button></div></div>
+<div class="card"><h3 style="margin-bottom:16px">${svgIcon('i-settings','icon-sm')} 偏好设置</h3><div style="display:flex;flex-direction:column;gap:12px"><label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer"><span style="font-size:14px">音效反馈</span><div style="position:relative;width:48px;height:26px"><input type="checkbox" ${Store.getSoundEnabled()!==false?'checked':''} onchange="Store.setSoundEnabled(this.checked);showToast(this.checked?'音效已开启':'音效已关闭','info')" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;z-index:1" aria-label="音效开关"><div style="position:absolute;top:0;left:0;right:0;bottom:0;background:${Store.getSoundEnabled()!==false?'var(--accent-cyan)':'var(--bg-tertiary)'};border-radius:13px;transition:var(--transition)"></div><div style="position:absolute;top:3px;left:${Store.getSoundEnabled()!==false?'25px':'3px'};width:20px;height:20px;background:#fff;border-radius:50%;transition:var(--transition)"></div></div></label><p style="font-size:12px;color:var(--text-muted);margin:0">开启后，答题正确/错误时会有音效和震动反馈</p></div></div>
 <div class="card" style="text-align:center;color:var(--text-muted);font-size:12px;padding:16px">
 <div style="margin-bottom:4px">面试通 v2.0.0</div>
-<div>多学科面试刷题平台 · 1500+ 精选题目 · 15 大专业分类</div>
+<div>多学科面试刷题平台 · 2000+ 精选题目 · 22 大专业分类</div>
 </div>`;
 }
 
@@ -13949,7 +14115,7 @@ const practicePageSize=mode==='challenge'?5:mode==='daily'?1:10;
 const totalPages=Math.ceil(questions.length/practicePageSize)||1;
 const paged=questions.slice((practicePage-1)*practicePageSize,practicePage*practicePageSize);
 const startIdx=(practicePage-1)*practicePageSize;
-return`${mode==='challenge'?`<div id="challengeTimer" style="position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,var(--accent-orange),var(--accent-gold));color:#000;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px"><span>${svgIcon('i-zap','icon-sm')} 限时挑战</span><span id="challengeCountdown" style="font-size:20px;font-variant-numeric:tabular-nums">05:00</span><span>答对越多越好！</span></div><div style="margin-top:48px"></div>`:''}<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">← 返回首页</button><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;currentParams.ppage=1;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-trophy','icon-2xl')+'</div><p>恭喜！该分类已全部掌握</p></div>':paged.map((q,i)=>{const im=masteredSet.has(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${startIdx+i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3>${q.content?`<div class="detail-content" style="margin-bottom:12px;max-height:100px;overflow:hidden;position:relative" id="practiceContent${i}"><div style="mask-image:linear-gradient(to bottom,black 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%)">${q.content.substring(0,300)}</div></div><button class="btn btn-outline btn-sm" style="margin-bottom:12px;font-size:12px;padding:4px 12px" onclick="navigate('detail',{id:'${q.id}'})">查看完整题目 →</button>`:''}<div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}${totalPages>1?`<div class="pagination"><button ${practicePage<=1?'disabled':''} onclick="currentParams.ppage=${practicePage-1};renderPage()">← 上一页</button><span class="page-info">${practicePage} / ${totalPages} (共${questions.length}题)</span><button ${practicePage>=totalPages?'disabled':''} onclick="currentParams.ppage=${practicePage+1};renderPage()">下一页 →</button></div>`:''}`;
+return`${mode==='challenge'?`<div id="challengeTimer" style="position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,var(--accent-orange),var(--accent-gold));color:#000;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px"><span>${svgIcon('i-zap','icon-sm')} 限时挑战</span><span id="challengeCountdown" style="font-size:20px;font-variant-numeric:tabular-nums">05:00</span><span>答对越多越好！</span></div><div style="margin-top:48px"></div>`:''}<nav class="breadcrumb" aria-label="面包屑导航" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);font-size:13px"><a href="javascript:void(0)" onclick="navigate('dashboard')" style="color:var(--accent-cyan);text-decoration:none;display:inline-flex;align-items:center;gap:4px">${svgIcon('i-home','icon-sm')} 首页</a><span style="color:var(--text-muted)">/</span><span style="color:var(--text-secondary)">${modeLabels[mode]||'刷题'}</span>${mode==='category'?`<span style="color:var(--text-muted)">/</span><span style="color:var(--accent-cyan)">${CATEGORY_MAP[currentParams.category]||currentParams.category||''}</span>`:''}</nav><div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><h2>${modeLabels[mode]||'刷题'}</h2>${mode==='category'?`<select class="search-input" style="min-width:140px" onchange="currentParams.category=this.value;currentParams.ppage=1;renderPage()">${CATEGORIES.map(c=>`<option value="${c.id}" ${currentParams.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select>`:''}</div>${questions.length===0?'<div class="empty-state"><div class="empty-icon">'+svgIcon('i-trophy','icon-2xl')+'</div><p>恭喜！该分类已全部掌握</p></div>':paged.map((q,i)=>{const im=masteredSet.has(q.id);return`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:18px;font-weight:700;color:var(--text-muted)">#${startIdx+i+1}</span><span class="difficulty-tag difficulty-${q.difficulty}">${DIFF_LABELS[q.difficulty]}</span><span class="category-tag">${CATEGORY_MAP[q.category]||q.category}</span></div><h3 style="margin-bottom:12px;cursor:pointer" onclick="navigate('detail',{id:'${q.id}'})">${q.title}</h3>${q.content?`<div class="detail-content" style="margin-bottom:12px;max-height:100px;overflow:hidden;position:relative" id="practiceContent${i}"><div style="mask-image:linear-gradient(to bottom,black 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%)">${q.content.substring(0,300)}</div></div><button class="btn btn-outline btn-sm" style="margin-bottom:12px;font-size:12px;padding:4px 12px" onclick="navigate('detail',{id:'${q.id}'})">查看完整题目 →</button>`:''}<div style="display:flex;gap:8px"><button class="btn ${im?'btn-success':'btn-outline'} btn-sm" onclick="Store.toggleMastered('${q.id}');renderPage()">${im?svgIcon('i-check','icon-sm')+' 已掌握':'标记掌握'}</button><button class="btn btn-outline btn-sm" onclick="navigate('detail',{id:'${q.id}'})">查看详情 →</button></div></div>`}).join('')}${totalPages>1?`<div class="pagination"><button ${practicePage<=1?'disabled':''} onclick="currentParams.ppage=${practicePage-1};renderPage()">← 上一页</button><span class="page-info">${practicePage} / ${totalPages} (共${questions.length}题)</span><button ${practicePage>=totalPages?'disabled':''} onclick="currentParams.ppage=${practicePage+1};renderPage()">下一页 →</button></div>`:''}`;
 }
 
 function startChallengeTimer(){
@@ -14008,6 +14174,7 @@ document.getElementById('sidebar').classList.remove('open-mobile');
 document.getElementById('sidebarOverlay').classList.remove('show');
 }
 let _touchStartX=0,_touchStartY=0,_touchStartTime=0;
+let _swipeIndicator=null;
 document.addEventListener('touchstart',function(e){_touchStartX=e.touches[0].clientX;_touchStartY=e.touches[0].clientY;_touchStartTime=Date.now()},{passive:true});
 document.addEventListener('touchend',function(e){
 const dx=e.changedTouches[0].clientX-_touchStartX;
@@ -14015,8 +14182,8 @@ const dy=e.changedTouches[0].clientY-_touchStartY;
 const dt=Date.now()-_touchStartTime;
 if(dt>300||Math.abs(dy)>Math.abs(dx)*0.7||Math.abs(dx)<50)return;
 if(currentPage==='detail'){
-if(dx<0){const allQ=getAllQuestions(),idx=allQ.findIndex(q=>q.id===currentParams.id);if(idx<allQ.length-1)navigate('detail',{id:allQ[idx+1].id})}
-else{const allQ=getAllQuestions(),idx=allQ.findIndex(q=>q.id===currentParams.id);if(idx>0)navigate('detail',{id:allQ[idx-1].id})}
+if(dx<0){playSound('click');vibrate(20);const allQ=getAllQuestions(),idx=allQ.findIndex(q=>q.id===currentParams.id);if(idx<allQ.length-1)navigate('detail',{id:allQ[idx+1].id})}
+else{playSound('click');vibrate(20);const allQ=getAllQuestions(),idx=allQ.findIndex(q=>q.id===currentParams.id);if(idx>0)navigate('detail',{id:allQ[idx-1].id})}
 }
 },{passive:true});
 
