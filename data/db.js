@@ -1,0 +1,6 @@
+const DB_NAME='ShuatiDB';const DB_VERSION=1;const STORE_NAME='questions';
+let db=null;
+function openDB(){return new Promise((resolve,reject)=>{if(db){resolve(db);return}const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE_NAME))d.createObjectStore(STORE_NAME,{keyPath:'id'})};req.onsuccess=e=>{db=e.target.result;resolve(db)};req.onerror=e=>reject(e.target.error)})}
+async function loadQuestionsFromDB(){try{const d=await openDB();const tx=d.transaction(STORE_NAME,'readonly');const store=tx.objectStore(STORE_NAME);return new Promise((resolve,reject)=>{const req=store.getAll();req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}catch{return null}}
+async function saveQuestionsToDB(questions){try{const d=await openDB();const tx=d.transaction(STORE_NAME,'readwrite');const store=tx.objectStore(STORE_NAME);questions.forEach(q=>store.put(q));return new Promise((resolve,reject)=>{tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}catch{return}}
+async function getDBVersion(){try{const d=await openDB();const tx=d.transaction(STORE_NAME,'readonly');const store=tx.objectStore(STORE_NAME);return new Promise((resolve)=>{const req=store.count();req.onsuccess=()=>resolve(req.result);req.onerror=()=>resolve(0)})}catch{return 0}}
